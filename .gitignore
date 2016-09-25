@@ -3,3 +3,10 @@
 *.log
 *.synctex.gz
 *.pdf
+*.dvi
+*.fls
+*.fdb_latexmk
+
+
+# vim
+*.*swp
