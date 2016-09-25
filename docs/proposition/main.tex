@@ -1,43 +1,56 @@
-\section{Presentation de l'Application}
+\documentclass[french]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{ragged2e}
 
-Nous souhaitons faire une application mobile permettant à un groupe de se retrouver facilement dans un festival, une grande occasion réunissant beaucoup de personnes, etc.
- L'interface représenterait une carte ou une boussole, au choix, permettant de se rejoindre le plus efficacement possible.
- La confidentalité des données utilisateurs, notamment GPS seraient bien évidément au centre des préocupations et les utilisateurs auraient plein contrôle sur celle-ci.
- Il serait possible de faire des listes de groupes et définir des points de rencontre. 
+\geometry{
+	a4paper,
+	total={210mm,297mm},
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm,
+}
 
-\section{Caractéristiques de l'application}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
 
-\subsection{Gestion des contacts}
+\lhead{Champion, Loiseau\\Rochat, Schubert}
+\chead{Proposition de projet}
+\rhead{\today}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
 
-\item Il sera possible de créer des groupes.
-\item ajouter des gens, les bloquer, reporter un compte douteux
-
-
-\subsection{Mode de retrouvailles}
-
-\item Il sera possible de trouver automatiquement le point de rencontre le plus prêt de tous les membres
-\item Il sera possible de définir un point de rencontre, fixe ou sur une personne.
-\item Il sera possible de traquer un membre du groupe
-
-
-\subsection{Gestion des données personnelles}
-
-\item un utilisateur peut être marqué comme visible par tous ses contacts pour un temps donné
-\item un utilisateur peut donner une visibilité indéfinie pour certains membres
-\item un utilisateur peut accepter au cas par cas les demandes de traquages
-
-
-
-\section{Motivation}
-
-Nous souhaitons apprendre de nouvelles technologies, notamment mobiles et mettre en oeuvre ce que nous voyons en cours concernant les interface hommes-machines, les systèmes mobiles, etc.
-
-Nous souhaitons utiliser de nouvelles technologies que les mobiles récents permettent
-
-
-\subsection{Données techniques}
-\item nous souhaitons utiliser OpenStreetMap pour les données de géolocalisation
-\item nous souhaitons utiliser MeteorJS pour le développement mobile
-\item nous souhaitons utiliser typescript afin de découvrire un nouveau langage en vogue
-
-
+\begin{document}
+	\centering
+	\large{\textbf{PDG: Application de géolocalisation entre amis}}
+	
+	\justify
+	
+	\section{Concept}
+		Nous souhaitons réaliser une application mobile permettant de se retrouver facilement entre amis. L'idée nous est venue des festivals de cet été, dans lesquels il est parfois compliqué de se retrouver au milieu d'une grande foule. L'application se présenterait sous la forme d'une liste d'amis, laquelle permettrait de créer des groupes et de lancer une géolocalisation. L'utilisateur aurait alors le choix entre une carte en vue du dessus ou une boussole indiquant la direction à prendre. 
+	
+	\section{Spécifications}
+		L'application est basée sur trois grands pôles de développement: la gestion de la liste d'amis, la géolocalisation et la sécurité des données utilisateurs.
+	
+		\subsection{Gestion de la liste d'amis}
+			La liste d'amis doit permettre toutes les fonctionnalités de base: ajout, suppression, création de groupe et blocage. D'autres options sont également envisageables comme la recherche d'amis dans la liste de contacts du mobile, l'ajout via un QR Code ou encore en utilisant les puces NFC des téléphones.
+			
+		\subsection{Géolocalisation}
+			Plusieurs modes de localisation sont possibles. Il y aurait la recherche centrée sur une personne, fixée sur un point fixe de la carte ou encore, dans le cas d'un groupe, fixée sur le lieu demandant le moins de temps de trajet pour chacun des membres du groupe.
+	
+		\subsection{Sécurité et confidentialité}
+			Bien évidemment, personne ne veut pouvoir être géolocalisé à n'importe quel moment, même par un ami. L'application doit prendre cet aspect en compte et permettre à l'utilisateur d'avoir un contrôle total sur les demandes de géolocalisation.\\
+			
+			De plus, nous ne souhaitons pas qu'un utilisateur malveillant puisse utiliser l'application pour trouver des personnes, amis ou non. Cela implique qu'une attention particulière devra être portée sur le transferts des données ainsi que sur la sécurité de l'application.
+	
+	\section{Motivation}
+		Ce projet est très intéressant sous plusieurs aspects. Premièrement nous aurions l'occasion de découvrir de nouvelles technologies dans le cadre du développement mobile, deuxièmement il s'agit d'une application pouvant réellement être utile et pour finir les possibilités d'extension sont nombreuses (boussole en mode réalité augmentée, chat intégré, etc.).
+	
+\end{document}
