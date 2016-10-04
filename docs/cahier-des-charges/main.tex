@@ -22,99 +22,97 @@
 \pagestyle{fancy}
 
 \lhead{Champion, Loiseau\\Rochat, Schubert}
-\chead{Projet Rady}
+\chead{Cahier des charges}
 \rhead{\today}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
 \begin{document}
-	\centering
-	\large{\textbf{PDG: Cahier des charges}}
+	
+	\title{Projet Rady - Cahier des charges}
+	\author{Projet de groupe\\
+		Champion, Loiseau, Rochat, Schubert\\
+		Resp. René Rentsch\\
+		HEIG-VD}
+	\date{\today}
+	\maketitle
 	
 	\justify
 	
 	\section{Motivation}
-		 Lors d'un fesival il est courrant de perdre ses amis en revanche les %
-		 retrouver est souvent moins aisé. 
+		 Nous souhaitons réaliser une application mobile permettant de se retrouver facilement entre amis. L’idée nous est venue des festivals de cet été, dans lesquels il est parfois compliqué de se retrouver au milieu d’une grande foule. L’application se présenterait sous la forme d’une liste d’amis, laquelle permettrait de créer des groupes et de lancer une géolocalisation. L’utilisateur aurait alors le choix entre une carte en vue du dessus ou une boussole indiquant la direction à
+		 prendre.
 	
 	\section{But et réalisation}
-		L'application est basée sur trois grands pôles de développement: la gestion de la liste d'amis, la géolocalisation et la sécurité des données utilisateurs.		
+		% Comment notre application va répondre à la problématique?
+		% expliquer le concept de groupe, de liste d'amis, de retrouvailles, etc. afin de bien comprendre la suite du document
+		% utiliser le mot "retrouvaille" ou un autre ?
 	
-	\section{Fonctionalités}
+	\section{Fonctionnalités}
+		% ajouter des (optionnelle)s ?
 	
-		bloquer les alertes / demande pendant un certain temps \\
-		pas de groupe \\
-		spécification du workflow specifier les specification en cas de blocquage etc... \\
-	
-		\subsection{Gestion de la liste d'amis}
-		
+		\subsection{Compte utilisateur}
 			\begin{itemize}
-				\item \textbf{Ajout de contact : } L'utilisateur peut ajouter un contact celuici sera inscrit dans la base de donnée et l'autre utilisateur doit accepter l'autre utilisateur avant qu'il soit ajouté dans la liste
-				\item \textbf{suppression de contact : } L'utilisateur supprime un contact ...
-				\item \textbf{bloquer contact : }
-				\item \textbf{recherche d'amis dans la liste de contact du mobile : }
-				\item \textbf{Ajout a partir d'un QR Code : }
-				
-				\item \textbf{création d'un battletag : } bob  1234
-				
-				\item \textbf{Historique : } L'utilisateur pourra voir ses anciens groupes et ancienne demande 
-				
-				
-				
-				
-				
+				\item À premier lancement de l'application, chaque utilisateur sera invité à fournir un pseudonyme ainsi qu'un mot de passe afin de \textbf{créer un compte} 
+				\item Chaque pseudonyme sera accompagné d'un numéro afin de permettre à plusieurs utilisateurs d'avoir le \textbf{même pseudonyme}
+				\item Un utilisateur pourra \textbf{se déconnecter}, \textbf{changer son numéro de téléphone} ou encore \textbf{supprimer son compte}
+			\end{itemize}
+	
+		\subsection{Liste d'amis}
+			\begin{itemize}
+				\item L'utilisateur pourra \textbf{ajouter un ami} à sa liste, lequel devra accepter la demande de son côté
+				\item L'utilisateur pourra \textbf{supprimer un ami} ou \textbf{bloquer un ami} de sa liste
+				\item Il sera possible de \textbf{rechercher des amis} depuis la liste de contacts du téléphone
+				\item Chaque utilisateur aura un \textbf{QR Code unique}, lequel pourra être scanné (via l'appareil photo) par un autre utilisateur afin d'effectuer un ajout rapide à la liste d'amis 
 			\end{itemize}
 		
-		\subsection{Securité}
+		\subsection{Sécurité}
 			\begin{itemize}
-				\item \textbf{Hash des données sensible : } numero de tel
-				\item \textbf{Chiffrage de la communication Client-Serveur / Serveur-DB: } SSL
-				\item \textbf{ Gestion restrictive des droits d'accès : } Qui peut demander quoi au serveur ...
-				\item \textbf{Diffusion des donnée : } Option de durée d'autorisation par personne (Toujours, 1h, 4h, 1j, 1an, 1min, 1ns)
+				\item \textbf{Les champs de la base de données} ne devant pas être lus directement \textbf{seront hashés avec un sel} (par ex: mot de passe, numéro de téléphone)
+				\item \textbf{Les communications} entre les clients et le serveur, ainsi qu'entre le serveur et la base de données, \textbf{seront chiffrées} à l'aide de SSL
+				\item Les utilisateurs ne pourront pas demander au serveur des informations auxquels ils n'ont pas les \textbf{droits} 
+				\item Un utilisateur peut se mettre en \textbf{invisible} pour une certaine durée durant laquelle ses amis ne pourront pas lui envoyer des demandes de géolocalisation
+				\item Un utilisateur pourra toujours \textbf{accepter ou refuser} une demande de géolocalisation, celle-ci lui indiquera également si un \textbf{ami bloqué} se trouve dans le groupe
 			\end{itemize}
-		\subsection{Géolocalisation}
+		
+		\subsection{Retrouvailles}
 			\begin{itemize}
-				\item \textbf{Point fixe fixée par l'utilisateur : }
-				\item \textbf{Sur une personne : }
-				\item \textbf{Meilleur point fixe calculé : }
+				\item La création d'un groupe de retrouvailles sera simple et rapide pour l'utilisateur
+				\item Une retrouvaille pourra se faire sur un \textbf{lieu fixé} à l'avance 
+				\item Une retrouvaille pourra se faire \textbf{sur une personne} du groupe, cela implique que la position peut se déplacer
+				\item Une retrouvaille pourra chercher le \textbf{meilleur lieu de rencontre} (fixé) afin de minimiser la distance à parcourir par chacune des personnes d'un groupe
+				\item L'application sera munie d'une partie \textbf{historique} pour lancer d'anciennes retrouvailles rapidement 
+				\item L'interface lors des retrouvailles pourra s'afficher sous différentes formes: \textbf{boussole, radar} ou encore \textbf{carte en vue du dessus}
 			\end{itemize}
 			
-		
 		\subsection{Interface}
 			\begin{itemize}
-				\item \textbf{Interface d'administration : } Accès pour l'administrateur aux données ...
-				\item \textbf{Interface utilisateur : }
+				\item Une \textbf{interface administrateur} offrira la possibilité de modifier la base de données
+				\item L'\textbf{interface utilisateur}:
 				\begin{itemize}
-					\item boussole
-					\item radar
-					\item visualisation de la map
-					\item design 
-					\item mode jour/nuit 
-					\item menu option (logout / changer num tel / supprimer conmpte ...)
-				\end{itemize} 
+					\item sera \textbf{claire, simple et rapide}, avec peu de menus et d'actions possibles
+					\item aura une \textbf{gestion du jour et de la nuit} afin d'offrir les meilleurs contrastes possibles
+				\end{itemize}
 			\end{itemize}
 		
-		\subsection{Base de donnée et accès aux données}
+	\section{Annexes}
+		\subsection{Technologies}
+			% mettre en forme, et dire pourquoi cela va être un défi pour nous
+			\begin{itemize}
+				\item Google Cloud Messaging
+				\item Meteor
+				\item Open Street Map
+				\item gyroscope
+				\item géolocalisation
+				\item Technologie android
+				\item Base de donnée SQL
+				\item Django
+				\item HTML/CSS
+				\item SSL ?
+				\item ...
+			\end{itemize}
 		
-		Ce projet est très intéressant sous plusieurs aspects. Premièrement nous aurions l'occasion de découvrir de nouvelles technologies dans le cadre du développement mobile, deuxièmement il s'agit d'une application pouvant réellement être utile et pour finir les possibilités d'extension sont nombreuses (boussole en mode réalité augmentée, chat intégré, etc.).
-		
-	\section{Technologies}
-		Nous utiliseront :
-		\begin{itemize}
-			\item Google Cloud Messaging
-			\item Meteor
-			\item Open Street Map
-			\item gyroscope
-			\item géolocalisation
-			\item Technologie android
-			\item Base de donnée SQL
-			\item Django
-			\item HTML/CSS
-			\item SSL ?
-			\item ...
-		\end{itemize}
-		
-	\section{Annexe}
-		
+		\subsection{Planification}
+			% faut-il la mettre ici ?
 	
 \end{document}
