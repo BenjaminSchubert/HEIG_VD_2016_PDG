@@ -37,6 +37,8 @@
 	\date{\today}
 	\maketitle
 	
+	\tableofcontents
+	
 	\justify
 	
 	\section{Motivation}
@@ -47,15 +49,17 @@
 		% Comment notre application va répondre à la problématique?
 		% expliquer le concept de groupe, de liste d'amis, de retrouvailles, etc. afin de bien comprendre la suite du document
 		% utiliser le mot "retrouvaille" ou un autre ?
+		% Plateformes cibles
 	
 	\section{Fonctionnalités}
 		% ajouter des (optionnelle)s ?
 	
 		\subsection{Compte utilisateur}
 			\begin{itemize}
-				\item À premier lancement de l'application, chaque utilisateur sera invité à fournir un pseudonyme ainsi qu'un mot de passe afin de \textbf{créer un compte} 
+				\item Au premier lancement de l'application, chaque utilisateur sera invité à fournir un pseudonyme, un email ainsi qu'un mot de passe afin de \textbf{créer un compte} 
 				\item Chaque pseudonyme sera accompagné d'un numéro afin de permettre à plusieurs utilisateurs d'avoir le \textbf{même pseudonyme}
 				\item Un utilisateur pourra \textbf{se déconnecter}, \textbf{changer son numéro de téléphone} ou encore \textbf{supprimer son compte}
+				\item Si un utilisateur oublie son mot de passe, une \textbf{ré-initialisation} sera possible grâce à son email
 			\end{itemize}
 	
 		\subsection{Liste d'amis}
@@ -71,8 +75,8 @@
 				\item \textbf{Les champs de la base de données} ne devant pas être lus directement \textbf{seront hashés avec un sel} (par ex: mot de passe, numéro de téléphone)
 				\item \textbf{Les communications} entre les clients et le serveur, ainsi qu'entre le serveur et la base de données, \textbf{seront chiffrées} à l'aide de SSL
 				\item Les utilisateurs ne pourront pas demander au serveur des informations auxquels ils n'ont pas les \textbf{droits} 
-				\item Un utilisateur peut se mettre en \textbf{invisible} pour une certaine durée durant laquelle ses amis ne pourront pas lui envoyer des demandes de géolocalisation
-				\item Un utilisateur pourra toujours \textbf{accepter ou refuser} une demande de géolocalisation, celle-ci lui indiquera également si un \textbf{ami bloqué} se trouve dans le groupe
+				\item Un utilisateur peut se mettre en \textbf{invisible} pour une certaine durée durant laquelle ses amis ne pourront pas lui envoyer des demandes de retrouvailles
+				\item Un utilisateur pourra toujours \textbf{accepter ou refuser} une demande de retrouvailles, celle-ci lui indiquera également si un \textbf{ami bloqué} se trouve dans le groupe
 			\end{itemize}
 		
 		\subsection{Retrouvailles}
@@ -87,32 +91,36 @@
 			
 		\subsection{Interface}
 			\begin{itemize}
-				\item Une \textbf{interface administrateur} offrira la possibilité de modifier la base de données
+				\item Une \textbf{interface administrateur} offrira la possibilité de modifier la base de données ainsi que des \textbf{statistiques} sur celle-ci
 				\item L'\textbf{interface utilisateur}:
 				\begin{itemize}
 					\item sera \textbf{claire, simple et rapide}, avec peu de menus et d'actions possibles
-					\item aura une \textbf{gestion du jour et de la nuit} afin d'offrir les meilleurs contrastes possibles
+					\item aura une \textbf{gestion du jour et de la nuit} afin d'offrir les meilleurs contrastes possibles (l'utilisateur aura le choix via les options: jour, nuit, ou automatique)
 				\end{itemize}
 			\end{itemize}
 		
 	\section{Annexes}
 		\subsection{Technologies}
 			% mettre en forme, et dire pourquoi cela va être un défi pour nous
+			Nous pensons utiliser les technologies suivantes:
 			\begin{itemize}
-				\item Google Cloud Messaging
-				\item Meteor
-				\item Open Street Map
-				\item gyroscope
-				\item géolocalisation
-				\item Technologie android
-				\item Base de donnée SQL
-				\item Django
-				\item HTML/CSS
-				\item SSL ?
-				\item ...
+				\item \textbf{Firebase Cloud Messaging} -
+				\item \textbf{MeteorJS} -
+				\item \textbf{Open Street Map} -
+				\item \textbf{Mobile} (gyroscope, géolocalisation) - 
+				\item \textbf{Base de donnée SQL} -
+				\item \textbf{Python/Django} - \\
 			\end{itemize}
 		
-		\subsection{Planification}
+			Ces technologies nous sont majoritairement inconnues et seront donc un défi, tant au niveau de l'apprentissage que de la réalisation. La plupart feront l'objet d'un test de faisabilité, notamment les performances de MeteorJS.\\
+			
+			Si MeteorJS devait se montrer sous-performant, nous partirons sur du développement Android pur (Java).
+			
+		\subsection{Logo et nom}
+		
+		\subsection{Maquette}
+		
+		\subsection{Planification initiale}
 			% faut-il la mettre ici ?
 	
 \end{document}
