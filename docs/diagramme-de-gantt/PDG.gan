@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2016-09-26" view-index="0" gantt-divider-location="923" resource-divider-location="330" version="2.8.1" locale="fr_CH">
+<?xml version="1.0" encoding="UTF-8"?><project name="Projet Rady" company="" webLink="http://" view-date="2016-09-19" view-index="0" gantt-divider-location="923" resource-divider-location="330" version="2.8.1" locale="fr">
     <description/>
-    <view zooming-state="default:1" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="352" order="0"/>
-        <field id="tpd4" name="Date de début" width="144" order="1"/>
-        <field id="tpd5" name="Date de fin" width="133" order="2"/>
-        <field id="tpd13" name="Ressources" width="184" order="3"/>
-        <field id="tpc2" name="Qte travail" width="106" order="4"/>
-        <option id="color.recent"><![CDATA[#f4f4f4 #6666ff #ff0000 #ff9999 #ffffff]]></option>
+    <view zooming-state="default:6" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="459" order="0"/>
+        <field id="tpd13" name="Ressources" width="344" order="1"/>
+        <field id="tpc2" name="Qte travail" width="116" order="2"/>
+        <option id="color.recent"><![CDATA[#6699ff #999999 #66ccff #ff3333 #cccccc #ccffcc #ffcccc #ffffff #000000 #ff9900]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Nom" width="326" order="0"/>
@@ -36,46 +34,162 @@
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
             <taskproperty id="tpc2" name="Qte travail" type="custom" valuetype="text"/>
         </taskproperties>
-        <task id="17" name="Redaction Cahier Des charges" color="#8cb6ce" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="18" name="Redaction Diagramme de Gantt" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="19" name="Design Logo" color="#8cb6ce" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="20" name="Apprentissage Meteor" color="#8cb6ce" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="22" name="Apprentissage GCM (Google Cloud Messaging)" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="23" name="Apprentissage Open Street Map" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="24" name="Prise en main Gyroscope/Géolocalisation" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="25" name="Apprentissage Django" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="26" name="Design Application" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="27" name="Apprentissage Lib Graphique" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="28" name="Implémentation du Design" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true">
-            <task id="35" name="Boussole" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="34" name="Radar" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="33" name="Map" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="62" name="Mode jour/nuit" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
+        <task id="17" name="Redaction Cahier Des charges" color="#cccccc" meeting="false" start="2016-09-28" duration="10" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="12h"/>
         </task>
-        <task id="29" name="Liaison Design - Models" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="36" name="Interface admin" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-        <task id="37" name="Serveur" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true">
-            <task id="41" name="Structure de la BDD" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="42" name="Création de la BDD" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="43" name="Remplissage de la BDD" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="44" name="Création de l'API" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
+        <task id="18" name="Redaction Diagramme de Gantt" color="#cccccc" meeting="false" start="2016-09-28" duration="10" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="6h"/>
         </task>
-        <task id="45" name="Sécurité" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true">
-            <task id="49" name="Hash des données sensibles" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="50" name="Chiffrage de la communication Client/Serveur" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="51" name="Création de droits" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
+        <task id="19" name="Design Logo" color="#ff3300" meeting="false" start="2016-09-28" duration="5" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="4h"/>
         </task>
-        <task id="54" name="Géolocalisation" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true">
-            <task id="58" name="Point fixe" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="59" name="Sur utilisateur" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="60" name="Point fixe Optimum" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
+        <task id="26" name="Flux d'utilisation" color="#ff3333" meeting="false" start="2016-10-03" duration="5" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="4h"/>
         </task>
-        <task id="63" name="Gestion de la liste de contact" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true">
-            <task id="72" name="Historique" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="73" name="Ajout par QR Code" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="74" name="Recherche dans la liste de contact" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="75" name="Ajout/Suppression/Bloquage" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
-            <task id="76" name="Lien avec la BDD" meeting="false" start="2016-09-26" duration="1" complete="0" expand="true"/>
+        <task id="215" name="Maquette de l'interface" color="#ff3333" meeting="false" start="2016-10-03" duration="12" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="6h"/>
+        </task>
+        <task id="85" name="Conception Structure Application" color="#6699ff" meeting="false" start="2016-10-07" duration="19" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="16h"/>
+        </task>
+        <task id="24" name="Prise en main Gyroscope/Géolocalisation" color="#33ff00" meeting="false" start="2016-10-07" duration="10" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="7h"/>
+        </task>
+        <task id="27" name="Apprentissage HTML CSS" color="#33ff00" meeting="false" start="2016-10-07" duration="10" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="7h"/>
+        </task>
+        <task id="20" name="Apprentissage Meteor" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="9h"/>
+        </task>
+        <task id="22" name="Apprentissage FCM (Firebase Cloud Messaging)" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="10h"/>
+        </task>
+        <task id="23" name="Apprentissage Open Street Map" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="10h"/>
+        </task>
+        <task id="25" name="Apprentissage Django" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="10h"/>
+        </task>
+        <task id="95" name="Test de faisabilité Django" color="#ccff00" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="8h"/>
+        </task>
+        <task id="96" name="Test de faisabilité Meteor" color="#ccff00" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="8h"/>
+        </task>
+        <task id="79" name="Infrastructure" color="#000000" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
+            <task id="81" name="Set up d'un serveur d'integration continue" color="#ff9900" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="8h"/>
+            </task>
+            <task id="82" name="Set up Serveur" color="#ff9900" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="8h"/>
+            </task>
+        </task>
+        <task id="45" name="Sécurité" meeting="false" start="2016-10-21" duration="10" complete="0" expand="true">
+            <task id="49" name="Hash des données sensibles" color="#6699ff" meeting="false" start="2016-10-21" duration="6" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="4h"/>
+            </task>
+            <task id="50" name="Chiffrage de la communication Client/Serveur" color="#6699ff" meeting="false" start="2016-10-21" duration="6" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+            <task id="51" name="Création de droits" color="#6699ff" meeting="false" start="2016-10-24" duration="7" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="4h"/>
+            </task>
+        </task>
+        <task id="37" name="Base de données" color="#000000" meeting="false" start="2016-10-21" duration="36" complete="0" expand="true">
+            <task id="179" name="Création du protocole" color="#6699ff" meeting="false" start="2016-10-21" duration="15" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="16h"/>
+            </task>
+            <task id="41" name="Structure de la BDD" color="#6699ff" meeting="false" start="2016-10-21" duration="8" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="6h"/>
+            </task>
+            <task id="42" name="Création de la BDD" color="#6699ff" meeting="false" start="2016-10-28" duration="8" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+            <task id="43" name="Remplissage de la BDD" color="#6699ff" meeting="false" start="2016-11-04" duration="3" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+            <task id="44" name="Création de l'API" color="#6699ff" meeting="false" start="2016-10-28" duration="29" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="16h"/>
+            </task>
+        </task>
+        <task id="191" name="Implémentation des modèles" color="#6699ff" meeting="false" start="2016-10-21" duration="10" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="4h"/>
+        </task>
+        <task id="28" name="Implémentation du Design" color="#000000" meeting="false" start="2016-10-21" duration="78" complete="0" expand="true">
+            <task id="177" name="Menus et interface" color="#6699ff" meeting="false" start="2016-10-21" duration="18" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="16h"/>
+            </task>
+            <task id="35" name="Boussole" color="#6699ff" meeting="false" start="2016-11-07" duration="8" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="4h"/>
+            </task>
+            <task id="34" name="Radar" color="#6699ff" meeting="false" start="2016-11-07" duration="8" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="4h"/>
+            </task>
+            <task id="33" name="Map" color="#6699ff" meeting="false" start="2016-11-14" duration="7" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="6h"/>
+            </task>
+            <task id="62" name="Mode jour/nuit" color="#ccffcc" meeting="false" start="2016-12-26" duration="12" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+        </task>
+        <task id="29" name="Liaison Design - Models" color="#6699ff" meeting="false" start="2016-11-19" duration="9" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="8h"/>
+        </task>
+        <task id="36" name="Interface admin" meeting="false" start="2016-11-19" duration="16" complete="0" expand="true">
+            <task id="156" name="Afiichage des statistiques" color="#6699ff" meeting="false" start="2016-11-19" duration="14" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="8h"/>
+            </task>
+            <task id="154" name="Bloquage utilisateur" color="#6699ff" meeting="false" start="2016-11-28" duration="7" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+        </task>
+        <task id="86" name="Création de compte" meeting="false" start="2016-11-19" duration="12" complete="0" expand="true">
+            <task id="88" name="Génération d'un id unique" color="#6699ff" meeting="false" start="2016-11-19" duration="7" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+            <task id="90" name="Gestion de la déconnection" color="#6699ff" meeting="false" start="2016-11-19" duration="7" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+            <task id="93" name="Suppression du compte" color="#6699ff" meeting="false" start="2016-11-25" duration="6" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="3h"/>
+            </task>
+            <task id="94" name="Changement de numro de telephone" color="#6699ff" meeting="false" start="2016-11-25" duration="6" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="4h"/>
+            </task>
+        </task>
+        <task id="63" name="Gestion de la liste de contact" meeting="false" start="2016-11-25" duration="43" complete="0" expand="true">
+            <task id="74" name="Recherche dans la liste de contact" color="#6699ff" meeting="false" start="2016-11-25" duration="8" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="8h"/>
+            </task>
+            <task id="75" name="Ajout/Suppression/Bloquage" color="#6699ff" meeting="false" start="2016-12-02" duration="6" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="6h"/>
+            </task>
+            <task id="72" name="Historique" color="#6699ff" meeting="false" start="2016-12-07" duration="8" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="12h"/>
+            </task>
+            <task id="76" name="Lien avec la BDD" color="#6699ff" meeting="false" start="2016-12-14" duration="12" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="10h"/>
+            </task>
+            <task id="73" name="Ajout par QR Code" color="#ccffcc" meeting="false" start="2016-12-26" duration="12" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="8h"/>
+            </task>
+        </task>
+        <task id="54" name="Géolocalisation" meeting="false" start="2016-11-19" duration="37" complete="0" expand="true">
+            <task id="58" name="Point fixe" color="#6699ff" meeting="false" start="2016-11-19" duration="21" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="12h"/>
+            </task>
+            <task id="59" name="Sur utilisateur" color="#6699ff" meeting="false" start="2016-12-09" duration="17" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="8h"/>
+            </task>
+            <task id="60" name="Point fixe Optimum" color="#6699ff" meeting="false" start="2016-12-09" duration="17" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="8h"/>
+            </task>
+        </task>
+        <task id="146" name="Documentation du projet" color="#cccccc" meeting="false" start="2016-09-28" duration="106" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="25h"/>
+        </task>
+        <task id="148" name="Redaction du rapport" color="#cccccc" meeting="false" start="2016-12-17" duration="26" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="45h"/>
         </task>
     </tasks>
     <resources>
@@ -84,7 +198,98 @@
         <resource id="2" name="Damien" function="Default:0" contacts="" phone=""/>
         <resource id="3" name="Thibaut" function="Default:0" contacts="" phone=""/>
     </resources>
-    <allocations/>
+    <allocations>
+        <allocation task-id="17" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="215" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="85" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="22" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="23" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="25" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="82" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="49" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="50" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="51" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="179" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="41" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="44" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="62" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="156" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="154" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="148" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="73" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="76" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="72" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="75" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="146" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="17" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="215" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="85" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="27" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="24" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="20" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="22" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="23" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="81" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="179" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="191" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="177" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="35" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="33" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="62" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="29" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="58" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="60" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="148" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="74" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="73" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="146" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="19" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="26" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="215" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="85" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="22" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="23" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="25" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="95" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="179" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="41" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="42" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="43" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="44" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="62" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="88" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="90" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="93" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="94" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="148" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="73" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="76" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="72" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="75" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="146" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="18" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="215" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="85" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="27" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="24" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="20" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="22" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="23" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="96" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="179" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="191" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="177" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="34" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="33" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="62" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="29" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="58" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="59" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="148" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="74" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="73" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="146" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+    </allocations>
     <vacations/>
     <previous/>
     <roles roleset-name="Default"/>
