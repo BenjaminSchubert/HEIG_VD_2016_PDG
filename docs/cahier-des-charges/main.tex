@@ -47,15 +47,13 @@
 		 prendre.
 	
 	\section{But et réalisation}
-		% Comment notre application va répondre à la problématique?
-		% expliquer le concept de groupe, de liste d'amis, de retrouvailles, etc. afin de bien comprendre la suite du document
-		% utiliser le mot "retrouvaille" ou un autre ?
-		% Plateformes cibles
+		Afin de répondre à la problématique, nous avons imaginé une application qui se présenterait sous la forme d'une liste d'amis. Ceux-ci seront sélectionnables afin de lancer une demande de retrouvailles. Chaque amis sélectionnés (plus le sélectionneur) pour une retrouvaille formeront un groupe. Un groupe est spécifique à une retrouvaille, c'est-à-dire qu'une nouvelle retrouvaille concernera un nouveau groupe, même si les membres sont les mêmes.\\
 		
+		Idéalement l'application tournera sous Android et sous iOS, cependant si certains tests de faisabilité ne passent pas, l'attention sera porté sur Android (voir section~\ref{subsec:technologies}).\\
+		
+		Une ébauche de l'application se trouve à la section~\ref{subsec:userflot}.
 	
 	\section{Fonctionnalités}
-		% ajouter des (optionnelle)s ?
-	
 		\subsection{Compte utilisateur}
 			\begin{itemize}
 				\item Au premier lancement de l'application, chaque utilisateur sera invité à fournir un pseudonyme, un email ainsi qu'un mot de passe afin de \textbf{créer un compte} 
@@ -91,7 +89,7 @@
 				\item L'interface lors des retrouvailles pourra s'afficher sous différentes formes: \textbf{boussole, radar} ou encore \textbf{carte en vue du dessus}
 			\end{itemize}
 			
-		\subsection{Interface}
+		\subsection{Interfaces}
 			\begin{itemize}
 				\item Une \textbf{interface administrateur} offrira la possibilité de modifier la base de données ainsi que des \textbf{statistiques} sur celle-ci
 				\item L'\textbf{interface utilisateur}:
@@ -103,7 +101,7 @@
 		
 	\section{Annexes}
 		\subsection{Technologies}
-			% mettre en forme, et dire pourquoi cela va être un défi pour nous
+		\label{subsec:technologies}
 			Nous pensons utiliser les technologies suivantes:
 			\begin{itemize}
 				\item \textbf{Firebase Cloud Messaging} - Permet de pousser des messages sur les téléphones de manière efficiente.
@@ -126,9 +124,11 @@
 			\end{figure}
 			Le nom vient du mot \textit{radis} qui est proche de \textit{radar}, puis nous avons simplement mis un \textit{Y} pour \textit{Yverdon}. Le côté drôle (et pratique) est que la forme d'un radis rappelle un peu les pointeurs de Google Maps.
 		
-		\subsection{Maquette}
+		\subsection{Userflot}
+		\label{subsec:userflot}
+			% TODO inclure pdf (Damien)
 		
 		\subsection{Planification initiale}
-			% faut-il la mettre ici ?
-	
+			% TODO inclure pdf (Thibaut)
+			
 \end{document}
