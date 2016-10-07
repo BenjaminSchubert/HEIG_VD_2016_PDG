@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Projet Rady" company="" webLink="http://" view-date="2016-09-19" view-index="0" gantt-divider-location="923" resource-divider-location="330" version="2.8.1" locale="fr">
+<?xml version="1.0" encoding="UTF-8"?><project name="Projet Rady" company="" webLink="http://" view-date="2016-10-03" view-index="0" gantt-divider-location="923" resource-divider-location="330" version="2.8.1" locale="fr">
     <description/>
-    <view zooming-state="default:6" id="gantt-chart">
+    <view zooming-state="default:5" id="gantt-chart">
         <field id="tpd3" name="Nom" width="459" order="0"/>
         <field id="tpd13" name="Ressources" width="344" order="1"/>
         <field id="tpc2" name="Qte travail" width="116" order="2"/>
@@ -34,19 +34,19 @@
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
             <taskproperty id="tpc2" name="Qte travail" type="custom" valuetype="text"/>
         </taskproperties>
-        <task id="17" name="Redaction Cahier Des charges" color="#cccccc" meeting="false" start="2016-09-28" duration="10" complete="0" expand="true">
+        <task id="17" name="Redaction Cahier Des charges" color="#cccccc" meeting="false" start="2016-09-28" duration="10" complete="100" expand="true">
             <customproperty taskproperty-id="tpc2" value="12h"/>
         </task>
-        <task id="18" name="Redaction Diagramme de Gantt" color="#cccccc" meeting="false" start="2016-09-28" duration="10" complete="0" expand="true">
+        <task id="18" name="Redaction Diagramme de Gantt" color="#cccccc" meeting="false" start="2016-09-28" duration="10" complete="100" expand="true">
             <customproperty taskproperty-id="tpc2" value="6h"/>
         </task>
-        <task id="19" name="Design Logo" color="#ff3300" meeting="false" start="2016-09-28" duration="5" complete="0" expand="true">
+        <task id="19" name="Design Logo" color="#ff3300" meeting="false" start="2016-09-28" duration="5" complete="100" expand="true">
             <customproperty taskproperty-id="tpc2" value="4h"/>
         </task>
-        <task id="26" name="Flux d'utilisation" color="#ff3333" meeting="false" start="2016-10-03" duration="5" complete="0" expand="true">
+        <task id="26" name="Flux d'utilisation" color="#ff3333" meeting="false" start="2016-10-03" duration="5" complete="100" expand="true">
             <customproperty taskproperty-id="tpc2" value="4h"/>
         </task>
-        <task id="215" name="Maquette de l'interface" color="#ff3333" meeting="false" start="2016-10-03" duration="12" complete="0" expand="true">
+        <task id="215" name="Maquette de l'interface" color="#ff3333" meeting="false" start="2016-10-03" duration="12" complete="42" expand="true">
             <customproperty taskproperty-id="tpc2" value="6h"/>
         </task>
         <task id="85" name="Conception Structure Application" color="#6699ff" meeting="false" start="2016-10-07" duration="19" complete="0" expand="true">
@@ -186,10 +186,10 @@
             </task>
         </task>
         <task id="146" name="Documentation du projet" color="#cccccc" meeting="false" start="2016-09-28" duration="106" complete="0" expand="true">
-            <customproperty taskproperty-id="tpc2" value="25h"/>
+            <customproperty taskproperty-id="tpc2" value="45h"/>
         </task>
         <task id="148" name="Redaction du rapport" color="#cccccc" meeting="false" start="2016-12-17" duration="26" complete="0" expand="true">
-            <customproperty taskproperty-id="tpc2" value="45h"/>
+            <customproperty taskproperty-id="tpc2" value="25h"/>
         </task>
     </tasks>
     <resources>
