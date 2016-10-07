@@ -10,3 +10,6 @@
 
 # vim
 *.*swp
+
+# archives
+*.zip
