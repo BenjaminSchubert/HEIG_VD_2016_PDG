@@ -13,3 +13,11 @@
 
 # archives
 *.zip
+
+
+# JetBrains
+*.iml
+*.idea
+
+# languages
+*.pyc
