@@ -6,6 +6,7 @@
   "scripts": {
     "build": "ionic-app-scripts build",
     "watch": "ionic-app-scripts watch",
+    "serve": "ionic serve",
     "serve:before": "watch",
     "emulate:before": "build",
     "deploy:before": "build",
@@ -30,6 +31,8 @@
     "zone.js": "0.6.21"
   },
   "devDependencies": {
+    "ionic": "2.1.1",
+    "cordova": "6.3.1",
     "@ionic/app-scripts": "^0.0.36",
     "typescript": "^2.0.3"
   },
