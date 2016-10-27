@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
 
-import { HomePage } from '../pages/home/home';
+import { Splashscreen } from '../pages/splashscreen/splashscreen';
 
 
 @Component({
   template: `<ion-nav [root]="rootPage"></ion-nav>`
 })
-export class MyApp {
-  rootPage = HomePage;
+export class RadyApp {
+  rootPage = Splashscreen;
 
   constructor(platform: Platform) {
     platform.ready().then(() => {

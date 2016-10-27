@@ -1,7 +1,7 @@
 {
-  "name": "ionic-hello-world",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "Rady",
+  "author": "P. Champion, T. Loiseau, D. Rochat, B. Schubert",
+  "homepage": "",
   "private": true,
   "scripts": {
     "build": "ionic-app-scripts build",
@@ -33,7 +33,7 @@
     "@ionic/app-scripts": "^0.0.36",
     "typescript": "^2.0.3"
   },
-  "description": "app: An Ionic project",
+  "description": "",
   "cordovaPlugins": [
     "cordova-plugin-device",
     "cordova-plugin-console",

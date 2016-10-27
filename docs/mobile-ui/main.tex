@@ -1,0 +1,65 @@
+\documentclass[french]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{ragged2e}
+\usepackage{float}
+
+\geometry{
+	a4paper,
+	total={210mm,297mm},
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm,
+}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\lhead{Champion, Loiseau\\Rochat, Schubert}
+\chead{Mobile UI}
+\rhead{\today}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+	
+	% Page de garde
+	\title{Projet Rady - Mobile UI}
+	\author{Projet de groupe\\
+		Champion, Loiseau, Rochat, Schubert\\
+		Resp. René Rentsch\\
+		HEIG-VD}
+	\date{\today}
+	\maketitle
+	\vspace{5cm}
+	\centering
+	\includegraphics[scale=0.3]{../logo/icone}
+	\thispagestyle{empty}
+	\newpage
+	
+	% Table des matières
+	\tableofcontents
+	\newpage
+	
+	\justify
+	
+	\section{Introduction}
+		 % TODO expliquer le but du document
+		 
+	\section{Technologies}
+		% TODO expliquer quels outils sont utilisés (ionic, leaflet?, etc.)
+		
+	\section{Pages}
+		% TODO expliquer le concept de "page"
+		% TODO formaliser chaque page présentes dans l'app
+		
+	% TODO autres sections? importer le user-flow?
+			
+\end{document}

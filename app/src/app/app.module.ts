@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
-import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
+import { RadyApp } from './app.component';
+
+import { Splashscreen } from '../pages/splashscreen/splashscreen';
+
+var components: any = [
+  RadyApp,
+  Splashscreen
+]
 
 @NgModule({
-  declarations: [
-    MyApp,
-    HomePage
-  ],
+  declarations: components,
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(RadyApp)
   ],
   bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    HomePage
-  ],
+  entryComponents: components,
   providers: []
 })
 export class AppModule {}

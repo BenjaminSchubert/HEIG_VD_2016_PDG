@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.app178550" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>app</name>
-  <description>An awesome Ionic/Cordova app.</description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+<widget id="rady" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>Rady</name>
+  <description></description>
+  <author email="patrick.champion@heig-vd.ch" href="">P. Champion</author>
+  <author email="thibaut.loiseau@heig-vd.ch" href="">T. Loiseau</author>
+  <author email="damien.rochat@heig-vd.ch" href="">D. Rochat</author>
+  <author email="benjamin.schubert@heig-vd.ch" href="">B. Schubert</author>
   <content src="index.html"/>
   <access origin="*"/>
   <allow-intent href="http://*/*"/>
