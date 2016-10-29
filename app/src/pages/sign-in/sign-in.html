@@ -1,0 +1,26 @@
+<!-- Sign-in form with other options under it -->
+<div class="sign-in">
+	<div class="content">
+		<h1>Sign In</h1>
+
+		<form [formGroup]="signIn" (ngSubmit)="doSignIn()">
+			<ion-item>
+				<ion-label>Username</ion-label>
+				<ion-input type="text" formControlName="username"></ion-input>
+			</ion-item>
+			<ion-item>
+				<ion-label>Password</ion-label>
+				<ion-input type="password" formControlName="password"></ion-input>
+			</ion-item>
+			<button ion-button block icon-right round large type="submit" [disabled]="!signIn.valid">
+				SIGN IN
+				<ion-icon name="arrow-forward"></ion-icon>
+			</button>
+		</form>
+
+		<button ion-button small clear block (click)="goToRegister()">I don't have an account</button>
+		<button ion-button small clear block (click)="goToForgottenPassword()">Forgot your password?</button>
+
+		<img src="assets/img/rady-logo.png">
+	</div>
+</div>

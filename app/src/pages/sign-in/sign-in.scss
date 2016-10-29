@@ -1,0 +1,29 @@
+div.sign-in {
+	// workaround for iOS: white background
+	background-color: white;
+	height: 100vh;
+	position: absolute;
+
+	// margin left and right
+	div.content {
+		margin: 0px 10vw auto 10vw;
+
+		// title
+		h1 {
+			text-align: center;
+			text-transform: uppercase;
+			font-size: 20pt;
+			font-weight: bold;
+			margin: 15vh auto 10vh auto;
+		}
+
+		// centered logo
+		img {
+			width: 40vw;
+			margin-top: 10vh;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+}

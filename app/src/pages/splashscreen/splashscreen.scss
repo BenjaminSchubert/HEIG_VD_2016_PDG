@@ -1,7 +1,9 @@
 div.splashscreen {
+	// workaround for iOS: white background
 	background-color: white;
 	height: 100vh;
 
+	// centered logo
 	img {
 		width: 50vw;
 		margin-top: 50vh;

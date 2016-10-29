@@ -59,15 +59,20 @@
 	\section{Pages}
 		% TODO expliquer le concept de "page"
 		% TODO montrer les transitions ?
-		% TODO formaliser chaque page présentes dans l'app
+		% TODO formaliser chaque page présentes dans l'app, pourquoi tel ou tel choix, etc.
 		
-		\subsection{\texttt{splashscreen}}
+		\subsection{\texttt{Splashscreen}}
 			Cette page est le point d'entrée de l'application, elle permet à celle-ci de charger la page suivante en arrière-plan. Ionic2 nous offre deux manières d'afficher un splashscreen:
 			\begin{enumerate}
 				\item avec le plugin natif \texttt{Splashscreen}, qui utilise une ressource et est assez limité dans ses possibilités
 				\item avec une page HTML/CSS qui affiche une image, beaucoup plus souple au niveau de l'affichage
 			\end{enumerate}
-			La solution (2) a été ici retenue pour ses plus grandes possibilités d'évolution.
+			La solution (2) a été ici retenue pour ses plus grandes possibilités d'évolution.\\
+			
+			Pour l'instant la page consiste à simplement afficher le logo Rady au centre de l'écran.
+			
+		\subsection{\texttt{SignIn}}
+			Cette page contient le formulaire de connexion (\textit{username}, \textit{password}), ainsi que des liens pour aller à la page \texttt{Register} ou à la page \texttt{ForgottenPassword}. Pour finir le logo Rady vient rappeler dans quelle application on est.
 		
 	% TODO autres sections? importer le user-flow?
 			
