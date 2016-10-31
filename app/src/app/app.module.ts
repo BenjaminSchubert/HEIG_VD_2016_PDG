@@ -5,12 +5,14 @@ import { RadyApp } from './app.component';
 
 import { Splashscreen } from '../pages/splashscreen/splashscreen';
 import { SignIn } from '../pages/sign-in/sign-in';
+import { Register } from '../pages/register/register';
 
 // put here the components
 var components: any = [
   RadyApp,
   Splashscreen,
-  SignIn
+  SignIn,
+  Register
 ]
 
 @NgModule({

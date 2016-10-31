@@ -1,13 +1,17 @@
-div.sign-in-page {
-	margin-top: 10vh;
+div.register-page {
+	margin-top: 5vh;
 
 	form {
 		margin-top: 5vh;
-		margin-bottom: 5vh;
 
 		button {
 			margin-top: 5vh;
 			text-transform: uppercase;
+		}
+
+		p {
+			text-align: right;
+			margin: 0 0 0 0;
 		}
 	}
 

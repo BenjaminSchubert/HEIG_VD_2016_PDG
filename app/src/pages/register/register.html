@@ -1,0 +1,45 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title class="hidden">Register</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<!-- Registration form -->
+<ion-content>
+	<div class="content">
+		<div class="register-page">
+			<h1>Register</h1>
+
+			<form [formGroup]="form" (ngSubmit)="doRegister()">
+				<ion-item>
+					<ion-label floating>Username</ion-label>
+					<ion-input type="text" formControlName="username"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Email</ion-label>
+					<ion-input type="email" formControlName="email"></ion-input>
+				</ion-item>
+				<p><small>optional, required for password resetting</small></p>
+				<ion-item>
+					<ion-label floating>Phone number</ion-label>
+					<ion-input type="tel" formControlName="phone"></ion-input>
+				</ion-item>
+				<p><small>optional, required for searching for friends</small></p>
+				<ion-item>
+					<ion-label floating>Password</ion-label>
+					<ion-input type="password" formControlName="password"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Confirm password</ion-label>
+					<ion-input type="password" formControlName="passwordConfirmation"></ion-input>
+				</ion-item>
+				<button ion-button block icon-right round large type="submit" [disabled]="!form.valid">
+					Register
+					<ion-icon name="arrow-forward"></ion-icon>
+				</button>
+			</form>
+
+			<img src="assets/img/rady-logo.png">
+		</div>
+	</div>
+</ion-content>

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 
+import { Register } from '../register/register';
+
 /**
  * SignIn
  * Sign-in form 
@@ -13,14 +15,14 @@ import { Validators, FormBuilder } from '@angular/forms';
 export class SignIn {
 
   // attributes
-  signIn;
+  form;
 
   constructor(public navCtrl: NavController,
   			  private formBuilder: FormBuilder) {}
 
   ionViewDidLoad() {
   	// create the form with validation
-  	this.signIn = this.formBuilder.group({
+  	this.form = this.formBuilder.group({
   		username: ['', Validators.required],
   		password: ['', Validators.required]
   	});
@@ -30,8 +32,9 @@ export class SignIn {
 
   }
 
+  // Go to the Register page
   goToRegister() {
-
+    this.navCtrl.push(Register);
   }
 
   goToForgottenPassword() {
