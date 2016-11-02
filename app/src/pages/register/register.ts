@@ -22,10 +22,10 @@ export class Register {
   	// create the form with validation
   	this.form = this.formBuilder.group({
       username: ['', Validators.required],
-      email: [''],
-      phone: [''],
+      email: ['', Validators.required], 
+      phone: [''], 
       password: ['', Validators.required],
-      passwordConfirmation: ['', Validators.required]
+      passwordConfirmation: ['', Validators.required] 
   	});
 
     // TODO: add more/better validators

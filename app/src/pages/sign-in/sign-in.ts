@@ -23,7 +23,7 @@ export class SignIn {
   ionViewDidLoad() {
   	// create the form with validation
   	this.form = this.formBuilder.group({
-  		username: ['', Validators.required],
+  		email: ['', Validators.required], 
   		password: ['', Validators.required]
   	});
   }
