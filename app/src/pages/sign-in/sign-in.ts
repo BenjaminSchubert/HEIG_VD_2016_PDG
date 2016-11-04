@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 
+import { RadyModule } from '../../lib/validators';
+
 import { Register } from '../register/register';
+import { ForgottenPassword } from '../forgotten-password/forgotten-password';
 
 /**
  * SignIn
@@ -23,7 +26,7 @@ export class SignIn {
   ionViewDidLoad() {
   	// create the form with validation
   	this.form = this.formBuilder.group({
-  		email: ['', Validators.required], 
+  		email: ['', Validators.compose([Validators.required, RadyModule.Validators.email])], 
   		password: ['', Validators.required]
   	});
   }
@@ -37,7 +40,8 @@ export class SignIn {
     this.navCtrl.push(Register);
   }
 
+  // Go to the ForgottenPassword page
   goToForgottenPassword() {
-  	
+  	this.navCtrl.push(ForgottenPassword);
   }
 }
