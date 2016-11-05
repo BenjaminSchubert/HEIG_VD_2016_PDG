@@ -6,11 +6,12 @@ import { RadyModule } from '../../lib/validators';
 
 import { Register } from '../register/register';
 import { ForgottenPassword } from '../forgotten-password/forgotten-password';
+import { MainTabs } from '../main-tabs/main-tabs';
 
 /**
  * SignIn
- * Sign-in form 
- * Patrick Champion - 29.10.2016 
+ * Sign-in form
+ * Patrick Champion - 29.10.2016
  */
 @Component({
   templateUrl: 'sign-in.html'
@@ -26,13 +27,13 @@ export class SignIn {
   ionViewDidLoad() {
   	// create the form with validation
   	this.form = this.formBuilder.group({
-  		email: ['', Validators.compose([Validators.required, RadyModule.Validators.email])], 
+  		email: ['', Validators.compose([Validators.required, RadyModule.Validators.email])],
   		password: ['', Validators.required]
   	});
   }
 
   doSignIn() {
-
+    this.navCtrl.setRoot(MainTabs)
   }
 
   // Go to the Register page
