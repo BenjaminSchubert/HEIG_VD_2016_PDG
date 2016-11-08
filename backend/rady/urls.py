@@ -1,7 +1,7 @@
 """Defines all Rady URL."""
 
 
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 
 from auth import urls as auth_urls

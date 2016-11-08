@@ -19,3 +19,7 @@ DATABASES = {
         'NAME': "rady.db",
     }
 }
+
+EMAIL_HOST = 'localhost'
+
+EMAIL_PORT = 2525
