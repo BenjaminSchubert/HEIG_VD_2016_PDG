@@ -1,4 +1,4 @@
-import unittest
+import os
 
 from rest_framework import status
 
@@ -45,7 +45,8 @@ class UserAvatarEndpointTestCase(APIEndpointTestCase):
         self.assertIsNotNone(response[0].get("avatar"))
         self.assertEqual(self.client.get(response[0].get("avatar")).status_code, status.HTTP_200_OK)
 
-    @unittest.skip("Avatar renaming is not yet implemented")
     @authenticated
     def test_avatar_created_is_renamed(self):
-        raise NotImplementedError()
+        avatar = self.client.put(self.url, {"avatar": get_image_file()}, format="multipart").json()["avatar"]
+        filename = os.path.splitext(os.path.basename(avatar))[0]
+        self.assertEqual(filename, str(self.user.id), msg="Avatar file should have been renamed to the id of the user")

@@ -1,5 +1,5 @@
 """This module defines all the serializers for the `user` application."""
-
+import os
 
 from django.utils import timezone
 from rest_framework.serializers import ModelSerializer, CharField, EmailField, ImageField
@@ -79,5 +79,7 @@ class UserAvatarSerializer(ModelSerializer):
         :param validated_data: data containing the file to use as new avatar
         :return: the new updated instance of the user
         """
+        extension = os.path.splitext(validated_data["avatar"].name)[1]
+        validated_data["avatar"].name = "{}{}".format(instance.id, extension)
         instance.last_avatar_update = timezone.now()
         return super().update(instance, validated_data)
