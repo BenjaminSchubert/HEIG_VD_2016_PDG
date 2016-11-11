@@ -3,7 +3,8 @@ Contains all models from the `users` module.
 
 We override here the default django user model and extend it.
 """
-
+import hashlib
+from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -17,10 +18,11 @@ class AccountManager(BaseUserManager):
     """Overrides the default UserManager with our custom one."""
 
     @transaction.atomic
-    def _create_user(self, password, **fields):
+    def _create_user(self, password, phone_number=None, **fields):
         user = self.model(**fields)
 
         user.set_password(password)
+        user.set_phone_number(phone_number)
         user.save()
         return user
 
@@ -61,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     username = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=255, unique=True, null=True)  # hashed with sha512 + salt on server
+    phone_number = models.BinaryField(max_length=255, unique=True, null=True)
     avatar = models.ImageField(upload_to="avatars/", null=True)
     last_avatar_update = models.DateTimeField(auto_now_add=True)
     hidden = models.DateTimeField(null=True, default=None)
@@ -82,6 +84,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         """Get user's short name."""
         return self.username
+
+    def set_phone_number(self, phone_number):
+        if phone_number is not None:
+            self.phone_number = User.hash_phone_number(phone_number)
+        else:
+            self.phone_number = None
+
+    @staticmethod
+    def hash_phone_number(number):
+        return hashlib.pbkdf2_hmac("sha512", number.encode(), settings.SECRET_KEY.encode(), 10000)
+
 
 
 class Friendship(models.Model):

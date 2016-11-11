@@ -1,5 +1,3 @@
-import unittest
-
 from rest_framework import status
 
 from user.tests import APIEndpointTestCase, authenticated
@@ -17,8 +15,14 @@ class UserProfileEndpointTestCase(APIEndpointTestCase):
     def test_can_retrieve_own_information(self):
         response = self.get()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()
+        self.assertIn("last_avatar_update", data.keys())
+
+        data.pop("last_avatar_update")
+
         self.assertDictEqual(
-            response.json(),
+            data,
             dict(username=self.user.username, email=self.user.email, phone_number=None, avatar=None)
         )
 
@@ -41,7 +45,24 @@ class UserProfileEndpointTestCase(APIEndpointTestCase):
         # check can login with new password
         self.assertTrue(self.client.login(email=self.user.email, password="new"))
 
-    @unittest.skip("Phone number is not yet implemented correctly")
+    @authenticated
+    def test_cannot_send_missformed_phonenumber(self):
+        self.assertEqual(
+            self.put(dict(username="goatsy", email=self.user.email, phone_number="abc")).status_code,
+            status.HTTP_400_BAD_REQUEST,
+            msg="Misformed phone number should not be accepted"
+        )
+
+    @authenticated
+    def test_can_send_valid_phonenumber(self):
+        self.assertEqual(
+            self.put(dict(username="goatsy", email=self.user.email, phone_number="+41760000000")).status_code,
+            status.HTTP_200_OK,
+            msg="A valid phone number cannot be entered"
+        )
+
     @authenticated
     def test_phone_number_is_obfuscated(self):
-        raise NotImplementedError()
+        number = "+41760000000"
+        self.put(dict(username="goatsy", email=self.user.email, phone_number=number))
+        self.assertNotEqual(number, self.user.phone_number, msg="The phone number should be obfuscated")

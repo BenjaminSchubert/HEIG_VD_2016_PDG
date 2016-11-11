@@ -1,5 +1,4 @@
-import unittest
-
+from django.contrib.auth.hashers import make_password
 from rest_framework import status
 
 from user.models import User
@@ -15,8 +14,12 @@ class UsersEndpointTestCase(APIEndpointTestCase):
 
     def create_objects(self, number):
         for i in range(number):
-            user = User(username="user-{}".format(chr(97 + i)), email="email-{}@test.com".format(i), password="")
-            user.save()
+            User.objects.create_user(
+                email="email-{}@test.com".format(i),
+                password=None,
+                phone_number="+41{:09d}".format(i),
+                username="user-{}".format(chr(97 + i)),
+            )
 
     # Post Operations on /
     # this allows the creation of users
@@ -75,8 +78,8 @@ class UsersEndpointTestCase(APIEndpointTestCase):
 
     @authenticated
     def test_can_get_all_users(self):  # FIXME : is this really wanted ? Should it be possible ?
-        self.create_objects(49)  # we need one less as we have the default user
-        self.assertEqual(len(self.get().json()), 50)
+        self.create_objects(9)  # we need one less as we have the default user
+        self.assertEqual(len(self.get().json()), 10)
 
     @authenticated
     def test_can_filter_by_email(self):
@@ -99,8 +102,12 @@ class UsersEndpointTestCase(APIEndpointTestCase):
 
         self.assertEqual(len(self.get(query_params=dict(username="one", email="me")).json()), 1)
 
-    @unittest.skip("Phone number searching is not yet implemented")
     @authenticated
     def test_can_filter_by_phone_number(self):
-        self.create_objects(50)
-        self.assertEqual(len(self.get(query_params=dict(phone="1")).json()), 1)
+        self.create_objects(10)
+        self.assertEqual(len(self.get(query_params=dict(phone="+41000000001")).json()), 1)
+
+    @authenticated
+    def test_can_filter_by_multiple_phone_numbers(self):
+        self.create_objects(10)
+        self.assertEqual(len(self.get(query_params=dict(phone=["+41000000001", "+41000000002"])).json()), 2)

@@ -1,5 +1,6 @@
 """This module defines the routes available in the `user` application."""
 
+
 from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, UpdateAPIView, DestroyAPIView
@@ -9,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from auth.permissions import IsAuthenticatedXorPost
 from user.models import User
 from user.serializers import PublicUserSerializer, UserProfileSerializer, UserAvatarSerializer
+
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
@@ -78,7 +80,7 @@ class UsersListView(ListCreateAPIView):
 
         email = self.request.query_params.get("email")
         username = self.request.query_params.get("username")
-        phone = self.request.query_params.get("phone")
+        phone_numbers = self.request.query_params.getlist("phone")
 
         if email is not None:
             queryset = queryset.filter(email__contains=email)
@@ -86,8 +88,8 @@ class UsersListView(ListCreateAPIView):
         if username is not None:
             queryset = queryset.filter(username__contains=username)
 
-        if phone is not None:
-            raise NotImplementedError()
+        if len(phone_numbers) > 0:
+            queryset = queryset.filter(phone_number__in=[User.hash_phone_number(phone) for phone in phone_numbers])
 
         return queryset
 
