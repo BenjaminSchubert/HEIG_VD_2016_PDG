@@ -1,9 +1,10 @@
 """This module defines all the serializers for the `user` application."""
 
-import os
-import phonenumbers
-from django.db import IntegrityError
 
+import os
+
+import phonenumbers
+from django.db.utils import IntegrityError
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
