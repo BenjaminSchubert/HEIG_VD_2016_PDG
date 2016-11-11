@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
+import { User } from '../../models/user'
 
 @Component({
   templateUrl: 'contact-list.html'
@@ -8,7 +9,7 @@ import { NavController } from 'ionic-angular';
 export class ContactList {
 
 
-  private items: Person[];
+  private items: User[];
 
 
   constructor(public navCtrl: NavController) {
@@ -17,9 +18,9 @@ export class ContactList {
 
   initializeItems() {
     this.items = [
-      new Person('Sauron'),
-      new Person('Frodon'),
-      new Person('Gandalf')
+      new User('Sauron'),
+      new User('Frodon'),
+      new User('Gandalf')
     ]
   }
 
@@ -33,7 +34,7 @@ export class ContactList {
     // if the value is an empty string don't filter the items
     if (val && val.trim() != '') {
       this.items = this.items.filter((item) => {
-        return (item.name.toLowerCase().indexOf(val.toLowerCase()) > -1);
+        return (item.username.toLowerCase().indexOf(val.toLowerCase()) > -1);
       })
     }
   }
@@ -50,9 +51,4 @@ export class ContactList {
 
   }
 
-}
-
-class Person {
-  name: string;
-  constructor(name: string) { this.name = name; }
 }
