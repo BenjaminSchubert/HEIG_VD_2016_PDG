@@ -85,7 +85,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Get user's short name."""
         return self.username
 
-    def set_phone_number(self, phone_number):
+    def set_phone_number(self, phone_number: str):
+        """
+        Set user's phone number securely, by hashing it.
+
+        :param phone_number: original phone number
+        """
         if phone_number is not None:
             self.phone_number = User.hash_phone_number(phone_number)
         else:
@@ -93,8 +98,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @staticmethod
     def hash_phone_number(number):
-        return hashlib.pbkdf2_hmac("sha512", number.encode(), settings.SECRET_KEY.encode(), 10000)
+        """
+        Hash the given phone number.
 
+        :param number: phone number to hash
+        :return: hashed phone number
+        """
+        return hashlib.pbkdf2_hmac("sha512", number.encode(), settings.SECRET_KEY.encode(), 10000)
 
 
 class Friendship(models.Model):

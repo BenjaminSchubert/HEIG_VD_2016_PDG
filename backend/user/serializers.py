@@ -8,7 +8,6 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, CharField, EmailField, ImageField
-from rest_framework.validators import UniqueValidator
 
 from user.models import User
 
@@ -16,7 +15,13 @@ from user.models import User
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
 
-def validate_phone_number(value):
+def validate_phone_number(value: str):
+    """
+    Validate that the given value is a valid phone number.
+
+    :param value: value to check
+    :raise ValidationError: when the phone number is not valid
+    """
     if not phonenumbers.is_possible_number_string(value, None):
         raise serializers.ValidationError(
             "{} is not a possible phone number under the E.164 specification".format(value)
