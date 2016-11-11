@@ -18,7 +18,7 @@ class AccountManager(BaseUserManager):
     """Overrides the default UserManager with our custom one."""
 
     @transaction.atomic
-    def _create_user(self, password, phone_number=None, **fields):
+    def _create_user(self, password=None, phone_number=None, **fields):
         user = self.model(**fields)
 
         user.set_password(password)

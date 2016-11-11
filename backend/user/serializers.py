@@ -2,9 +2,11 @@
 
 import os
 import phonenumbers
+from django.db import IntegrityError
 
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, CharField, EmailField, ImageField
 from rest_framework.validators import UniqueValidator
 
@@ -25,8 +27,7 @@ class PublicUserSerializer(ModelSerializer):
     """Defines a serializer for users that only keeps the minimum information."""
 
     avatar = ImageField(read_only=True)
-    # FIXME : remove this validator
-    email = EmailField(write_only=True, validators=[UniqueValidator(User.objects.all())])
+    email = EmailField(write_only=True)
     password = CharField(max_length=255, write_only=True)
 
     class Meta:
@@ -42,15 +43,19 @@ class PublicUserSerializer(ModelSerializer):
         :param validated_data: data to use for the creation of the user
         :return: the new user instance
         """
-        return User.objects.create_user(**validated_data)
+        try:
+            return User.objects.create_user(**validated_data)
+        except IntegrityError as e:
+            error = e.args[0].split(".")[-1]
+            if "UNIQUE" in e.args[0]:
+                raise ValidationError({error: ["user with this {} already exists".format(error)]})
+            raise e
 
 
 class UserProfileSerializer(ModelSerializer):
     """Defines a serializer for users to edit their profiles."""
 
     password = CharField(max_length=255, write_only=True, required=False)
-    # FIXME : this validation should not be done, and the database should catch this
-    email = EmailField(validators=[UniqueValidator(User.objects.all())])
     avatar = ImageField(read_only=True)
     phone_number = CharField(required=False, validators=[validate_phone_number])
 

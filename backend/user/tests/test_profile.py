@@ -1,5 +1,6 @@
 from rest_framework import status
 
+from user.models import User
 from user.tests import APIEndpointTestCase, authenticated
 from user.tests import API_V1
 
@@ -31,6 +32,15 @@ class UserProfileEndpointTestCase(APIEndpointTestCase):
         response = self.put(dict(username="goatsy", email=self.user.email))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["username"], "goatsy")
+
+    @authenticated
+    def test_cannot_use_same_email_as_someone_else(self):
+        user2 = User.objects.create_user(username="goat", email="goat@tsy.com")
+        self.assertContains(
+            self.put(dict(username=self.user.username, email=user2.email)),
+            "already exists",
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
 
     @authenticated
     def test_can_login_after_update_without_password_field(self):
