@@ -1,9 +1,12 @@
 """This module defines all the serializers for the `user` application."""
 
 
-import os
+from io import BytesIO
 
 import phonenumbers
+from PIL import Image
+from django.conf import settings
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.utils import IntegrityError
 from django.utils import timezone
 from rest_framework import serializers
@@ -11,7 +14,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, CharField, EmailField, ImageField
 
 from user.models import User
-
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
@@ -107,7 +109,17 @@ class UserAvatarSerializer(ModelSerializer):
         :param validated_data: data containing the file to use as new avatar
         :return: the new updated instance of the user
         """
-        extension = os.path.splitext(validated_data["avatar"].name)[1]
-        validated_data["avatar"].name = "{}{}".format(instance.id, extension)
+        avatar = validated_data["avatar"]
+        image = Image.open(avatar)
+        image.thumbnail(settings.THUMBNAILS_SIZE, Image.ANTIALIAS)
+
+        temp_data = BytesIO()
+        image.save(temp_data, "PNG")
+
+        avatar.close()
+        validated_data["avatar"] = InMemoryUploadedFile(
+            temp_data, None, "{}.png".format(instance.id), "image/png", len(temp_data.getvalue()), None
+        )
+
         instance.last_avatar_update = timezone.now()
         return super().update(instance, validated_data)

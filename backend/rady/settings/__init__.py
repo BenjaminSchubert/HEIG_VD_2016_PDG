@@ -111,3 +111,6 @@ JWT_AUTH = {
 }
 
 TEST_RUNNER = "rady.tests.RadyTestRunner"
+
+
+THUMBNAILS_SIZE = (150, 150)

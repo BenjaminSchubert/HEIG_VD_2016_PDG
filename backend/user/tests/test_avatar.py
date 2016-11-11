@@ -1,4 +1,5 @@
 import os
+from django.conf import settings
 
 from rest_framework import status
 
@@ -50,3 +51,8 @@ class UserAvatarEndpointTestCase(APIEndpointTestCase):
         avatar = self.client.put(self.url, {"avatar": get_image_file()}, format="multipart").json()["avatar"]
         filename = os.path.splitext(os.path.basename(avatar))[0]
         self.assertEqual(filename, str(self.user.id), msg="Avatar file should have been renamed to the id of the user")
+
+    @authenticated
+    def test_avatar_created_is_resized(self):
+        self.client.put(self.url, {"avatar": get_image_file(size=(2000, 2000))}, format="multipart")
+        self.assertEqual((self.user.avatar.height, self.user.avatar.width), settings.THUMBNAILS_SIZE)
