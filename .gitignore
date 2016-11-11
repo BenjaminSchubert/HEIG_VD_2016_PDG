@@ -24,3 +24,6 @@
 
 # databases
 *.db
+
+# migrations
+migrations/

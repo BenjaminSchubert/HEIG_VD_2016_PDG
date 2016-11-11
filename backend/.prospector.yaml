@@ -1,7 +1,7 @@
 output-format: grouped
 
 strictness: veryhigh
-test-warnings: true
+test-warnings: false
 doc-warnings: true
 member-warnings: true
 
