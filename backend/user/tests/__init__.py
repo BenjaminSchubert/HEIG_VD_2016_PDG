@@ -1,4 +1,3 @@
-import os
 from PIL import Image
 from abc import abstractmethod
 from django.core.files import File
@@ -72,20 +71,25 @@ class APIEndpointTestCase(APITestCase):
     def assert400WithError(self, response, error):
         self.assertContains(response, error, status_code=status.HTTP_400_BAD_REQUEST)
 
+    # noinspection PyShadowingBuiltins
     def request(self, call, url, format, *args, **kwargs):
         if url is None:
             url = self.url
 
         if format is None:
+            # noinspection PyShadowingBuiltins
             format = self.format
 
         return call(url, format=format, *args, **kwargs)
 
+    # noinspection PyShadowingBuiltins
     def post(self, data, url=None, format=None):
         return self.request(self.client.post, url, format, data)
 
+    # noinspection PyShadowingBuiltins
     def get(self, url=None, format=None, query_params=None):
         return self.request(self.client.get, url, format, query_params)
 
+    # noinspection PyShadowingBuiltins
     def put(self, data, url=None, format=None):
         return self.request(self.client.put, url, format, data)

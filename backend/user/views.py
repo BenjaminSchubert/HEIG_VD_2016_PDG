@@ -149,6 +149,7 @@ class UserAvatarView(UpdateAPIView, DestroyAPIView):
         """Get the current user on which to perform work."""
         return self.request.user
 
+    # noinspection PyMethodMayBeStatic
     def perform_destroy(self, instance):
         """Remove the user's avatar."""
         instance.avatar.delete()

@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import make_password
 from rest_framework import status
 
 from user.models import User
@@ -12,7 +11,8 @@ class UsersEndpointTestCase(APIEndpointTestCase):
     url = API_V1 + "users/"
     correct_user = dict(username="goatsy", email="goatsy@goat.com", password="goat")
 
-    def create_objects(self, number):
+    @staticmethod
+    def create_objects(number):
         for i in range(number):
             User.objects.create_user(
                 email="email-{}@test.com".format(i),
