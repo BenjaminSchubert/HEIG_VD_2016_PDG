@@ -48,7 +48,6 @@ class UsersEndpointTestCase(APIEndpointTestCase):
 
     def test_cannot_create_already_existing_user(self):
         self.assertEqual(self.post(self.correct_user).status_code, status.HTTP_201_CREATED)
-        print(self.post(self.correct_user).json())
         self.assertContains(self.post(self.correct_user), "already exists", status_code=status.HTTP_400_BAD_REQUEST)
 
     def test_can_login_after_creation(self):
