@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
-import { User } from '../../models/user'
+import { RadyModels } from '../../models/user'
 
 @Component({
   templateUrl: 'contact-list.html'
@@ -9,7 +9,7 @@ import { User } from '../../models/user'
 export class ContactList {
 
 
-  private items: User[];
+  private items: RadyModels.User[];
 
 
   constructor(public navCtrl: NavController) {
@@ -18,9 +18,9 @@ export class ContactList {
 
   initializeItems() {
     this.items = [
-      new User('Sauron'),
-      new User('Frodon'),
-      new User('Gandalf')
+      new RadyModels.User('Sauron'),
+      new RadyModels.User('Frodon'),
+      new RadyModels.User('Gandalf')
     ]
   }
 
