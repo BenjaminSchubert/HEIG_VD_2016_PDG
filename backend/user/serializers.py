@@ -227,6 +227,8 @@ class FriendDetailsSerializer(ModelSerializer):
         if attrs.get("is_blocked", False) and not self.instance.is_accepted:
             raise ValidationError("You cannot block a friend when the request was not accepted.")
         elif attrs.get("is_hidden", False) and self.instance.is_accepted:
-            raise ValidationError("You cannot hide a request that was accepted")
+            raise ValidationError("You cannot hide a request that was accepted.")
+        elif not attrs.get("is_accepted", True) and self.instance.is_accepted:
+            raise ValidationError("You cannot un-accept a request that was accepted.")
 
         return attrs

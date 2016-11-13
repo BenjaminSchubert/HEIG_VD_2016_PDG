@@ -17,6 +17,8 @@ __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
 
 class FriendViewMixin:
+    """This is a simple mixin for view that require a `FriendSerializer` as serializer_class."""
+
     serializer_class = FriendSerializer
 
 
@@ -163,40 +165,206 @@ class UserAvatarView(UpdateAPIView, DestroyAPIView):
 
 
 class FriendListView(FriendViewMixin, ListCreateAPIView):
+    """
+    Returns user's friends that have accepted the request and that are not blocked by the user.
+
+    This view requires to be authenticated.
+
+    This view supports multiple formats : JSon, XML, etc.
+
+    GET requests:
+        An example of data received, in JSon:
+
+            [
+                {
+                    "friend": {
+                        "username": "Bob",
+                        "avatar": "http://my_avatar_url"
+                    },
+                    is_hidden: False,
+                    is_accepted: True,
+                    is_blocked: False
+                },
+                ...
+            ]
+
+    POST requests:
+        POST requests here allows the creation of new friendships. Note that these need the second user's agreement.
+
+        The view expects the following parameters (example in JSon):
+
+            {
+                "friend": friend_id
+            }
+    """
+
     def get_queryset(self):
+        """Get the queryset of all friends currently active, that is accepted and not blocked by the current user."""
         return Friendship.objects.filter(is_accepted=True).filter(
-                Q(from_account=self.request.user, from_blocking=False) |
-                Q(to_account=self.request.user, to_blocking=False)
-            )
+            Q(from_account=self.request.user, from_blocking=False) |
+            Q(to_account=self.request.user, to_blocking=False)
+        )
 
 
 class AllFriendListView(FriendViewMixin, ListAPIView):
+    """
+    Returns user's friends whether they already accepted the request or not, whether they are blocked or not.
+
+    This view requires to be authenticated.
+
+    This view supports multiple formats : JSon, XML, etc.
+
+    An example of data received, in JSon:
+
+        [
+            {
+                "friend": {
+                    "username": "Bob",
+                    "avatar": "http://my_avatar_url"
+                },
+                is_hidden: True,
+                is_accepted: False,
+                is_blocked: False
+            },
+            {
+                "friend": {
+                    "username": "Bill",
+                    "avatar": none
+                },
+                is_hidden: False,
+                is_accepted: True,
+                is_blocked: True
+            },
+
+            ...
+        ]
+    """
+
     def get_queryset(self):
+        """Get all friends and friends requests the current user made."""
         return Friendship.objects.filter(Q(from_account=self.request.user) | Q(to_account=self.request.user))
 
 
 class PendingFriendListView(FriendViewMixin, ListAPIView):
+    """
+    Returns all friends requests made to the user that where not yet answered.
+
+    This view requires to be authenticated.
+
+    This view supports multiple formats : JSon, XML, etc.
+
+    An example of data received, in JSon:
+
+        [
+            {
+                "friend": {
+                    "username": "Bob",
+                    "avatar": "http://my_avatar_url"
+                },
+                is_hidden: False,
+                is_accepted: False,
+                is_blocked: False
+            },
+
+            ...
+        ]
+    """
+
     def get_queryset(self):
+        """Get all unanswered friend requests for the current user."""
         return Friendship.objects.filter(to_account=self.request.user, is_accepted=False, is_hidden=False)
 
 
 class HiddenPendingFriendListView(FriendViewMixin, ListAPIView):
+    """
+    Returns all friends requests made to the user that where not yet answered and marked as hidden.
+
+    This view requires to be authenticated.
+
+    This view supports multiple formats : JSon, XML, etc.
+
+    An example of data received, in JSon:
+
+        [
+            {
+                "friend": {
+                    "username": "Bob",
+                    "avatar": "http://my_avatar_url"
+                },
+                is_hidden: True,
+                is_accepted: False,
+                is_blocked: False
+            },
+
+            ...
+        ]
+    """
+
     def get_queryset(self):
+        """Get all friend request that the user has hidden."""
         return Friendship.objects.filter(to_account=self.request.user, is_accepted=False, is_hidden=True)
 
 
 class BlockedFriendListView(FriendViewMixin, ListAPIView):
+    """
+    Returns all friends that the user has blocked.
+
+    This view requires to be authenticated.
+
+    This view supports multiple formats : JSon, XML, etc.
+
+    An example of data received, in JSon:
+
+        [
+            {
+                "friend": {
+                    "username": "Bob",
+                    "avatar": "http://my_avatar_url"
+                },
+                is_hidden: False,
+                is_accepted: False,
+                is_blocked: True
+            },
+
+            ...
+        ]
+    """
+
     def get_queryset(self):
+        """Get all friends that the current user has blocked."""
         return Friendship.objects.filter(
             Q(to_account=self.request.user, to_blocking=True) | Q(from_account=self.request.user, from_blocking=True)
         )
 
 
 class FriendListDetailsView(RetrieveUpdateAPIView):
+    """
+    Allows a user to manage a friendship link.
+
+    This view requires the user to be authenticated.
+
+    This view supports multiple formats : JSon, XML, etc.
+
+    Acceptable entries are :
+        "is_accepted": accepts a boolean, can only be set to True to accept a friendship relation.
+        "is_blocked": accepts a boolean, block or unblock a friend
+        "is_hidden": accepts a boolean, hides or un-hides an unaccepted friend request.
+
+    GET requests will return something like (in JSon):
+
+        {
+            "friend": {
+                "username": "Bob",
+                "avatar": "http://my_avatar_url"
+            },
+            is_hidden: False,
+            is_accepted: False,
+            is_blocked: True
+        },
+    """
+
     serializer_class = FriendDetailsSerializer
 
     def get_queryset(self):
+        """Get all friendship links the current user has."""
         return Friendship.objects.filter(Q(from_account=self.request.user) | Q(to_account=self.request.user))
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)

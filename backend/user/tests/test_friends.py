@@ -229,3 +229,15 @@ class FriendsDetailsEndpointTestCase(FriendsTestCase):
     def test_cannot_hide_own_request(self):
         response = self.put(dict(is_hidden=True), url=self.url.format(Friendship.objects.first().id))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @authenticated
+    def test_cannot_unaccept_previously_accepted_request(self):
+        friendship = Friendship.objects.last()
+        friendship.is_accepted = True
+        friendship.save()
+
+        self.assertContains(
+            self.put(dict(is_accepted=False), url=self.url.format(friendship.id)),
+            "un-accept",
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
