@@ -121,11 +121,18 @@ class Friendship(models.Model):
     from_blocking = models.BooleanField(default=False)
     to_blocking = models.BooleanField(default=False)
 
-    class Meta:
-        unique_together = ("from_account", "to_account")
-
     @transaction.atomic
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """
+        Save the friendship instance.
+
+        This will beforehand create a `unique_validator` field based on both user ids.
+
+        This is to ensure that two requests cannot target the two same users.
+
+        The `unique` field on ('from_account', 'to_account') would not be sufficient as a user can add the second
+        and the second can add the first one. This is therefore the safest, concurrency-proof way of doing it.
+        """
         self.unique_validator = "{min}{max}".format(
             min=min(self.from_account.id, self.to_account.id),
             max=max(self.from_account.id, self.to_account.id)

@@ -34,45 +34,110 @@ def validate_phone_number(value: str):
 
 
 class FriendField(Field):
+    """
+    Field for a friend.
+
+    This will check the `from_account` and `to_account` values and will return the one that is not the current user.
+
+    :param instance_serializer: serializer used to serialize the friend
+    :param kwargs: additional arguments to pass to the `Field` constructor
+    """
+
     def __init__(self, instance_serializer, **kwargs):
         self.serializer = instance_serializer
         kwargs['source'] = '*'
         super().__init__(**kwargs)
 
     def to_internal_value(self, data):
+        """
+        Transform the current object to its internal representation.
+
+        This also checks that the user is not itself, as we don't accept imaginary friends.
+
+        :param data: id of the friend user
+        :raise ValidationError: if the user to be friend with is the current user
+        :return: a dictionary with a key `friend` containing the given user
+        """
         if data == self.parent.context["request"].user.id:
             raise serializers.ValidationError("Cannot be friend with self.")
         return {"friend": User.objects.get(id=data)}
 
     def to_representation(self, value):
+        """
+        Get the friend from the representation, base on the `from_account` and `to_account` of the value given.
+
+        :param value: object to serialize
+        :return: the user in the relation that is not the current user
+        """
         if self.parent.context["request"].user == value.from_account:
             return self.serializer.to_representation(value.to_account)
         return self.serializer.to_representation(value.from_account)
 
 
 class BlockedField(Field):
+    """
+    Field for serializing whether the object is blocked from the current user's point of view.
+
+    This will check the `from_blocking` and `to_blocking` values and
+    will return the one that is related to the current user.
+    """
+
     def __init__(self, **kwargs):
         kwargs['source'] = '*'
         super().__init__(**kwargs)
 
-    def to_internal_value(self, data):
+    def to_internal_value(self, data: bool):
+        """
+        Get the data correctly formatted.
+
+        :param data: boolean describing whether the current user is blocking the other.
+        """
         return {"is_blocked": data}
 
     def to_representation(self, value):
+        """
+        Get the correct value for the is_blocked field.
+
+        This will check which of the `from_blocking` and `to_blocking` is related to the current user and return it.
+
+        :param value: object to serialize
+        :return: whether the current user is blocking the other or not
+        """
         if self.parent.context["request"].user == value.from_account:
             return value.from_blocking
         return value.to_blocking
 
 
 class HiddenField(Field):
+    """
+    Field for serializing whether the object is hidden from the current user's point of view.
+
+    This will check the `is_hidden` value and will return it if the current user is the one that
+    must accept the request. Otherwise will return False.
+    """
+
     def __init__(self, **kwargs):
         kwargs["source"] = "*"
         super().__init__(**kwargs)
 
     def to_internal_value(self, data):
+        """
+        Get the data correctly formatted.
+
+        :param data: boolean describing whether the current user has hidden the request from the other.
+        """
         return {"is_hidden": data}
 
     def to_representation(self, value):
+        """
+        Get if the request was hidden.
+
+        This will check which of the `is_hidden` and return it if the current user is the one that must accept.
+        Otherwise will return `False`
+
+        :param value: object to serialize
+        :return: whether the request is hidden or not
+        """
         if self.parent.context["request"].user == value.from_account:
             return False  # a user cannot know his request was hidden
         return value.is_hidden
@@ -173,6 +238,8 @@ class UserAvatarSerializer(ModelSerializer):
 
 
 class FriendSerializer(ModelSerializer):
+    """Defines a serializer for creating and viewing friend requests."""
+
     error_message = "You already asked {} as friend"
 
     friend = FriendField(PublicUserSerializer())
@@ -180,10 +247,21 @@ class FriendSerializer(ModelSerializer):
     is_hidden = HiddenField(read_only=True)
 
     class Meta:
+        """Defines the fields and models for the `FriendSerializer`."""
+
         model = Friendship
         fields = ("friend", "is_accepted", "is_blocked", "is_hidden")
 
     def create(self, validated_data):
+        """
+        Create a new friend request.
+
+        This checks that both users are different and will throw an error otherwise.
+
+        :param validated_data: data to use for friendship creation
+        :raise ValidationError: if an integrity violation is done
+        :return: the newly created object
+        """
         try:
             return super().create(dict(from_account=self.context["request"].user, to_account=validated_data["friend"]))
         except IntegrityError as e:
@@ -192,22 +270,37 @@ class FriendSerializer(ModelSerializer):
             raise e
 
     def update(self, instance, validated_data):
+        """Override the default behavior to raise an exception. We don't want this."""
         raise NotImplementedError("This is not meant to be used")
 
 
 class FriendDetailsSerializer(ModelSerializer):
+    """Defines a serializer to view details about a friendship and update it."""
+
     friend = FriendField(PublicUserSerializer(), read_only=True)
     is_blocked = BlockedField(required=False)
     is_hidden = HiddenField(required=False)
 
     class Meta:
+        """Defines the fields and models for the `FriendDetailsSerializer`."""
+
         model = Friendship
         fields = ("friend", "is_accepted", "is_blocked", "is_hidden")
 
     def create(self, validated_data):
+        """Override the default behavior to raise an exception. We don't want this."""
         raise NotImplementedError("This is not meant to be used")
 
     def update(self, instance, validated_data):
+        """
+        Update the given instance with the new data.
+
+        This will reassign fields based on whether the user is the initiator or receiver of the request.
+
+        :param instance: friendship instance to update
+        :param validated_data: data to use for update
+        :return: the update instance
+        """
         blocked = validated_data.pop("is_blocked", None)
         if blocked is not None:
             if self.context["request"].user == instance.from_account:
@@ -218,6 +311,13 @@ class FriendDetailsSerializer(ModelSerializer):
         return super().update(instance, validated_data)
 
     def validate(self, attrs):
+        """
+        Validate that the given attributes do not violate the workflow of a friendship request.
+
+        :param attrs: attributes to check
+        :raise ValidationError: if there is an error with one attribute
+        :return: the attributes once checked
+        """
         if self.instance.to_account != self.context["request"].user:
             if attrs.get("is_accepted", False):
                 raise ValidationError("You have to be the user to which the friendship request is sent to accept it.")
