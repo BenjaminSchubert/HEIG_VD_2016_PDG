@@ -11,9 +11,11 @@ from django.db.utils import IntegrityError
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.fields import Field
 from rest_framework.serializers import ModelSerializer, CharField, EmailField, ImageField
 
-from user.models import User
+from user.models import User, Friendship
+
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
@@ -29,6 +31,51 @@ def validate_phone_number(value: str):
         raise serializers.ValidationError(
             "{} is not a possible phone number under the E.164 specification".format(value)
         )
+
+
+class FriendField(Field):
+    def __init__(self, instance_serializer, **kwargs):
+        self.serializer = instance_serializer
+        kwargs['source'] = '*'
+        super().__init__(**kwargs)
+
+    def to_internal_value(self, data):
+        if data == self.parent.context["request"].user.id:
+            raise serializers.ValidationError("Cannot be friend with self.")
+        return {"friend": User.objects.get(id=data)}
+
+    def to_representation(self, value):
+        if self.parent.context["request"].user == value.from_account:
+            return self.serializer.to_representation(value.to_account)
+        return self.serializer.to_representation(value.from_account)
+
+
+class BlockedField(Field):
+    def __init__(self, **kwargs):
+        kwargs['source'] = '*'
+        super().__init__(**kwargs)
+
+    def to_internal_value(self, data):
+        return {"is_blocked": data}
+
+    def to_representation(self, value):
+        if self.parent.context["request"].user == value.from_account:
+            return value.from_blocking
+        return value.to_blocking
+
+
+class HiddenField(Field):
+    def __init__(self, **kwargs):
+        kwargs["source"] = "*"
+        super().__init__(**kwargs)
+
+    def to_internal_value(self, data):
+        return {"is_hidden": data}
+
+    def to_representation(self, value):
+        if self.parent.context["request"].user == value.from_account:
+            return False  # a user cannot know his request was hidden
+        return value.is_hidden
 
 
 class PublicUserSerializer(ModelSerializer):
@@ -123,3 +170,63 @@ class UserAvatarSerializer(ModelSerializer):
 
         instance.last_avatar_update = timezone.now()
         return super().update(instance, validated_data)
+
+
+class FriendSerializer(ModelSerializer):
+    error_message = "You already asked {} as friend"
+
+    friend = FriendField(PublicUserSerializer())
+    is_blocked = BlockedField(read_only=True)
+    is_hidden = HiddenField(read_only=True)
+
+    class Meta:
+        model = Friendship
+        fields = ("friend", "is_accepted", "is_blocked", "is_hidden")
+
+    def create(self, validated_data):
+        try:
+            return super().create(dict(from_account=self.context["request"].user, to_account=validated_data["friend"]))
+        except IntegrityError as e:
+            if "UNIQUE" in e.args[0]:
+                raise ValidationError({"error": [self.error_message.format(validated_data["friend"].username)]})
+            raise e
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError("This is not meant to be used")
+
+
+class FriendDetailsSerializer(ModelSerializer):
+    friend = FriendField(PublicUserSerializer(), read_only=True)
+    is_blocked = BlockedField(required=False)
+    is_hidden = HiddenField(required=False)
+
+    class Meta:
+        model = Friendship
+        fields = ("friend", "is_accepted", "is_blocked", "is_hidden")
+
+    def create(self, validated_data):
+        raise NotImplementedError("This is not meant to be used")
+
+    def update(self, instance, validated_data):
+        blocked = validated_data.pop("is_blocked", None)
+        if blocked is not None:
+            if self.context["request"].user == instance.from_account:
+                validated_data["from_blocking"] = blocked
+            else:
+                validated_data["to_blocking"] = blocked
+
+        return super().update(instance, validated_data)
+
+    def validate(self, attrs):
+        if self.instance.to_account != self.context["request"].user:
+            if attrs.get("is_accepted", False):
+                raise ValidationError("You have to be the user to which the friendship request is sent to accept it.")
+            elif attrs.get("is_hidden", False):
+                raise ValidationError("You have to be the user to which the friendship request is sent to hide it.")
+
+        if attrs.get("is_blocked", False) and not self.instance.is_accepted:
+            raise ValidationError("You cannot block a friend when the request was not accepted.")
+        elif attrs.get("is_hidden", False) and self.instance.is_accepted:
+            raise ValidationError("You cannot hide a request that was accepted")
+
+        return attrs

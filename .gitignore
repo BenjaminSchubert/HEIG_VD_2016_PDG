@@ -27,3 +27,7 @@
 
 # migrations
 migrations/
+
+# python coverage
+.coverage
+htmlcov/

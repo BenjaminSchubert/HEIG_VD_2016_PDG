@@ -2,17 +2,22 @@
 
 
 from django.core.exceptions import SuspiciousOperation
+from django.db.models import Q
 from django.utils import timezone
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, UpdateAPIView, DestroyAPIView, ListAPIView
 from rest_framework.parsers import FileUploadParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 
 from auth.permissions import IsAuthenticatedXorPost
-from user.models import User
-from user.serializers import PublicUserSerializer, UserProfileSerializer, UserAvatarSerializer
-
+from user.models import User, Friendship
+from user.serializers import PublicUserSerializer, UserProfileSerializer, UserAvatarSerializer, FriendSerializer, \
+    FriendDetailsSerializer
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
+
+
+class FriendViewMixin:
+    serializer_class = FriendSerializer
 
 
 class UsersListView(ListCreateAPIView):
@@ -155,3 +160,43 @@ class UserAvatarView(UpdateAPIView, DestroyAPIView):
         instance.avatar.delete()
         instance.last_avatar_update = timezone.now()
         instance.save()
+
+
+class FriendListView(FriendViewMixin, ListCreateAPIView):
+    def get_queryset(self):
+        return Friendship.objects.filter(is_accepted=True).filter(
+                Q(from_account=self.request.user, from_blocking=False) |
+                Q(to_account=self.request.user, to_blocking=False)
+            )
+
+
+class AllFriendListView(FriendViewMixin, ListAPIView):
+    def get_queryset(self):
+        return Friendship.objects.filter(Q(from_account=self.request.user) | Q(to_account=self.request.user))
+
+
+class PendingFriendListView(FriendViewMixin, ListAPIView):
+    def get_queryset(self):
+        return Friendship.objects.filter(to_account=self.request.user, is_accepted=False, is_hidden=False)
+
+
+class HiddenPendingFriendListView(FriendViewMixin, ListAPIView):
+    def get_queryset(self):
+        return Friendship.objects.filter(to_account=self.request.user, is_accepted=False, is_hidden=True)
+
+
+class BlockedFriendListView(FriendViewMixin, ListAPIView):
+    def get_queryset(self):
+        return Friendship.objects.filter(
+            Q(to_account=self.request.user, to_blocking=True) | Q(from_account=self.request.user, from_blocking=True)
+        )
+
+
+class FriendListDetailsView(RetrieveUpdateAPIView):
+    serializer_class = FriendDetailsSerializer
+
+    def get_queryset(self):
+        return Friendship.objects.filter(Q(from_account=self.request.user) | Q(to_account=self.request.user))
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)

@@ -121,6 +121,8 @@ def prepare_deploy():
         start_section("local cleanup")
         local("""find . -type f -iname "*.pyc" -delete""")
         local("""find . -type d -empty -delete""")
+        local("rm -rf ./backend/htmlcov")
+        local("rm -f ./backend/.coverage")
         stop_section()
 
 

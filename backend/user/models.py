@@ -3,7 +3,10 @@ Contains all models from the `users` module.
 
 We override here the default django user model and extend it.
 """
+
+
 import hashlib
+
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
@@ -68,7 +71,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_avatar_update = models.DateTimeField(auto_now_add=True)
     hidden = models.DateTimeField(null=True, default=None)
 
-    friends = models.ManyToManyField("User", through="Friendship", related_name="friend_with")
+    friends = models.ManyToManyField("User", through="Friendship")
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -112,5 +115,20 @@ class Friendship(models.Model):
 
     from_account = models.ForeignKey(User, related_name="from_account")
     to_account = models.ForeignKey(User, related_name="to_account")
-    is_blocked = models.BooleanField(default=False)
+    unique_validator = models.CharField(max_length=255, unique=True)
     is_accepted = models.BooleanField(default=False)
+    is_hidden = models.BooleanField(default=False)
+    from_blocking = models.BooleanField(default=False)
+    to_blocking = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ("from_account", "to_account")
+
+    @transaction.atomic
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.unique_validator = "{min}{max}".format(
+            min=min(self.from_account.id, self.to_account.id),
+            max=max(self.from_account.id, self.to_account.id)
+        )
+
+        super().save(force_insert, force_update, using, update_fields)
