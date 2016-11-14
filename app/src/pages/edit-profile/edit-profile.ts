@@ -13,6 +13,8 @@ export class EditProfile {
   constructor(public navCtrl: NavController, private formBuilder: FormBuilder) {}
 
   ionViewDidLoad() {
+    //TODO : GET CURRENT USER
+
   	// create the form with validation
   	this.form = this.formBuilder.group({
       username: ['', Validators.required],
@@ -24,7 +26,8 @@ export class EditProfile {
   }
 
   save(){
-    //TODO : save
+    //TODO : SAVE USER LOCALY
+    //TODO : SAVE USER ON SEVER
   }
 
 }

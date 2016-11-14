@@ -33,6 +33,7 @@ export class SignIn {
   }
 
   doSignIn() {
+    // TODO : ADD USER IN "SESSION"
     this.navCtrl.setRoot(MainTabs)
   }
 
