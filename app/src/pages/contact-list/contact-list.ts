@@ -10,6 +10,7 @@ export class ContactList {
 
 
   private items: RadyModels.User[];
+  checked : boolean = true;
 
 
   constructor(public navCtrl: NavController) {
@@ -39,16 +40,23 @@ export class ContactList {
     }
   }
 
+
   ionViewDidLoad() {
     console.log('Hello ContactList Page');
   }
 
   goToAddContact() {
-
+    for(let item of this.items){
+      console.log((<any>item).checked);
+    }
   }
 
   goToWaitingForParticipant() {
 
+  }
+
+  isSomeChecked(){
+    return this.items.some((o:any)=> o.checked === true);
   }
 
 }

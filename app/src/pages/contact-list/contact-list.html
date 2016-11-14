@@ -11,14 +11,14 @@
 
   <ion-list>
     <ion-item *ngFor="let item of items">
-      <ion-checkbox item-right></ion-checkbox>
+      <ion-checkbox item-right checked="false" [(ngModel)]="item.checked"></ion-checkbox>
       <ion-label>{{item.username}}</ion-label>
     </ion-item>
   </ion-list>
 
-  <ion-fab right bottom>
-    <button ion-fab color="light" (click)="goToWaitingForParticipant()"><ion-icon name="arrow-dropleft"></ion-icon></button>
-    <button ion-fab color="light" (click)="goToAddContact()"><ion-icon name="add"></ion-icon></button>
+  <ion-fab right bottom class >
+    <button ion-fab color="light" *ngIf ="isSomeChecked()" (click)="goToWaitingForParticipant()"><ion-icon name="arrow-dropleft" ></ion-icon></button>
+    <button ion-fab color="light" (click)="goToAddContact()"><ion-icon name="person-add"></ion-icon></button>
   </ion-fab>
 
 </ion-content>
