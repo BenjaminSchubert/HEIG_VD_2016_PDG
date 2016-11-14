@@ -6,7 +6,38 @@
 
 </ion-header>
 
+<ion-content>
+	<div class="content">
+		<div class="edit-profile">
 
-<ion-content padding>
+			<form [formGroup]="form" (ngSubmit)="save()">
+				<ion-item>
+					<ion-label floating>Username</ion-label>
+					<ion-input type="text" formControlName="username"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Email</ion-label>
+					<ion-input type="email" formControlName="email"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Phone number</ion-label>
+					<ion-input type="tel" formControlName="phone"></ion-input>
+				</ion-item>
+				<p><small>optional, required for searching for friends</small></p>
+				<ion-item>
+					<ion-label floating>Password</ion-label>
+					<ion-input type="password" formControlName="password"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Confirm password</ion-label>
+					<ion-input type="password" formControlName="passwordConfirmation"></ion-input>
+				</ion-item>
+				<button ion-button block icon-right round large type="submit" [disabled]="!form.valid">
+					Save
+					<ion-icon name="arrow-forward"></ion-icon>
+				</button>
+			</form>
 
+		</div>
+	</div>
 </ion-content>
