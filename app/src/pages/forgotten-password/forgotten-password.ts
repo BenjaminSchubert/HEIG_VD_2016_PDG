@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 import { RadyModule } from '../../lib/validators';
 
@@ -15,7 +15,7 @@ import { RadyModule } from '../../lib/validators';
 export class ForgottenPassword {
 
   // attributes
-  form;
+  form: FormGroup;
 
   constructor(public navCtrl: NavController,
   			  private formBuilder: FormBuilder,
@@ -24,8 +24,15 @@ export class ForgottenPassword {
   ionViewDidLoad() {
   	// create the form with validation
   	this.form = this.formBuilder.group({
-      email: ['', Validators.compose([Validators.required, RadyModule.Validators.email])]
-  	});
+      email: ['']
+  	}, { validator: Validators.compose([
+      RadyModule.Validators.email('email', 'is not valid'),
+      RadyModule.Validators.required(['email'], 'is required')])
+    });
+  }
+
+  get errors() {
+    return JSON.stringify(this.form.errors);
   }
 
   doResetPassword() {

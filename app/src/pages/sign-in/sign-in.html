@@ -10,6 +10,8 @@
 		<div class="sign-in-page">
 			<h1>Sign In</h1>
 
+			<p>{{errors}}</p>
+
 			<form [formGroup]="form" (ngSubmit)="doSignIn()">
 				<ion-item>
 					<ion-label floating>Email</ion-label>
