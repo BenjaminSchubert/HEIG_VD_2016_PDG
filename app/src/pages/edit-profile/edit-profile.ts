@@ -4,6 +4,8 @@ import { Validators, FormBuilder } from '@angular/forms';
 
 import { RadyModule } from '../../lib/validators';
 
+import { ContactList } from '../contact-list/contact-list';'
+
 @Component({
   templateUrl: 'edit-profile.html'
 })
@@ -23,6 +25,10 @@ export class EditProfile {
       password: ['', Validators.required],
       passwordConfirmation: ['', Validators.required]
   	}, { validator: RadyModule.Validators.areEqual(['password', 'passwordConfirmation']) });
+  }
+
+  goToContactList(){
+    this.navCtrl.setRoot(ContactList);
   }
 
   save(){

@@ -34,7 +34,7 @@ export class SignIn {
 
   doSignIn() {
     // TODO : ADD USER IN "SESSION"
-    this.navCtrl.setRoot(MainTabs)
+    this.navCtrl.setRoot(MainTabs);
   }
 
   // Go to the Register page
