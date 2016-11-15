@@ -32,7 +32,7 @@ export class Register {
   	}, { validator: Validators.compose([
       RadyModule.Validators.email('email', 'is not valid'),
       RadyModule.Validators.phone('phone', 'country', 'is not valid'),
-      RadyModule.Validators.areEqual(['password', 'passwordConfirmation'], 'passwords are not equal'), 
+      RadyModule.Validators.areEqual(['password', 'passwordConfirmation'], 'is not equal with password'), 
       RadyModule.Validators.required(['username', 'email', 'password', 'passwordConfirmation'], 'is required')]) 
     });
   }
