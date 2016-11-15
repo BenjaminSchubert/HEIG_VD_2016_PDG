@@ -4,7 +4,7 @@ import { Validators, FormBuilder } from '@angular/forms';
 
 import { RadyModule } from '../../lib/validators';
 
-import { ContactList } from '../contact-list/contact-list';'
+import { ContactList } from '../contact-list/contact-list';
 
 @Component({
   templateUrl: 'edit-profile.html'
