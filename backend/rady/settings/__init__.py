@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "rest_framework_docs",
     "auth.apps.AuthConfig",  # Because "auth" module already exists
     "user",
+    "fcm_django"
 ]
 
 MIDDLEWARE = [
@@ -114,3 +115,8 @@ TEST_RUNNER = "rady.tests.RadyTestRunner"
 
 
 THUMBNAILS_SIZE = (150, 150)
+
+
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": os.environ["FCM_SERVER_TOKEN"],
+}
