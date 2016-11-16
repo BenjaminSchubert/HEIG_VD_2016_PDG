@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, App } from 'ionic-angular';
 
 import { RadyModels } from '../../models/user'
+
+import { AddContact } from '../add-contact/add-contact';
 
 @Component({
   templateUrl: 'contact-list.html'
@@ -9,11 +11,12 @@ import { RadyModels } from '../../models/user'
 export class ContactList {
 
 
-  private items: RadyModels.User[];
+  items: RadyModels.User[];
   checked : boolean = true;
 
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController,
+              public app: App) {
     this.initializeItems();
   }
 
@@ -46,9 +49,8 @@ export class ContactList {
   }
 
   goToAddContact() {
-    for(let item of this.items){
-      console.log((<any>item).checked);
-    }
+    // getRootNav() needed to get out of the Tabs
+    this.app.getRootNav().push(AddContact);
   }
 
   goToWaitingForParticipant() {
