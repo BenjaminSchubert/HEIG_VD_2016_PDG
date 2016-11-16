@@ -89,6 +89,8 @@ def test_backend():
     Run tests on the backend
     """
     with lcd(LOCAL_BACKEND):
+        start_section("making migrations")
+        local("python3 manage.py makemigrations")
         start_section("testing backend")
         local("python3 manage.py test")
         stop_section()
@@ -119,6 +121,8 @@ def prepare_deploy():
         start_section("local cleanup")
         local("""find . -type f -iname "*.pyc" -delete""")
         local("""find . -type d -empty -delete""")
+        local("rm -rf ./backend/htmlcov")
+        local("rm -f ./backend/.coverage")
         stop_section()
 
 

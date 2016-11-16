@@ -24,3 +24,10 @@
 
 # databases
 *.db
+
+# migrations
+migrations/
+
+# python coverage
+.coverage
+htmlcov/
