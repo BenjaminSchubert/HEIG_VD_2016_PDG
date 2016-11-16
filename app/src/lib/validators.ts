@@ -23,7 +23,7 @@ export module RadyModule {
 			return (group: FormGroup): ValidatorResult => {
 				let errors = {};
 				for(let control of controls) {
-					if(group.get(control).value.length == 0)
+					if(group.get(control).value.length === 0)
 						errors[control] = msg;
 				}
 				return Object.keys(errors).length === 0 ? null : errors;
@@ -83,12 +83,13 @@ export module RadyModule {
 		 */
 		public static areEqual(controls: string[], msg: string) {
 			return (group: FormGroup): ValidatorResult => {
+				let errors = {};
 				let value = group.get(controls[0]).value;
 				for(let i = 1; i < controls.length; ++i) {
 					if(value !== group.get(controls[i]).value)
-						return {'mismatch': msg};
+						errors[controls[i]] = msg;
 				}
-				return null;
+				return Object.keys(errors).length === 0 ? null : errors;
 			}
 		}
 	}
