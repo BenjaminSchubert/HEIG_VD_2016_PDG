@@ -1,6 +1,5 @@
 """Declares and configures the `user` application."""
 
-
 from django.apps import AppConfig
 
 
@@ -10,4 +9,5 @@ class UsersConfig(AppConfig):
     name = 'user'
 
     def ready(self):
-        import user.signals
+        """Initialization tasks."""
+        import user.signals  # noqa
