@@ -26,4 +26,8 @@ export class Settings {
     this.app.getRootNav().push(EditProfile);
   }
 
+  doLogOut(){
+    //TODO : LOG OUT 
+  }
+
 }
