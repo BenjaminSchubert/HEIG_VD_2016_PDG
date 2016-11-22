@@ -1,5 +1,3 @@
-export module RadyModels {
-
   /**
    * Contact
    * Custom models for Contacts
@@ -15,5 +13,3 @@ export module RadyModels {
     constructor(username : string) { this.username  = username ; }
 
   }
-
-}

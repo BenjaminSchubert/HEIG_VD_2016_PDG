@@ -18,7 +18,7 @@ export class AddContact {
   constructor(public navCtrl: NavController) {}
 
   ionViewDidLoad() {
-    
+
   }
 
   goToAddContactFromList() {
