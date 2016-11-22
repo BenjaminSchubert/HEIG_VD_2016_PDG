@@ -8,7 +8,12 @@ import { RadyLocation } from './location';
    */
   export class RadyHistory{
     users : RadyUser[];
-    coord : RadyLocation;
-    constructor(users : RadyUser[]) { this.users  = users ; }
+    location : RadyLocation;
+    date : string;
+    constructor(users : RadyUser[], location : RadyLocation, date : string) {
+      this.users  = users ;
+      this.location = location
+      this.date = date;
+    }
 
   }
