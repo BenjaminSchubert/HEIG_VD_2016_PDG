@@ -107,7 +107,7 @@ JWT_AUTH = {
     "JWT_ALLOW_REFRESH": True,
     "JWT_EXPIRATION_DELTA": datetime.timedelta(days=30),
     "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=90),
-    "JWT_AUTH_HEADER_PREFIX": "TOKEN",
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
 }
 
 TEST_RUNNER = "rady.tests.RadyTestRunner"
