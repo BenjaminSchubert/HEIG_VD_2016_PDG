@@ -3,7 +3,7 @@
  * Custom models for Contacts
  * Thibaut Loiseau - 09.11.2016
  */
-export class Location{
+export class RadyLocation{
 
   posx : number;
   posy : number;

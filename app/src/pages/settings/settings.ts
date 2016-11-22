@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, App } from 'ionic-angular';
 
-import { User } from '../../models/user';
+import { RadyUser } from '../../models/user';
 
 import { EditProfile } from '../edit-profile/edit-profile';
 
@@ -10,12 +10,12 @@ import { EditProfile } from '../edit-profile/edit-profile';
 })
 export class Settings {
 
-  user: User;
+  user: RadyUser;
 
   constructor(public navCtrl: NavController,
               public app: App) {
     //TODO : LOAD USER
-    this.user = new User('Sauron');
+    this.user = new RadyUser('Sauron');
   }
 
   ionViewDidLoad() {

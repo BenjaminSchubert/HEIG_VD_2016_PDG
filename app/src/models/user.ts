@@ -3,7 +3,7 @@
  * Custom models for Contacts
  * Thibaut Loiseau - 09.11.2016
  */
-export class User {
+export class RadyUser {
   username: string;
   email: string;
   phone_number: string;
