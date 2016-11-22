@@ -1,4 +1,5 @@
 import { User } from './user';
+import { Location } from './location';
 
   /**
    * Contact
@@ -7,6 +8,7 @@ import { User } from './user';
    */
   export class History{
     users : User[];
+    coord : Location;
     constructor(users : User[]) { this.users  = users ; }
 
   }

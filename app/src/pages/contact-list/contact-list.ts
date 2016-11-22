@@ -14,7 +14,7 @@ export class ContactList {
   items: User[];
 
   constructor(public navCtrl: NavController,
-              public app: App) {
+    public app: App) {
     this.initializeItems();
   }
 
@@ -55,8 +55,8 @@ export class ContactList {
 
   }
 
-  isSomeChecked(){
-    return this.items.some((o:any)=> o.checked === true);
+  isSomeChecked() {
+    return this.items.some((o: any) => o.checked === true);
   }
 
 }
