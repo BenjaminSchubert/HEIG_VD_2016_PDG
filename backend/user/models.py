@@ -109,6 +109,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         return hashlib.pbkdf2_hmac("sha512", number.encode(), settings.SECRET_KEY.encode(), 10000)
 
+    def get_device(self):
+        """
+        Get the user unique device or None.
+
+        :return: reference to the user device
+        """
+        return self.fcmdevice_set.first()
+
 
 class Friendship(models.Model):
     """Extends `Model` to keep information about friends."""
