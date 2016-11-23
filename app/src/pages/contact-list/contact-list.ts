@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, App } from 'ionic-angular';
 
-import { RadyModels } from '../../models/user'
+import { RadyUser } from '../../models/user';
 
 import { AddContact } from '../add-contact/add-contact';
 
@@ -11,20 +11,18 @@ import { AddContact } from '../add-contact/add-contact';
 export class ContactList {
 
 
-  items: RadyModels.User[];
-  checked : boolean = true;
-
+  items: RadyUser[];
 
   constructor(public navCtrl: NavController,
-              public app: App) {
+    public app: App) {
     this.initializeItems();
   }
 
   initializeItems() {
     this.items = [
-      new RadyModels.User('Sauron'),
-      new RadyModels.User('Frodon'),
-      new RadyModels.User('Gandalf')
+      new RadyUser('Sauron'),
+      new RadyUser('Frodon'),
+      new RadyUser('Gandalf')
     ]
   }
 
@@ -57,8 +55,8 @@ export class ContactList {
 
   }
 
-  isSomeChecked(){
-    return this.items.some((o:any)=> o.checked === true);
+  isSomeChecked() {
+    return this.items.some((o: any) => o.checked === true);
   }
 
 }

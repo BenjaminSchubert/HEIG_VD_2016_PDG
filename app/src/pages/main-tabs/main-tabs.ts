@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { Settings } from '../settings/settings'
-import { ContactList } from '../contact-list/contact-list'
-import { History } from '../history/history'
-import { EditProfile } from '../edit-profile/edit-profile'
+import { Settings } from '../settings/settings';
+import { ContactList } from '../contact-list/contact-list';
+import { History } from '../history/history';
+import { EditProfile } from '../edit-profile/edit-profile';
 
 @Component({
   templateUrl: 'main-tabs.html'

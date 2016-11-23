@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, Tabs } from 'ionic-angular';
+import { NavController} from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 
+import { MainTabs } from '../main-tabs/main-tabs';
 
 import { RadyModule } from '../../lib/validators';
-
-import { ContactList } from '../contact-list/contact-list';
 
 @Component({
   templateUrl: 'edit-profile.html'
@@ -35,9 +34,7 @@ export class EditProfile {
   }
 
   goToContactList(){
-    var t: Tabs = this.navCtrl.parent;
-    // Select the 2nd tab
-    t.select(1);
+    this.navCtrl.setRoot(MainTabs);
   }
 
   save(){

@@ -1,12 +1,26 @@
 <ion-header class="hidden">
-
   <ion-navbar>
     <ion-title>history</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content padding>
+
+  <ion-list>
+    <ion-card *ngFor="let item of historyList">
+      <ion-card-content >
+        <button ion-item (click)="goToGathering(item)" >
+          <ion-label>
+            <span *ngFor="let user of item.users"> {{user.username }} </span> <br><br>
+            <p> Date : {{item.date}} </p>
+            <p> At location : {{item.location.posx}},  {{item.location.posy}} </p>
+          </ion-label>
+        </button>
+      </ion-card-content>
+
+    </ion-card>
+  </ion-list>
+
 
 </ion-content>
