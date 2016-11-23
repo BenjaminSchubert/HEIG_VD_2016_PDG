@@ -153,7 +153,7 @@ class PublicUserSerializer(ModelSerializer):
     class Meta:
         """This Meta class defines the fields and models for the `PublicUserSerializer`."""
 
-        fields = ("username", "email", "avatar", "password")
+        fields = ("id", "username", "email", "avatar", "password")
         model = User
 
     def create(self, validated_data):
@@ -177,7 +177,7 @@ class UserProfileSerializer(ModelSerializer):
 
     password = CharField(max_length=255, write_only=True, required=False)
     avatar = ImageField(read_only=True)
-    phone_number = CharField(required=False, validators=[validate_phone_number])
+    phone_number = CharField(required=False, validators=[validate_phone_number], write_only=True)
 
     class Meta:
         """This Meta class defines the fields and models for the `UserProfileSerializer`."""
