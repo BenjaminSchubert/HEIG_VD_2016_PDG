@@ -5,6 +5,8 @@ import { SecureStorage } from 'ionic-native';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
+import { CONFIG } from './config';
+
 /**
  * AuthService
  * Authentification service using JWT
@@ -21,7 +23,7 @@ export class AuthService {
   // constants
   private TOKEN_NAME: string = 'id_token';
   private STORE_NAME: string = 'auth-service-store';
-  private BASE_URL: string = 'https://rady.benschubert.me/api/v1/';
+  private BASE_URL: string = CONFIG.API_URL;
   private LOGIN_URL: string = this.BASE_URL + 'auth/login/';
   private REFRESH_URL: string = this.BASE_URL + 'auth/refresh/';
   private REGISTER_URL: string = this.BASE_URL + 'users/';
@@ -177,6 +179,18 @@ export class AuthService {
    */
   http() {
     return this.authHttp;
+  }
+
+  /**
+   * Create a RequestOptions from headers
+   * @param headers array of object (name, value)
+   * @return
+   */
+  createOptions(headers) {
+    let h = new Headers();
+    for(let header of headers)
+      h.append(header.name, header.value);
+    return new RequestOptions({ 'headers': h });
   }
 
   /**
