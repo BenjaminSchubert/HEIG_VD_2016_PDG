@@ -83,7 +83,10 @@ class UsersListView(ListCreateAPIView):
             if param not in self.available_parameters:
                 raise SuspiciousOperation({"reason": "Unrecognized query parameter: {}".format(param)})
 
-        queryset = User.objects.filter(is_active=True).exclude(id=self.request.user.id)
+        queryset = User.objects\
+            .filter(is_active=True)\
+            .exclude(id=self.request.user.id)\
+            .exclude(id__in=[f.id for f in self.request.user.friends.all()])
 
         email = self.request.query_params.get("email")
         username = self.request.query_params.get("username")
