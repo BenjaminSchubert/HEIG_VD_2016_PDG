@@ -19,8 +19,10 @@ import { AddContactFromList } from '../pages/add-contact-from-list/add-contact-f
 import { AddContactFromScanner } from '../pages/add-contact-from-scanner/add-contact-from-scanner';
 import { MyQrCode } from '../pages/my-qr-code/my-qr-code';
 
+import { AuthService } from '../providers/auth-service';
+
 // put here the components
-var components: any = [
+let COMPONENTS_LIST: any = [
   RadyApp,
   Splashscreen,
   SignIn,
@@ -37,13 +39,18 @@ var components: any = [
   MyQrCode
 ]
 
+// put here the providers
+let PROVIDERS_LIST: any = [
+  AuthService
+]
+
 @NgModule({
-  declarations: components,
+  declarations: COMPONENTS_LIST,
   imports: [
     IonicModule.forRoot(RadyApp,{tabsPlacement: 'top'})
   ],
   bootstrap: [IonicApp],
-  entryComponents: components,
-  providers: []
+  entryComponents: COMPONENTS_LIST,
+  providers: PROVIDERS_LIST
 })
 export class AppModule {}
