@@ -4,7 +4,6 @@ Declares various permission types not in the base framework.
 This allows us to have a more fine-grained control over the permissions of our views.
 """
 
-
 from rest_framework.compat import is_authenticated
 from rest_framework.permissions import BasePermission
 
@@ -15,6 +14,7 @@ class IsAuthenticatedXorPost(BasePermission):
 
     This will allow every other method to authenticated users.
     """
+
     def has_permission(self, request, view):
         """
         Get whether the user has the permission required to call this view, with this method.
