@@ -4,14 +4,14 @@ import uuid
 from fcm_django.models import FCMDevice
 from rest_framework import status
 
-from user.tests import APIEndpointTestCase, authenticated
+from user.tests import APIEndpointTestCase, authenticated, API_V1
 
 __author__ = "Damien Rochat <rochat.damien@gmail.com>"
 
 
 class UserDeviceEndpointTestCase(APIEndpointTestCase):
     format = "json"
-    url = "/fcm/devices/"
+    url = API_V1 + "fcm/devices/"
 
     @staticmethod
     def generate_device_info():
