@@ -23,3 +23,7 @@ DATABASES = {
 EMAIL_HOST = 'localhost'
 
 EMAIL_PORT = 2525
+
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": os.environ["FCM_SERVER_TOKEN"],
+}
