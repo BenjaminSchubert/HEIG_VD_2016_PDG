@@ -115,8 +115,3 @@ TEST_RUNNER = "rady.tests.RadyTestRunner"
 
 
 THUMBNAILS_SIZE = (150, 150)
-
-
-FCM_DJANGO_SETTINGS = {
-    "FCM_SERVER_KEY": os.environ["FCM_SERVER_TOKEN"],
-}
