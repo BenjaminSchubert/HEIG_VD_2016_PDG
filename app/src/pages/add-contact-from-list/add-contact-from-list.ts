@@ -14,7 +14,6 @@ export class AddContactFromList {
   constructor(public navCtrl: NavController) {}
 
   ionViewDidLoad() {
-    console.log('Hello AddContactFromList Page');
   }
 
 }

@@ -14,7 +14,6 @@ export class AddContactFromScanner {
   constructor(public navCtrl: NavController) {}
 
   ionViewDidLoad() {
-    console.log('Hello AddContactFromScanner Page');
   }
 
 }

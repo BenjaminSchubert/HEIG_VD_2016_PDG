@@ -14,7 +14,6 @@ export class MyQrCode {
   constructor(public navCtrl: NavController) {}
 
   ionViewDidLoad() {
-    console.log('Hello MyQrCode Page');
   }
 
 }

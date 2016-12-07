@@ -20,6 +20,7 @@ import { AddContactFromScanner } from '../pages/add-contact-from-scanner/add-con
 import { MyQrCode } from '../pages/my-qr-code/my-qr-code';
 
 import { AuthService } from '../providers/auth-service';
+import { PushService } from '../providers/push-service';
 
 // put here the components
 let COMPONENTS_LIST: any = [
@@ -41,7 +42,8 @@ let COMPONENTS_LIST: any = [
 
 // put here the providers
 let PROVIDERS_LIST: any = [
-  AuthService
+  AuthService,
+  PushService
 ]
 
 @NgModule({

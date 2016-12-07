@@ -23,7 +23,6 @@ export class Settings {
   }
 
   ionViewDidLoad() {
-    console.log('Hello Settings Page');
   }
 
   goToEditProfile(){

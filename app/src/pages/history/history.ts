@@ -53,7 +53,6 @@ export class History {
 
 
   ionViewDidLoad() {
-    console.log('Hello History Page');
   }
 
   goToGathering(history : RadyHistory){

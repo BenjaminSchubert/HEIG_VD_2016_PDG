@@ -43,7 +43,6 @@ export class ContactList {
 
 
   ionViewDidLoad() {
-    console.log('Hello ContactList Page');
   }
 
   goToAddContact() {
