@@ -54,14 +54,10 @@ export class PushService {
     // on notification, dispatch the message
     this.push.on('notification', (data) => {
 
-      // TEST
-      console.log('[PushService] notification: \n' + JSON.stringify(data));
     });
 
     // on error
     this.push.on('error', (data) => {
-
-      // TEST
       console.log('[PushService] error: \n' + JSON.stringify(data));
     });
   }
@@ -83,7 +79,7 @@ export class PushService {
         this.authService.http().post(
           CONFIG.API_URL + 'fcm/devices/',
           JSON.stringify({
-            type: Device.device.platform,
+            type: Device.device.platform.toLowerCase(),
             registration_id: this.token,
             device_id: Device.device.uuid
           }),

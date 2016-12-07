@@ -26,7 +26,13 @@ export class Splashscreen {
       // redefine the console.log behavior for device testing
       // /!\ comments those lines for production /!\
       console.log = (function(text) {
-        Toast.show(Date.now().toLocaleString() + ':\n' + text, '5000', 'top').subscribe();
+        Toast.hide().then(() => {
+          Toast.show(
+            Date.now().toLocaleString() + ':\n' + text, 
+            '10000', 
+            'top'
+          ).subscribe();
+        });
       });
 
       platform.ready().then(() => {
