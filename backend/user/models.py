@@ -12,7 +12,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.db import transaction
-
+from popo_attribute_tracker.attribute_tracker import AttributeTrackerMixin
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
@@ -118,7 +118,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.fcmdevice_set.first()
 
 
-class Friendship(models.Model):
+class Friendship(models.Model, AttributeTrackerMixin):
     """Extends `Model` to keep information about friends."""
 
     from_account = models.ForeignKey(User, related_name="from_account")
@@ -128,6 +128,8 @@ class Friendship(models.Model):
     is_hidden = models.BooleanField(default=False)
     from_blocking = models.BooleanField(default=False)
     to_blocking = models.BooleanField(default=False)
+
+    TRACKED_ATTRS = ("is_accepted")
 
     @transaction.atomic
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):

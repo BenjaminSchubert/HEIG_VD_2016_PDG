@@ -138,12 +138,25 @@ class FriendsMainEndpointTestCase(FriendsTestCase):
         self.assertEqual(len(self.get().json()), 2)
 
     @authenticated
-    @patch('user.signals.create_friendship')
+    @patch('user.signals.post_save_friendship')
     def test_new_friendship_emit_post_save_signal(self, mocked_handler):
 
         # Bind mocked handler to the event and emit signal
         post_save.connect(mocked_handler, sender=Friendship)
         Friendship(from_account=self.user, to_account=User.objects.last()).save()
+
+        self.assertEquals(mocked_handler.call_count, 1)
+
+    @authenticated
+    @patch('user.signals.post_save_friendship')
+    def test_update_friendship_emit_post_save_signal(self, mocked_handler):
+        friendship = Friendship(from_account=self.user, to_account=User.objects.last())
+        friendship.save()
+
+        # Bind mocked handler to the event and emit signal
+        post_save.connect(mocked_handler, sender=Friendship)
+        friendship.is_accepted = True
+        friendship.save()
 
         self.assertEquals(mocked_handler.call_count, 1)
 
@@ -158,6 +171,26 @@ class FriendsMainEndpointTestCase(FriendsTestCase):
 
         mocked_handler.assert_called_once_with(registration_id=user.get_device().registration_id,
                                                data={"type": "friend-request"},
+                                               title=ANY,
+                                               body=ANY,
+                                               badge=ANY,
+                                               icon=ANY,
+                                               sound=ANY,
+                                               )
+
+    @authenticated
+    def test_accept_friendship_send_push_notification(self):
+        from .test_device import UserDeviceEndpointTestCase
+        UserDeviceEndpointTestCase.generate_device(self.user)
+        friendship = Friendship(from_account=self.user, to_account=User.objects.last())
+        friendship.save()
+
+        with patch('fcm_django.fcm.fcm_send_message') as mocked_handler:
+            friendship.is_accepted = True
+            friendship.save()
+
+        mocked_handler.assert_called_once_with(registration_id=self.user.get_device().registration_id,
+                                               data={"type": "friend-request-accepted"},
                                                title=ANY,
                                                body=ANY,
                                                badge=ANY,
