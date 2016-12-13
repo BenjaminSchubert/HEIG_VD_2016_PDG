@@ -41,10 +41,9 @@ class UserAvatarEndpointTestCase(APIEndpointTestCase):
     @authenticated
     def test_can_retrieve_avatar_image(self):
         self.client.put(self.url, {"avatar": get_image_file()}, format="multipart")
-        response = self.client.get("{}users/?email={}".format(API_V1, self.user.email), format="json").json()
-        self.assertEqual(len(response), 1)
-        self.assertIsNotNone(response[0].get("avatar"))
-        self.assertEqual(self.client.get(response[0].get("avatar")).status_code, status.HTTP_200_OK)
+        response = self.client.get("{}users/me/".format(API_V1), format="json").json()
+        self.assertIsNotNone(response.get("avatar"))
+        self.assertEqual(self.client.get(response.get("avatar")).status_code, status.HTTP_200_OK)
 
     @authenticated
     def test_avatar_created_is_renamed(self):

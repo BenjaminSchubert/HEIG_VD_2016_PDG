@@ -217,7 +217,7 @@ class FriendsDetailsEndpointTestCase(FriendsTestCase):
             response.json(),
             dict(
                 is_accepted=False, is_blocked=False, is_hidden=False,
-                friend=dict(avatar=None, username=User.objects.all()[2].username)
+                friend=dict(avatar=None, username=User.objects.all()[2].username, id=User.objects.all()[2].id)
             )
         )
 
