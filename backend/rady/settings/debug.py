@@ -1,6 +1,8 @@
 """Defines the debug configuration for Rady."""
 
 
+import os
+
 from rady.settings import *  # noqa
 
 

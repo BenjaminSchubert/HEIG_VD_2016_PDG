@@ -77,8 +77,8 @@ class UsersEndpointTestCase(APIEndpointTestCase):
         self.assertEqual(self.get(query_params=dict(query="test")).status_code, status.HTTP_400_BAD_REQUEST)
 
     @authenticated
-    def test_can_get_all_users(self):  # FIXME : is this really wanted ? Should it be possible ?
-        self.create_objects(9)  # we need one less as we have the default user
+    def test_can_get_all_users(self):
+        self.create_objects(10)
         self.assertEqual(len(self.get().json()), 10)
 
     @authenticated

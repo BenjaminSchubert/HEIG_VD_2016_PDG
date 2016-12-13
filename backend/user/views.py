@@ -83,17 +83,20 @@ class UsersListView(ListCreateAPIView):
             if param not in self.available_parameters:
                 raise SuspiciousOperation({"reason": "Unrecognized query parameter: {}".format(param)})
 
-        queryset = User.objects.filter(is_active=True)
+        queryset = User.objects\
+            .filter(is_active=True)\
+            .exclude(id=self.request.user.id)\
+            .exclude(id__in=[f.id for f in self.request.user.friends.all()])
 
         email = self.request.query_params.get("email")
         username = self.request.query_params.get("username")
         phone_numbers = self.request.query_params.getlist("phone")
 
         if email is not None:
-            queryset = queryset.filter(email__contains=email)
+            queryset = queryset.filter(email__icontains=email)
 
         if username is not None:
-            queryset = queryset.filter(username__contains=username)
+            queryset = queryset.filter(username__icontains=username)
 
         if len(phone_numbers) > 0:
             queryset = queryset.filter(phone_number__in=[User.hash_phone_number(phone) for phone in phone_numbers])
