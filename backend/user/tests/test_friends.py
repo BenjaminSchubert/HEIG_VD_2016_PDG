@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from rest_framework import status
 
 from user.models import User, Friendship
-from user.tests import APIEndpointTestCase, API_V1, authenticated
+from test_utils import APIEndpointTestCase, API_V1, authenticated
 
 
 class FriendsTestCase(APIEndpointTestCase, metaclass=ABCMeta):

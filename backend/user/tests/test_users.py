@@ -1,7 +1,7 @@
 from rest_framework import status
 
 from user.models import User
-from user.tests import authenticated, APIEndpointTestCase, API_V1
+from test_utils import authenticated, APIEndpointTestCase, API_V1
 
 HTTP_METHODS = ["DELETE", "GET", "PATCH", "POST", "PUT"]
 

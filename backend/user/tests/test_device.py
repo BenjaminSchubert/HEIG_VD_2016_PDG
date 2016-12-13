@@ -4,7 +4,8 @@ import uuid
 from fcm_django.models import FCMDevice
 from rest_framework import status
 
-from user.tests import APIEndpointTestCase, authenticated, API_V1
+from test_utils import APIEndpointTestCase, authenticated, API_V1
+
 
 __author__ = "Damien Rochat <rochat.damien@gmail.com>"
 

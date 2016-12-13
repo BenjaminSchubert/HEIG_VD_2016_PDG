@@ -4,7 +4,8 @@ from django.conf import settings
 from rest_framework import status
 
 from user.models import User
-from user.tests import authenticated, API_V1, get_image_file, APIEndpointTestCase
+from test_utils import authenticated, API_V1, APIEndpointTestCase
+from user.tests import get_image_file
 
 
 class UserAvatarEndpointTestCase(APIEndpointTestCase):
