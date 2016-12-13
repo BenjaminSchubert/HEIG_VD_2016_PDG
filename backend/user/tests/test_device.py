@@ -11,7 +11,6 @@ __author__ = "Damien Rochat <rochat.damien@gmail.com>"
 
 
 class UserDeviceEndpointTestCase(APIEndpointTestCase):
-    format = "json"
     url = API_V1 + "fcm/devices/"
 
     @staticmethod

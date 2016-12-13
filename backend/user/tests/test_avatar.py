@@ -9,7 +9,6 @@ from user.tests import get_image_file
 
 
 class UserAvatarEndpointTestCase(APIEndpointTestCase):
-    format = "json"
     url = API_V1 + "users/me/avatar/"
 
     def test_must_be_authenticated(self):

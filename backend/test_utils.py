@@ -1,9 +1,8 @@
 from abc import abstractmethod
+from django.contrib.auth import get_user_model
 from functools import wraps
 from rest_framework import status
 from rest_framework.test import APITestCase
-
-from user.models import User
 
 
 API_V1 = "/v1/"
@@ -32,13 +31,11 @@ def authenticated(f):
 
 
 class APIEndpointTestCase(APITestCase):
+    format = "json"
     user = None
     password = "goat"
 
-    @property
-    @abstractmethod
-    def format(self):
-        """This is the format in which to send the data."""
+    number_of_other_users = 0
 
     @property
     @abstractmethod
@@ -47,7 +44,17 @@ class APIEndpointTestCase(APITestCase):
 
     def setUp(self):
         """This is a base user for tests requiring authentication."""
-        self.user = User.objects.create_user(username="tdd", email="goat@tdd.com", password=self.password)
+        super().setUp()
+
+        self.user = get_user_model().objects.create_user(username="tdd", email="goat@tdd.com", password=self.password)
+
+        for i in range(self.number_of_other_users):
+            get_user_model().objects.create_user(
+                email="email-{}@test.com".format(i),
+                password=None,
+                phone_number="+41{:09d}".format(i),
+                username="user-{}".format(chr(97 + i)),
+            )
 
     def assert400WithError(self, response, error):
         self.assertContains(response, error, status_code=status.HTTP_400_BAD_REQUEST)

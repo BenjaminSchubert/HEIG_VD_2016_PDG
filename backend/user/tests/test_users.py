@@ -7,7 +7,6 @@ HTTP_METHODS = ["DELETE", "GET", "PATCH", "POST", "PUT"]
 
 
 class UsersEndpointTestCase(APIEndpointTestCase):
-    format = "json"
     url = API_V1 + "users/"
     correct_user = dict(username="goatsy", email="goatsy@goat.com", password="goat")
 
