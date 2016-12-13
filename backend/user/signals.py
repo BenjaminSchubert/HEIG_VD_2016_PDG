@@ -19,8 +19,13 @@ def pre_save_device(instance, **kwargs):
     FCMDevice.objects.filter(user_id=instance.user_id).delete()
 
 
-@receiver(post_save, sender=Friendship)
-def reset_tracker(instance, **kwargs):
+@receiver(post_init, sender=Friendship)
+def post_init_friendship(instance, **kwargs):
+    """
+    Fired when instantiate a friendship object model, signal sent at the end of the model init method.
+
+    It initialize the attribute tracker for the Friendship model.
+    """
     instance.initialize_tracker()
 
 

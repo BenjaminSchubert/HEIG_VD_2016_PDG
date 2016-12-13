@@ -44,6 +44,13 @@ class FriendField(Field):
     """
 
     def __init__(self, instance_serializer, **kwargs):
+        """
+        Override the default constructor of field to force the `source` to be the whole object.
+
+        This also sets the serializer used internally
+
+        :param kwargs: arguments to pass to the parent constructor
+        """
         self.serializer = instance_serializer
         kwargs['source'] = '*'
         super().__init__(**kwargs)
@@ -83,6 +90,11 @@ class BlockedField(Field):
     """
 
     def __init__(self, **kwargs):
+        """
+        Override the default constructor of field to force the `source` to be the whole object.
+
+        :param kwargs: arguments to pass to the parent constructor
+        """
         kwargs['source'] = '*'
         super().__init__(**kwargs)
 
@@ -117,6 +129,11 @@ class HiddenField(Field):
     """
 
     def __init__(self, **kwargs):
+        """
+        Override the default constructor of field to force the `source` to be the whole object.
+
+        :param kwargs: arguments to pass to the parent constructor
+        """
         kwargs["source"] = "*"
         super().__init__(**kwargs)
 
