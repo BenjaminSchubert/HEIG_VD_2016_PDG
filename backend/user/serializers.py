@@ -167,7 +167,7 @@ class PublicUserSerializer(ModelSerializer):
             return User.objects.create_user(**validated_data)
         except IntegrityError as e:
             error = e.args[0].split(".")[-1]
-            if "UNIQUE" in e.args[0]:
+            if "unique" in e.args[0].lower():
                 raise ValidationError({error: ["user with this {} already exists".format(error)]})
             raise e
 
@@ -265,7 +265,7 @@ class FriendSerializer(ModelSerializer):
         try:
             return super().create(dict(from_account=self.context["request"].user, to_account=validated_data["friend"]))
         except IntegrityError as e:
-            if "UNIQUE" in e.args[0]:
+            if "unique" in e.args[0].lower():
                 raise ValidationError({"error": [self.error_message.format(validated_data["friend"].username)]})
             raise e
 
