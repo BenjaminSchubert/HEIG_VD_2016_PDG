@@ -80,7 +80,7 @@ class MeetingSerializer(ModelSerializer):
     class Meta:
         """Defines the metaclass for the `MeetingSerializer`."""
 
-        fields = "__all__"
+        exclude = ("end_time", "start_time")
         model = Meeting
         depth = 1
 
