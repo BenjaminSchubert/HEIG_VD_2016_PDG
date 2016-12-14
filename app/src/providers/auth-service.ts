@@ -142,7 +142,7 @@ export class AuthService {
   authentificated() {
     return this.token().then((token) => {
         if(new JwtHelper().isTokenExpired(token))
-          throw ""; // to do to the catch
+          throw ""; // to go to the catch
       });
   }
 
