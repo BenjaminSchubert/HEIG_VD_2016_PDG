@@ -1,8 +1,15 @@
+"""Contains all models from the `meeting` module."""
+
 from django.db import models
 from django.conf import settings
 
 
+__author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
+
+
 class Place(models.Model):
+    """Extends `Model` to define places to which meetings can be done."""
+
     # 6 decimals allows for approximately a 10 cm precision, which is below non-military GPS precision
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
@@ -10,6 +17,8 @@ class Place(models.Model):
 
 
 class Meeting(models.Model):
+    """Extends `Model` to define meetings."""
+
     start_time = models.DateTimeField(auto_now_add=True)
     meeting_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
@@ -25,6 +34,12 @@ class Meeting(models.Model):
 
 
 class Participant(models.Model):
+    """
+    Extends `Model` to define participants to meetings.
+
+    The participants can accept or refuse a meeting and must signal once they are arrived.
+    """
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     meeting = models.ForeignKey(Meeting)
 
@@ -33,4 +48,6 @@ class Participant(models.Model):
     place = models.ForeignKey(Place, null=True, max_length=255)
 
     class Meta:
+        """Metaclass for the `Participant` model."""
+
         unique_together = ("user", "meeting")
