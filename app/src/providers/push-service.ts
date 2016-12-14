@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Push, Device } from 'ionic-native';
 
 import { AuthService } from './auth-service';
+import { NotificationService } from './notification-service';
 import { CONFIG } from './config';
 
 /**
@@ -21,7 +22,8 @@ export class PushService {
   // registered to server?
   public registered: boolean = false;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService,
+              private notificationService: NotificationService) {
     // initialize() must be called when the plateform is ready 
   }
 
@@ -53,7 +55,7 @@ export class PushService {
 
     // on notification, dispatch the message
     this.push.on('notification', (data) => {
-
+      this.notificationService.notify(data);
     });
 
     // on error

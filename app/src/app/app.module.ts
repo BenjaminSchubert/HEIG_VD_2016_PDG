@@ -21,6 +21,7 @@ import { MyQrCode } from '../pages/my-qr-code/my-qr-code';
 
 import { AuthService } from '../providers/auth-service';
 import { PushService } from '../providers/push-service';
+import { NotificationService } from '../providers/notification-service';
 
 // put here the components
 let COMPONENTS_LIST: any = [
@@ -43,7 +44,8 @@ let COMPONENTS_LIST: any = [
 // put here the providers
 let PROVIDERS_LIST: any = [
   AuthService,
-  PushService
+  PushService,
+  NotificationService
 ]
 
 @NgModule({
