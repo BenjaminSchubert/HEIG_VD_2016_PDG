@@ -17,6 +17,12 @@ class PlaceSerializer(ModelSerializer):
         fields = "__all__"
         model = Place
 
+
+class MeetingPlaceSerializer(ModelSerializer):
+    class Meta:
+        fields = "__all__"
+        model = Place
+
     def get_attribute(self, instance):
         return Participant.objects.get(user=self.context["request"].user, meeting=instance).place
 
@@ -29,7 +35,7 @@ class ParticipantSerializer(ModelSerializer):
 
 class MeetingSerializer(ModelSerializer):
     organiser = IntegerField(source="organiser.id")
-    place = PlaceSerializer(required=False)
+    place = MeetingPlaceSerializer(required=False)
     participants = ParticipantSerializer(many=True, source="participant_set")
 
     class Meta:

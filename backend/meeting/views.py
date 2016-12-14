@@ -1,16 +1,30 @@
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 
-from meeting.models import Meeting
-from meeting.serializers import MeetingSerializer, WriteMeetingSerializer
+from meeting.models import Meeting, Place
+from meeting.serializers import MeetingSerializer, WriteMeetingSerializer, PlaceSerializer
+
+
+class PlaceListView(ListAPIView):
+    serializer_class = PlaceSerializer
+
+    def get_queryset(self):
+        return Place.objects.filter(participant__user=self.request.user)
+
+
+class PlaceDetailsView(RetrieveUpdateAPIView):
+    serializer_class = PlaceSerializer
+
+    def get_queryset(self):
+        return Place.objects.filter(participant__user=self.request.user)
 
 
 class MeetingListView(ListCreateAPIView):
     serializer_class = WriteMeetingSerializer
 
     def get_queryset(self):
-        return Meeting.objects.all()
+        return Meeting.objects.filter(participant__user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

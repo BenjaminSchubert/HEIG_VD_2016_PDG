@@ -1,9 +1,9 @@
 from unittest import expectedFailure
-from unittest import skip
 
 from django.contrib.auth import get_user_model
 from rest_framework import status
 
+from meeting.models import Meeting, Participant
 from test_utils import APIEndpointTestCase, API_V1, authenticated
 from user.models import Friendship
 
@@ -142,3 +142,24 @@ class TestMeeting(APIEndpointTestCase):
             self.post(dict(type="shortest", participants=[friend.id])).status_code,
             status.HTTP_201_CREATED
         )
+
+    @authenticated
+    def test_cannot_get_others_meetings(self):
+        Meeting(organiser=get_user_model().objects.last()).save()
+        self.assertEqual(len(self.get().json()), 0)
+
+    @authenticated
+    def test_can_get_own_meetings(self):
+        meeting = Meeting(organiser=self.user)
+        meeting.save()
+
+        Participant(meeting=meeting, user=self.user).save()
+        self.assertEqual(len(self.get().json()), 1)
+
+    @authenticated
+    def test_can_get_meeting_in_which_we_participate(self):
+        meeting = Meeting(organiser=get_user_model().objects.last())
+        meeting.save()
+
+        Participant(meeting=meeting, user=self.user).save()
+        self.assertEqual(len(self.get().json()), 1)
