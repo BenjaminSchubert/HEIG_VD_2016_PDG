@@ -1,7 +1,11 @@
+from unittest import expectedFailure
+from unittest import skip
+
 from django.contrib.auth import get_user_model
 from rest_framework import status
 
 from test_utils import APIEndpointTestCase, API_V1, authenticated
+from user.models import Friendship
 
 
 class TestMeeting(APIEndpointTestCase):
@@ -33,14 +37,108 @@ class TestMeeting(APIEndpointTestCase):
 
     @authenticated
     def test_participants_is_required(self):
-        print(self.post(dict()).json())
         self.assert400WithError(self.post(dict()), "participants")
 
     @authenticated
     def test_at_least_one_participant_is_required(self):
-        print(self.post(dict(participants=[], type="place")).json())
         self.assert400WithError(self.post(dict(participants=[], type="place")), "one participant")
 
     @authenticated
     def test_at_least_one_participant_plus_organizer_is_required(self):
         self.assert400WithError(self.post(dict(participants=[self.user.id], type="place")), "one participant")
+
+    @authenticated
+    def test_cannot_add_user_that_is_not_friend(self):
+        self.assert400WithError(
+            self.post(dict(
+                participants=[get_user_model().objects.last().id],
+                type="place",
+                place=dict(latitude=0, longitude=1))
+            ),
+            "friends"
+        )
+
+    @authenticated
+    def test_cannot_add_user_that_did_not_accept_friend_request(self):
+        friend = get_user_model().objects.last()
+        Friendship(from_account=self.user, to_account=friend).save()
+
+        self.assert400WithError(
+            self.post(dict(
+                type="place",
+                place=dict(latitude=0, longitude=1),
+                participants=[friend.id]
+            )),
+            "friends"
+        )
+
+    @authenticated
+    def test_cannot_add_user_from_which_friend_request_was_not_accepted(self):
+        friend = get_user_model().objects.last()
+        Friendship(to_account=self.user, from_account=friend).save()
+
+        self.assert400WithError(
+            self.post(dict(
+                type="place",
+                place=dict(latitude=0, longitude=1),
+                participants=[friend.id]
+            )),
+            "friends"
+        )
+
+    @authenticated
+    def test_cannot_add_user_that_is_inactive(self):
+        friend = get_user_model().objects.last()
+        friend.is_active = False
+        friend.save()
+
+        friendships = [
+            Friendship(to_account=self.user, from_account=friend, is_accepted=True),
+            Friendship(from_account=self.user, to_account=friend, is_accepted=True)
+        ]
+
+        for friendship in friendships:
+            friendship.save()
+
+            self.assert400WithError(
+                self.post(dict(
+                    type="place",
+                    place=dict(latitude=0, longitude=1),
+                    participants=[friend.id]
+                )),
+                "friends"
+            )
+
+            friendship.delete()
+
+    @authenticated
+    def test_can_create_new_meeting_on_place(self):
+        friend = get_user_model().objects.last()
+        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+
+        self.assertEqual(
+            self.post(dict(type="place", place=dict(latitude=0, longitude=1), participants=[friend.id])).status_code,
+            status.HTTP_201_CREATED
+        )
+
+    @expectedFailure
+    @authenticated
+    def test_can_create_new_meeting_on_person(self):
+        friend = get_user_model().objects.last()
+        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+
+        self.assertEqual(
+            self.post(dict(type="on", participants=[friend.id])).status_code,
+            status.HTTP_201_CREATED
+        )
+
+    @expectedFailure
+    @authenticated
+    def test_can_create_new_meeting_on_shortest_path(self):
+        friend = get_user_model().objects.last()
+        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+
+        self.assertEqual(
+            self.post(dict(type="shortest", participants=[friend.id])).status_code,
+            status.HTTP_201_CREATED
+        )
