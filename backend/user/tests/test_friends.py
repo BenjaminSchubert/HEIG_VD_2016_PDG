@@ -1,32 +1,15 @@
 from unittest.mock import patch, ANY
 
-from abc import ABCMeta
 from django.db.models.signals import post_save
 from rest_framework import status
 
 from user.models import User, Friendship
-from user.tests import APIEndpointTestCase, API_V1, authenticated
+from test_utils import APIEndpointTestCase, API_V1, authenticated
 
 
-class FriendsTestCase(APIEndpointTestCase, metaclass=ABCMeta):
-    format = "json"
-    correct_user = dict(username="goatsy", email="goatsy@goat.com", password="goat")
-
-    def setUp(self):
-        super().setUp()
-        for i in range(5):
-            User.objects.create_user(
-                email="email-{}@test.com".format(i),
-                password=None,
-                phone_number="+41{:09d}".format(i),
-                username="user-{}".format(chr(97 + i)),
-            )
-
-
-# noinspection PyAbstractClass
-# FIXME : this noinspection is a bug and shouldn't happen. We should report that
-class FriendsMainEndpointTestCase(FriendsTestCase):
+class FriendsMainEndpointTestCase(APIEndpointTestCase):
     url = API_V1 + "users/friends/"
+    number_of_other_users = 10
 
     def test_cannot_access_friends_unauthenticated(self):
         self.assertEqual(self.get().status_code, status.HTTP_401_UNAUTHORIZED)
@@ -169,14 +152,15 @@ class FriendsMainEndpointTestCase(FriendsTestCase):
 
         Friendship(from_account=self.user, to_account=user).save()
 
-        mocked_handler.assert_called_once_with(registration_id=user.get_device().registration_id,
-                                               data={"type": "friend-request"},
-                                               title=ANY,
-                                               body=ANY,
-                                               badge=ANY,
-                                               icon=ANY,
-                                               sound=ANY,
-                                               )
+        mocked_handler.assert_called_once_with(
+            registration_id=user.get_device().registration_id,
+            data={"type": "friend-request"},
+            title=ANY,
+            body=ANY,
+            badge=ANY,
+            icon=ANY,
+            sound=ANY,
+        )
 
     @authenticated
     def test_accept_friendship_send_push_notification(self):
@@ -189,19 +173,20 @@ class FriendsMainEndpointTestCase(FriendsTestCase):
             friendship.is_accepted = True
             friendship.save()
 
-        mocked_handler.assert_called_once_with(registration_id=self.user.get_device().registration_id,
-                                               data={"type": "friend-request-accepted"},
-                                               title=ANY,
-                                               body=ANY,
-                                               badge=ANY,
-                                               icon=ANY,
-                                               sound=ANY,
-                                               )
+        mocked_handler.assert_called_once_with(
+            registration_id=self.user.get_device().registration_id,
+            data={"type": "friend-request-accepted"},
+            title=ANY,
+            body=ANY,
+            badge=ANY,
+            icon=ANY,
+            sound=ANY,
+        )
 
 
-# noinspection PyAbstractClass
-class FriendsDetailsEndpointTestCase(FriendsTestCase):
+class FriendsDetailsEndpointTestCase(APIEndpointTestCase):
     url = API_V1 + "users/friends/{}/"
+    number_of_other_users = 10
 
     def setUp(self):
         super().setUp()

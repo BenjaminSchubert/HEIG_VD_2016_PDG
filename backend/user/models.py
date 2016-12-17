@@ -1,5 +1,5 @@
 """
-Contains all models from the `users` module.
+Contains all models from the `user` module.
 
 We override here the default django user model and extend it.
 """

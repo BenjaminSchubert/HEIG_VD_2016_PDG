@@ -1,12 +1,10 @@
 from rest_framework import status
 
 from user.models import User
-from user.tests import APIEndpointTestCase, authenticated
-from user.tests import API_V1
+from test_utils import APIEndpointTestCase, authenticated, API_V1
 
 
 class UserProfileEndpointTestCase(APIEndpointTestCase):
-    format = "json"
     url = API_V1 + "users/me/"
 
     def test_must_be_logged_in_to_update_information(self):

@@ -1,13 +1,12 @@
 from rest_framework import status
 
 from user.models import User
-from user.tests import authenticated, APIEndpointTestCase, API_V1
+from test_utils import authenticated, APIEndpointTestCase, API_V1
 
 HTTP_METHODS = ["DELETE", "GET", "PATCH", "POST", "PUT"]
 
 
 class UsersEndpointTestCase(APIEndpointTestCase):
-    format = "json"
     url = API_V1 + "users/"
     correct_user = dict(username="goatsy", email="goatsy@goat.com", password="goat")
 
