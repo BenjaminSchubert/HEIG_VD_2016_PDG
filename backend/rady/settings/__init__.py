@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "auth.apps.AuthConfig",  # Because "auth" module already exists
     "user",
     "meeting",
+    "device",
 ]
 
 MIDDLEWARE = [
