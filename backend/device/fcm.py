@@ -17,7 +17,6 @@ def send_fcm_message(registration_id,
                      sound=None,
                      badge=None, **kwargs):
     """Send a push notification with FCM to a device."""
-
     api_key = settings.FCM_SETTINGS.get("FCM_SERVER_KEY")
     push_service = FCMNotification(api_key=api_key)
 

@@ -14,6 +14,8 @@ from django.db import models
 from django.db import transaction
 from popo_attribute_tracker.attribute_tracker import AttributeTrackerMixin
 
+from device.models import Device
+
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
 
@@ -113,9 +115,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Get the user unique device or None.
 
-        :return: reference to the user device
+        :return: reference to the device
         """
-        return self.fcmdevice_set.first()
+        return Device.objects.filter(user=self).first()
 
 
 class Friendship(models.Model, AttributeTrackerMixin):
@@ -129,7 +131,7 @@ class Friendship(models.Model, AttributeTrackerMixin):
     from_blocking = models.BooleanField(default=False)
     to_blocking = models.BooleanField(default=False)
 
-    TRACKED_ATTRS = ("is_accepted")
+    TRACKED_ATTRS = ("is_accepted",)
 
     @transaction.atomic
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):

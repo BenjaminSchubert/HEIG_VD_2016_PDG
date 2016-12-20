@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_docs",
-    "fcm_django",
     "auth.apps.AuthConfig",  # Because "auth" module already exists
     "user",
     "meeting",

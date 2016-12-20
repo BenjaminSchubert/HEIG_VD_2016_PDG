@@ -3,8 +3,9 @@ from unittest.mock import patch, ANY
 from django.db.models.signals import post_save
 from rest_framework import status
 
-from user.models import User, Friendship
+from device.tests import create_device
 from test_utils import APIEndpointTestCase, API_V1, authenticated
+from user.models import User, Friendship
 
 
 class FriendsMainEndpointTestCase(APIEndpointTestCase):
@@ -121,7 +122,7 @@ class FriendsMainEndpointTestCase(APIEndpointTestCase):
         self.assertEqual(len(self.get().json()), 2)
 
     @authenticated
-    @patch('user.signals.post_save_friendship')
+    @patch("user.signals.post_save_friendship")
     def test_new_friendship_emit_post_save_signal(self, mocked_handler):
 
         # Bind mocked handler to the event and emit signal
@@ -131,7 +132,7 @@ class FriendsMainEndpointTestCase(APIEndpointTestCase):
         self.assertEquals(mocked_handler.call_count, 1)
 
     @authenticated
-    @patch('user.signals.post_save_friendship')
+    @patch("user.signals.post_save_friendship")
     def test_update_friendship_emit_post_save_signal(self, mocked_handler):
         friendship = Friendship(from_account=self.user, to_account=User.objects.last())
         friendship.save()
@@ -144,43 +145,35 @@ class FriendsMainEndpointTestCase(APIEndpointTestCase):
         self.assertEquals(mocked_handler.call_count, 1)
 
     @authenticated
-    @patch('fcm_django.fcm.fcm_send_message')
+    @patch("device.models.send_fcm_message")
     def test_new_friendship_send_push_notification(self, mocked_handler):
-        from .test_device import UserDeviceEndpointTestCase
         user = User.objects.last()
-        UserDeviceEndpointTestCase.generate_device(user)
+        create_device(user)
 
         Friendship(from_account=self.user, to_account=user).save()
 
         mocked_handler.assert_called_once_with(
             registration_id=user.get_device().registration_id,
-            data={"type": "friend-request"},
             title=ANY,
             body=ANY,
-            badge=ANY,
-            icon=ANY,
-            sound=ANY,
+            data={"type": "friend-request"},
         )
 
     @authenticated
     def test_accept_friendship_send_push_notification(self):
-        from .test_device import UserDeviceEndpointTestCase
-        UserDeviceEndpointTestCase.generate_device(self.user)
+        create_device(self.user)
         friendship = Friendship(from_account=self.user, to_account=User.objects.last())
         friendship.save()
 
-        with patch('fcm_django.fcm.fcm_send_message') as mocked_handler:
+        with patch("device.models.send_fcm_message") as mocked_handler:
             friendship.is_accepted = True
             friendship.save()
 
         mocked_handler.assert_called_once_with(
             registration_id=self.user.get_device().registration_id,
-            data={"type": "friend-request-accepted"},
             title=ANY,
             body=ANY,
-            badge=ANY,
-            icon=ANY,
-            sound=ANY,
+            data={"type": "friend-request-accepted"},
         )
 
 
