@@ -1,22 +1,11 @@
 """Contains all signal handlers from the `users` module."""
 
-from django.db.models.signals import post_init, pre_save, post_save
+from django.db.models.signals import post_init, post_save
 from django.dispatch import receiver
-from fcm_django.models import FCMDevice
 
 from user.models import Friendship
 
 __author__ = "Damien Rochat <rochat.damien@gmail.com>"
-
-
-@receiver(pre_save, sender=FCMDevice)
-def pre_save_device(instance, **kwargs):
-    """
-    Fired when a new device is created.
-
-    It remove eventual devices already attached to the current logged in user.
-    """
-    FCMDevice.objects.filter(user_id=instance.user_id).delete()
 
 
 @receiver(post_init, sender=Friendship)
@@ -36,7 +25,7 @@ def post_save_friendship(instance, created, **kwargs):
 
     Creation :
     - Send a push notification to the user who need to accept/refuse the request.
-    Update :
+    Update, if the friendship has been accepted :
     - Send a push notification to the user who asked for the friendship that the relation has been accepted.
     """
     if created:
