@@ -80,11 +80,7 @@ export class PushService {
         // registration
         this.authService.http().post(
           CONFIG.API_URL + 'fcm/devices/',
-          JSON.stringify({
-            type: Device.device.platform.toLowerCase(),
-            registration_id: this.token,
-            device_id: Device.device.uuid
-          }),
+          JSON.stringify({registration_id: this.token}),
           this.authService.createOptions([
             {'name': 'Content-Type', 'value': 'application/json'}
           ])

@@ -151,8 +151,8 @@ export class AuthService {
    * @return a promise
    */
   logout() {
-      this.setTokenString(null);
-      return this.storage.remove(this.TOKEN_NAME);
+    this.setTokenString(null);
+    return this.storage.remove(this.TOKEN_NAME);
   }
 
   /**
