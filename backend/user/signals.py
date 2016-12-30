@@ -1,4 +1,4 @@
-"""Contains all signal handlers from the `users` module."""
+"""Contains all signal handlers from the `user` module."""
 
 from django.db.models.signals import post_init, post_save
 from django.dispatch import receiver
@@ -29,19 +29,15 @@ def post_save_friendship(instance, created, **kwargs):
     - Send a push notification to the user who asked for the friendship that the relation has been accepted.
     """
     if created:
-        device = instance.to_account.get_device()
-        if device is not None:
-            device.send_message(
-                title="New friend request",
-                body="{} wants to be your friend".format(instance.from_account.username),
-                data={"type": "friend-request"}
-            )
+        instance.to_account.send_message(
+            title="New friend request",
+            body="{} wants to be your friend".format(instance.from_account.username),
+            type="friend-request",
+        )
     elif instance.has_changed("is_accepted") and instance.is_accepted is True:
-        device = instance.from_account.get_device()
-        if device is not None:
-            device.send_message(
-                title="Friend request accepted",
-                body="{} is now your friend".format(instance.to_account.username),
-                data={"type": "friend-request-accepted"}
-            )
+        instance.from_account.send_message(
+            title="Friend request accepted",
+            body="{} is now your friend".format(instance.to_account.username),
+            type="friend-request-accepted",
+        )
     instance.reset_tracker()

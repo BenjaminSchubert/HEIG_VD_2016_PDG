@@ -1,10 +1,7 @@
 """Contains all models from the `device` module."""
 
 from django.db import models
-from django.db import transaction
 from django.conf import settings
-
-from device.fcm import send_fcm_message
 
 __author__ = "Damien Rochat <rochat.damien@gmail.com>"
 
@@ -14,43 +11,41 @@ class Device(models.Model):
     Extends `Model` to keep information about devices.
 
     Device has a One to One relation. The foreign key is located on the device
-    to allow eventually mutliples devices for on user. It's a common practice,
+    to allow eventually multiples devices for on user. It's a common practice,
     but not used in this project.
     """
 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     registration_id = models.TextField(unique=True)
     is_active = models.BooleanField(default=True)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """Override save method to delete eventually existing device attached to the user."""
+        Device.objects.filter(user=self.user).delete()
+        super(Device, self).save(force_insert, force_update, using, update_fields)
+
+
+class DeferredMessage(models.Model):
+    """Extends `Model` to keep information about messages which could not be sent."""
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    title = models.TextField(null=True)
+    body = models.TextField(null=True)
+    type = models.TextField(null=True)
+    last_try = models.DateTimeField(auto_now=True)
 
-    def send_message(self, title=None, body=None, data=None):
-        """Send a push notification with FCM."""
-        result = send_fcm_message(
-            registration_id=self.registration_id,
-            title=title,
-            body=body,
-            data=data
-        )
-
-        if "error" in result["results"][0]:  # TODO : handle deferred
-            self.active = False
-
-        return result
-
-    @transaction.atomic
-    def save(self, *args, **kwargs):
+    def send(self):
         """
-        Override the default save method of the model.
+        Try to send again the message to the user.
 
-        Skip the save if the user and the registration id are already registered together.
-        Remove an eventually device already registered with the current user before saving
-        the new one.
-        Or error if the registration id is already registered with an other user.
+        If the message was successful sent, remove it from the database.
+
+        :return: True if the message was successfully sent, False otherwise.
         """
-        device = self.user.get_device()
-        if device is not None:
-            if device.registration_id != self.registration_id:
-                device.delete()
-            else:
-                return
-
-        super(Device, self).save(*args, **kwargs)
+        if self.user.send_message(title=self.title, body=self.body, type=self.type, deferred=False) is True:
+            self.delete()
+            return True
+        else:
+            self.last_try.now()
+            self.save(update_fields=["last_try"])
+            return False
