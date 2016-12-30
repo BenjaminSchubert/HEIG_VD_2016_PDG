@@ -145,7 +145,7 @@ class FriendsMainEndpointTestCase(APIEndpointTestCase):
         self.assertEquals(mocked_handler.call_count, 1)
 
     @authenticated
-    @patch("device.models.send_fcm_message")
+    @patch("user.models.send_fcm_message")
     def test_new_friendship_send_push_notification(self, mocked_handler):
         user = User.objects.last()
         create_device(user)
@@ -165,7 +165,7 @@ class FriendsMainEndpointTestCase(APIEndpointTestCase):
         friendship = Friendship(from_account=self.user, to_account=User.objects.last())
         friendship.save()
 
-        with patch("device.models.send_fcm_message") as mocked_handler:
+        with patch("user.models.send_fcm_message") as mocked_handler:
             friendship.is_accepted = True
             friendship.save()
 

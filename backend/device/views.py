@@ -1,6 +1,4 @@
 """This module defines the routes available in the `device` application."""
-
-from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -29,11 +27,8 @@ class DeviceView(CreateAPIView):
                 "registration_id": "MyRegistrationId"
             }
 
-        - On success will return a 201 CREATED
+        - On success will return a 201 CREATED or 200 OK if the device was already attached with the user.
         - On error will send a 400, 401 depending on the error, with a message explaining it.
-        - If the registration_id is already set with the current user, no action will be done
-          and a 204 NO CONTENT will be returned. It simplify devices registration.
-
     """
 
     permission_classes = (IsAuthenticated,)
@@ -41,20 +36,24 @@ class DeviceView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         """
-        Create a new device.
+        Override the create method.
 
-        If a corresponding device is already attached with the current logged in user,
-        don't try to save and simply return a 204 response.
+        If the user is registering the same device than he already has,
+        just try to send eventually pending messages and response with a HTTP 200 code.
+
+        Otherwise, register the new device.
 
         :param request: the HTTP request done
-        :return a 400, 401, 201, 204 response depending on whether the data was correct or not.
+        :return a 201, 200, 400, 401 response depending on whether the data was correct or not.
         """
-        if "registration_id" in request.data:
-            device = Device.objects.filter(
-                Q(registration_id=request.data["registration_id"]) &
-                Q(user=self.request.user)
-            ).first()
-            if device is not None:
-                return Response(status=status.HTTP_204_NO_CONTENT)
-
+        if "registration_id" in self.request.data:
+            try:
+                Device.objects.get(
+                    user=self.request.user,
+                    registration_id=self.request.data["registration_id"]
+                )
+                self.request.user.send_deferred_messages()
+                return Response(status=status.HTTP_200_OK)
+            except Device.DoesNotExist:
+                pass
         return super(DeviceView, self).create(request, *args, **kwargs)
