@@ -29,21 +29,21 @@ class BulkMessagesTestCase(TestCase):
 
     @patch("device.models.send_fcm_bulk_message")
     def test_successful_message_keep_devices_as_active(self, mocked_handler):
-        mocked_handler.return_value = dict(results=[dict(), dict(), dict(error="error"), dict()])
+        mocked_handler.return_value = [dict(results=[dict(), dict(), dict(error="error"), dict()])]
         Device.objects.all().send_message()
 
         self.assertEqual(Device.objects.filter(is_active=True).count(), 3)
 
     @patch("device.models.send_fcm_bulk_message")
     def test_failed_message_set_devices_as_inactive(self, mocked_handler):
-        mocked_handler.return_value = dict(results=[dict(), dict(), dict(error="error"), dict()])
+        mocked_handler.return_value = [dict(results=[dict(), dict(), dict(error="error"), dict()])]
         Device.objects.all().send_message()
 
         self.assertEqual(Device.objects.filter(id=3, is_active=False).count(), 1)
 
     @patch("device.models.send_fcm_message")
     def test_failed_message_add_deferred_message(self, mocked_handler):
-        mocked_handler.return_value = dict(results=[dict(), dict(), dict(error="error"), dict()])
+        mocked_handler.return_value = [dict(results=[dict(), dict(), dict(error="error"), dict()])]
         Device.objects.all().send_message()
 
         self.assertEqual(DeferredMessage.objects.filter(id=2).count(), 1)

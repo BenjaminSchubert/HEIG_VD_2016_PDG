@@ -46,7 +46,8 @@ class DeviceQuerySet(models.query.QuerySet):
             body=body,
             data=dict(type=type)
         )
-        for (index, result) in enumerate(result["results"]):
+
+        for (index, result) in enumerate(result[0]["results"]):
             if "error" in result:
                 self.filter(id=devices[index].id).update(is_active=False)
 
