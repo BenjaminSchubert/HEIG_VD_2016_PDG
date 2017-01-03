@@ -160,7 +160,44 @@ class HiddenField(Field):
         return value.is_hidden
 
 
-class PublicUserSerializer(ModelSerializer):
+class PhoneNumberSerializerMixin(serializers.Serializer):
+    """
+    This Serializer adds a phone number and a country fields.
+
+    This allows for the submission of a phone number and its validation under the E.164 format.
+    """
+
+    phone_number = CharField(required=False, validators=[validate_phone_number], write_only=True)
+    country = CharField(required=False, write_only=True)
+
+    def validate(self, attrs):
+        """
+        Validate that every attributes of the serializer is valid.
+
+        This mainly checks the phone number.
+
+        :param attrs: attributes to validate
+        :return: all valid attributes
+        """
+        attrs = super().validate(attrs)
+
+        if "phone_number" in attrs and "country" not in attrs:
+            raise ValidationError({"country": "This field is required when giving phone number."})
+        if "country" in attrs and "phone_number" not in attrs:
+            raise ValidationError({"phone_number": "This field is required when giving a country."})
+
+        if "phone_number" in attrs:
+            phone_number = phonenumbers.parse(attrs["phone_number"], attrs["country"])
+            if not phonenumbers.is_valid_number_for_region(phone_number, attrs["country"]):
+                raise ValidationError({"phone_number": "This is not a valid phone number."})
+
+            attrs["phone_number"] = phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
+            attrs.pop("country")
+
+        return attrs
+
+
+class PublicUserSerializer(ModelSerializer, PhoneNumberSerializerMixin):
     """Defines a serializer for users that only keeps the minimum information."""
 
     avatar = ImageField(read_only=True)
@@ -170,7 +207,7 @@ class PublicUserSerializer(ModelSerializer):
     class Meta:
         """This Meta class defines the fields and models for the `PublicUserSerializer`."""
 
-        fields = ("id", "username", "email", "avatar", "password")
+        fields = ("id", "username", "email", "avatar", "password", "phone_number", "country")
         model = User
 
     def create(self, validated_data):
@@ -189,17 +226,16 @@ class PublicUserSerializer(ModelSerializer):
             raise e
 
 
-class UserProfileSerializer(ModelSerializer):
+class UserProfileSerializer(ModelSerializer, PhoneNumberSerializerMixin):
     """Defines a serializer for users to edit their profiles."""
 
     password = CharField(max_length=255, write_only=True, required=False)
     avatar = ImageField(read_only=True)
-    phone_number = CharField(required=False, validators=[validate_phone_number], write_only=True)
 
     class Meta:
         """This Meta class defines the fields and models for the `UserProfileSerializer`."""
 
-        fields = ("username", "email", "avatar", "password", "phone_number", "last_avatar_update")
+        fields = ("username", "email", "avatar", "password", "phone_number", "last_avatar_update", "country")
         model = User
 
     def update(self, instance, validated_data):

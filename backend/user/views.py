@@ -120,6 +120,7 @@ class UserProfileView(RetrieveUpdateAPIView):
             "avatar": "AvatarUrl" (this is read-only, optional)
             "password": "Password" (this is write-only)
             "phone_number": "MyPhoneNumber" (this is write-only, optional, respecting the E.164 format)
+            "country": "CH"  (this is write-only, optional, and must be sent when sending `phone_number`)
         }
     """
 

@@ -90,9 +90,9 @@ def test_backend():
     """
     with lcd(LOCAL_BACKEND):
         start_section("making migrations")
-        local("python3 manage.py makemigrations")
+        local("FCM_SERVER_TOKEN='' python3 manage.py makemigrations")
         start_section("testing backend")
-        local("python3 manage.py test")
+        local("FCM_SERVER_TOKEN='' python3 manage.py test")
         stop_section()
 
 

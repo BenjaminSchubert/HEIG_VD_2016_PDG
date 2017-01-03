@@ -62,9 +62,25 @@ class UserProfileEndpointTestCase(APIEndpointTestCase):
         )
 
     @authenticated
+    def test_cannot_send_phone_number_without_country(self):
+        response = self.put(dict(username="goatsy", email=self.user.email, phone_number="+41760000000"))
+        self.assert400WithError(response, "country")
+
+    @authenticated
+    def test_cannot_send_country_without_phone_number(self):
+        response = self.put(dict(username="goatsy", email=self.user.email, country="CH"))
+        self.assert400WithError(response, "phone_number")
+
+    @authenticated
+    def test_cannot_send_valid_phonenumber_with_invalid_country(self):
+        response = self.put(dict(username="goatsy", email=self.user.email, phone_number="+41760000000", country="GB"))
+        self.assert400WithError(response, "phone_number")
+
+    @authenticated
     def test_can_send_valid_phonenumber(self):
+        response = self.put(dict(username="goatsy", email=self.user.email, phone_number="+41760000000", country="CH"))
         self.assertEqual(
-            self.put(dict(username="goatsy", email=self.user.email, phone_number="+41760000000")).status_code,
+            response.status_code,
             status.HTTP_200_OK,
             msg="A valid phone number cannot be entered"
         )

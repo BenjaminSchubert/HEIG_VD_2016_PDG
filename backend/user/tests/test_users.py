@@ -32,6 +32,10 @@ class UsersEndpointTestCase(APIEndpointTestCase):
     def test_creating_user_requires_email(self):
         self.assert400WithError(self.post(dict()), "email")
 
+    def test_can_create_user_with_phone_number(self):
+        user = dict(username="goatsy", email="g@g.com", password="goat", phone_number="+41760000000", country="CH")
+        self.assertEqual(self.post(user).status_code, status.HTTP_201_CREATED)
+
     def test_can_create_user_while_unauthenticated(self):
         self.assertEqual(self.post(self.correct_user).status_code, status.HTTP_201_CREATED)
 
