@@ -121,61 +121,6 @@ class FriendsMainEndpointTestCase(APIEndpointTestCase):
 
         self.assertEqual(len(self.get().json()), 2)
 
-    @authenticated
-    @patch("user.signals.post_save_friendship")
-    def test_new_friendship_emit_post_save_signal(self, mocked_handler):
-
-        # Bind mocked handler to the event and emit signal
-        post_save.connect(mocked_handler, sender=Friendship)
-        Friendship(from_account=self.user, to_account=User.objects.last()).save()
-
-        self.assertEquals(mocked_handler.call_count, 1)
-
-    @authenticated
-    @patch("user.signals.post_save_friendship")
-    def test_update_friendship_emit_post_save_signal(self, mocked_handler):
-        friendship = Friendship(from_account=self.user, to_account=User.objects.last())
-        friendship.save()
-
-        # Bind mocked handler to the event and emit signal
-        post_save.connect(mocked_handler, sender=Friendship)
-        friendship.is_accepted = True
-        friendship.save()
-
-        self.assertEquals(mocked_handler.call_count, 1)
-
-    @authenticated
-    @patch("user.models.send_fcm_message")
-    def test_new_friendship_send_push_notification(self, mocked_handler):
-        user = User.objects.last()
-        create_device(user)
-
-        Friendship(from_account=self.user, to_account=user).save()
-
-        mocked_handler.assert_called_once_with(
-            registration_id=user.get_device().registration_id,
-            title=ANY,
-            body=ANY,
-            data={"type": "friend-request"},
-        )
-
-    @authenticated
-    def test_accept_friendship_send_push_notification(self):
-        create_device(self.user)
-        friendship = Friendship(from_account=self.user, to_account=User.objects.last())
-        friendship.save()
-
-        with patch("user.models.send_fcm_message") as mocked_handler:
-            friendship.is_accepted = True
-            friendship.save()
-
-        mocked_handler.assert_called_once_with(
-            registration_id=self.user.get_device().registration_id,
-            title=ANY,
-            body=ANY,
-            data={"type": "friend-request-accepted"},
-        )
-
 
 class FriendsDetailsEndpointTestCase(APIEndpointTestCase):
     url = API_V1 + "users/friends/{}/"
