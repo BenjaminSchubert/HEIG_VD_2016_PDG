@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Push, Device } from 'ionic-native';
+import { Push } from 'ionic-native';
 
 import { AuthService } from './auth-service';
 import { NotificationService } from './notification-service';
@@ -55,7 +55,9 @@ export class PushService {
 
     // on notification, dispatch the message
     this.push.on('notification', (data) => {
-      this.notificationService.notify(data);
+      this.authService.authentificated().then(() => 
+        this.notificationService.notify(data)
+      );
     });
 
     // on error
@@ -75,7 +77,7 @@ export class PushService {
       console.log('[PushService] try registration');
 
       // we need to be auth.
-      if(this.authService.authentificated()) {
+      this.authService.authentificated().then(() => {
 
         // registration
         this.authService.http().post(
@@ -85,7 +87,6 @@ export class PushService {
             {'name': 'Content-Type', 'value': 'application/json'}
           ])
         )
-        .map(res => res.json())
         .toPromise()
         .then(() => {
           console.log('[PushService] registered!');
@@ -97,12 +98,14 @@ export class PushService {
         .catch((err) => {
           console.log('[PushService] post error: ' + JSON.stringify(err));
         });
-      }
+      });
     });
 
     // we need to be authentificated to register,
     // we run a callback in case of not
-    id = setInterval(callback, 10000); // 10s
+    callback();
+    if(!this.registered)
+      id = setInterval(callback, 20000); // 20s
   }
 
 }

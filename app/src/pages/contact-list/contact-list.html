@@ -4,16 +4,62 @@
   </ion-navbar>
 </ion-header>
 
+<!--
+friend request received -> initiator=false, is_accepted=false
+  => name with open alert with accept/decline button
+
+friends -> is_accepted=true, is_blocked=false
+  => name with checkbox
+  => long touch to block
+
+  hidden -> + is_hidden=true
+    => name with hidden written 
+
+friend request sent -> initiator=true, is_accepted=false
+  => name with open alert with just an informative message
+
+blocked -> is_blocked=true
+  => name with open alert to unblock
+-->
 
 <ion-content padding>
 
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
 
   <ion-list>
-    <ion-item *ngFor="let item of items">
+    <!--<ion-item *ngFor="let item of items">
       <ion-checkbox item-right checked="false" [(ngModel)]="item.checked"></ion-checkbox>
-      <ion-label>{{item.username}}</ion-label>
+      <ion-label>{{item.friend.username}}</ion-label>
+    </ion-item>-->
+
+    <ion-list-header>
+      Friend request received
+    </ion-list-header>
+    <ion-item text-wrap *ngFor="let item of friendRequestReceived()">
+      {{diag(item)}}
     </ion-item>
+    
+    <ion-list-header>
+      Friends
+    </ion-list-header>
+    <ion-item text-wrap *ngFor="let item of friends()">
+      {{diag(item)}}
+    </ion-item>
+    
+    <ion-list-header>
+      Friend request sent
+    </ion-list-header>
+    <ion-item text-wrap *ngFor="let item of friendRequestSent()">
+      {{diag(item)}}
+    </ion-item>
+    
+    <ion-list-header>
+      Blocked friends
+    </ion-list-header>
+    <ion-item text-wrap *ngFor="let item of blockedFriends()">
+      {{diag(item)}}
+    </ion-item>
+
   </ion-list>
 
   <ion-fab right bottom class >

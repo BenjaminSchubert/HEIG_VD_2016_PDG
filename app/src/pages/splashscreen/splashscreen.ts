@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, Platform, AlertController } from 'ionic-angular';
-import { StatusBar, Toast } from 'ionic-native';
+import { StatusBar } from 'ionic-native';
 
 import { SignIn } from '../sign-in/sign-in';
 import { MainTabs } from '../main-tabs/main-tabs';
@@ -26,18 +26,6 @@ export class Splashscreen {
               public pushService: PushService,
               public notificationService: NotificationService) {
 
-      // redefine the console.log behavior for device testing
-      // /!\ comments those lines for production /!\
-      console.log = (function(text) {
-        Toast.hide().then(() => {
-          Toast.show(
-            Date.now().toLocaleString() + ':\n' + text, 
-            '10000', 
-            'top'
-          ).subscribe();
-        });
-      });
-
       // Set the default notification handler
       this.notificationService.setDefaultHandler((n) => {
         this.alertCtrl.create({
@@ -47,6 +35,18 @@ export class Splashscreen {
           enableBackdropDismiss: false
         }).present();
       });
+
+      // redefine the console.log behavior for device testing
+      // /!\ comments those lines for production /!\
+      let logger = function(nS) {
+        return function(text) {
+          nS.notify({
+            title: 'CONSOLE.LOG',
+            message: text
+          });
+        };
+      };
+      console.log = logger(this.notificationService);
 
       platform.ready().then(() => {
 
@@ -60,8 +60,10 @@ export class Splashscreen {
         // otherwise      => go to SignIn
         this.authService.refresh()
           .then(() => {
+            console.log('[Splashscreen] token refreshed, go to MainTabs');
             this.navCtrl.setRoot(MainTabs);
           }).catch((err) => {
+            console.log('[Splashscreen] refresh error: ' + err);
             this.navCtrl.setRoot(SignIn);
           });
     });
