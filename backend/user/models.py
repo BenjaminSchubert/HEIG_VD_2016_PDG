@@ -110,7 +110,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         :param number: phone number to hash
         :return: hashed phone number
         """
-        return hashlib.pbkdf2_hmac("sha512", number.encode(), settings.SECRET_KEY.encode(), 10000)
+        return hashlib.pbkdf2_hmac("sha512", number.encode("utf8"), settings.SECRET_KEY.encode("utf8"), 10000)
 
     def get_device(self):
         """

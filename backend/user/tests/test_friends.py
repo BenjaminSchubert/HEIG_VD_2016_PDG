@@ -194,7 +194,7 @@ class FriendsDetailsEndpointTestCase(APIEndpointTestCase):
         self.assertDictEqual(
             response.json(),
             dict(
-                is_accepted=False, is_blocked=False, is_hidden=False,
+                is_accepted=False, is_blocked=False, is_hidden=False, initiator=True,
                 friend=dict(avatar=None, username=User.objects.all()[2].username, id=User.objects.all()[2].id)
             )
         )
@@ -202,6 +202,18 @@ class FriendsDetailsEndpointTestCase(APIEndpointTestCase):
     @authenticated
     def test_can_accept_friendship(self):
         self.assertEqual(self.put(dict(is_accepted=True), url=self.url.format(2)).status_code, status.HTTP_200_OK)
+
+    @authenticated
+    def test_is_initiator_when_doing_friend_request(self):
+        response = self.get(url=self.url.format(1))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.json()["initiator"])
+
+    @authenticated
+    def test_is_not_initiator_when_receiving_friend_request(self):
+        response = self.get(url=self.url.format(2))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(response.json()["initiator"])
 
     @authenticated
     def test_cannot_accept_friendship_when_owner(self):
