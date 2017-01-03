@@ -41,9 +41,9 @@ class BulkMessagesTestCase(TestCase):
 
         self.assertEqual(Device.objects.filter(id=3, is_active=False).count(), 1)
 
-    @patch("device.models.send_fcm_message")
+    @patch("device.models.send_fcm_bulk_message")
     def test_failed_message_add_deferred_message(self, mocked_handler):
         mocked_handler.return_value = [dict(results=[dict(), dict(), dict(error="error"), dict()])]
         Device.objects.all().send_message()
 
-        self.assertEqual(DeferredMessage.objects.filter(id=2).count(), 1)
+        self.assertEqual(DeferredMessage.objects.count(), 1)

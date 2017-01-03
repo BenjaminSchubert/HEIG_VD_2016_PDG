@@ -34,7 +34,8 @@ class MessagesTestCase(TestCase):
             data={"type": "friend-request"},
         )
 
-    def test_accept_friendship_send_push_notification(self):
+    @patch("device.models.send_fcm_message")
+    def test_accept_friendship_send_push_notification(self, m):
         u1 = User.objects.first()
         u2 = User.objects.last()
         friendship = Friendship(from_account=u1, to_account=u2)
