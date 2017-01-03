@@ -11,7 +11,7 @@ from django.db.utils import IntegrityError
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import Field
+from rest_framework.fields import Field, SerializerMethodField
 from rest_framework.serializers import ModelSerializer, CharField, EmailField, ImageField
 
 from user.models import User, Friendship
@@ -262,12 +262,13 @@ class FriendSerializer(ModelSerializer):
     friend = FriendField(PublicUserSerializer())
     is_blocked = BlockedField(read_only=True)
     is_hidden = HiddenField(read_only=True)
+    initiator = SerializerMethodField()
 
     class Meta:
         """Defines the fields and models for the `FriendSerializer`."""
 
         model = Friendship
-        fields = ("friend", "is_accepted", "is_blocked", "is_hidden")
+        fields = ("friend", "initiator", "is_accepted", "is_blocked", "is_hidden")
 
     def create(self, validated_data):
         """
@@ -290,6 +291,10 @@ class FriendSerializer(ModelSerializer):
         """Override the default behavior to raise an exception. We don't want this."""
         raise NotImplementedError("This is not meant to be used")
 
+    def get_initiator(self, obj):
+        """Get whether current user is the initiator of the request or not."""
+        return obj.from_account == self.context["request"].user
+
 
 class FriendDetailsSerializer(ModelSerializer):
     """Defines a serializer to view details about a friendship and update it."""
@@ -297,12 +302,13 @@ class FriendDetailsSerializer(ModelSerializer):
     friend = FriendField(PublicUserSerializer(), read_only=True)
     is_blocked = BlockedField(required=False)
     is_hidden = HiddenField(required=False)
+    initiator = SerializerMethodField()
 
     class Meta:
         """Defines the fields and models for the `FriendDetailsSerializer`."""
 
         model = Friendship
-        fields = ("friend", "is_accepted", "is_blocked", "is_hidden")
+        fields = ("friend", "initiator", "is_accepted", "is_blocked", "is_hidden")
 
     def create(self, validated_data):
         """Override the default behavior to raise an exception. We don't want this."""
@@ -349,3 +355,7 @@ class FriendDetailsSerializer(ModelSerializer):
             raise ValidationError("You cannot un-accept a request that was accepted.")
 
         return attrs
+
+    def get_initiator(self, obj):
+        """Get whether current user is the initiator of the request or not."""
+        return obj.from_account == self.context["request"].user
