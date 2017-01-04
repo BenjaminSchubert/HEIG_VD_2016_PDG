@@ -6,8 +6,8 @@
 export class RadyUser {
   id: number;
   username: string;
-  avatar: string;
-  last_avatar_update: string;
+  avatar?: string;
+  last_avatar_update?: string;
 
   constructor(username?: string) {
     this.username = username;

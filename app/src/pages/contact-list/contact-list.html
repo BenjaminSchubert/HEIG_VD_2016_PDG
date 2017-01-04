@@ -27,38 +27,39 @@ blocked -> is_blocked=true
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
 
   <ion-list>
-    <!--<ion-item *ngFor="let item of items">
-      <ion-checkbox item-right checked="false" [(ngModel)]="item.checked"></ion-checkbox>
-      <ion-label>{{item.friend.username}}</ion-label>
-    </ion-item>-->
 
-    <ion-list-header>
+    <ion-list-header *ngIf="friendRequestReceived().length>0">
       Friend request received
     </ion-list-header>
-    <ion-item text-wrap *ngFor="let item of friendRequestReceived()">
-      {{diag(item)}}
-    </ion-item>
+    <button *ngFor="let item of friendRequestReceived()" ion-item detail-push (click)="popupRequestReceived(item)">
+      <h2>{{item.friend.username}}</h2>
+      <small>sent you a friend request</small>
+    </button>
     
-    <ion-list-header>
+    <ion-list-header *ngIf="friends().length>0">
       Friends
     </ion-list-header>
-    <ion-item text-wrap *ngFor="let item of friends()">
-      {{diag(item)}}
+    <ion-item *ngFor="let item of friends()" (press)="actionsSheetFriends(item)">
+      <ion-label>{{item.friend.username}}</ion-label>
+      <ion-checkbox *ngIf="!item.is_hidden" item-right checked="false" [(ngModel)]="item.checked"></ion-checkbox>
+      <ion-badge *ngIf="item.is_hidden" item-right>hidden</ion-badge>
     </ion-item>
     
-    <ion-list-header>
+    <ion-list-header *ngIf="friendRequestSent().length>0">
       Friend request sent
     </ion-list-header>
-    <ion-item text-wrap *ngFor="let item of friendRequestSent()">
-      {{diag(item)}}
+    <ion-item *ngFor="let item of friendRequestSent()">
+      <h2>{{item.friend.username}}</h2>
+      <small>you've sent a friend request</small>
     </ion-item>
     
-    <ion-list-header>
+    <ion-list-header *ngIf="blockedFriends().length>0">
       Blocked friends
     </ion-list-header>
-    <ion-item text-wrap *ngFor="let item of blockedFriends()">
-      {{diag(item)}}
-    </ion-item>
+    <button *ngFor="let item of blockedFriends()" ion-item detail-push (click)="popupBlockedFriends(item)">
+      <h2>{{item.friend.username}}</h2>
+      <small>blocked</small>
+    </button>
 
   </ion-list>
 

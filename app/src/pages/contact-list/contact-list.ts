@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, App } from 'ionic-angular';
+import { NavController, App, AlertController, ActionSheetController } from 'ionic-angular';
 
 import { AddContact } from '../add-contact/add-contact';
 
@@ -16,7 +16,9 @@ export class ContactList {
 
   constructor(public navCtrl: NavController,
               public app: App,
-              public contactsService: ContactsService) {
+              public contactsService: ContactsService,
+              public alertCtrl: AlertController,
+              public actionSheetCtrl: ActionSheetController) {
     // nothing
   }
 
@@ -41,6 +43,21 @@ export class ContactList {
     return [];
   }
 
+  popupRequestReceived(item) {
+    this.alertCtrl.create({
+      title: 'Accept ' + item.friend.username + ' ?',
+      message: 'Click OK to accept the friend request',
+      buttons: [
+        { text: 'Cancel' },
+        { text: 'OK', handler: () => {
+
+          // TODO accept friend request
+        }}
+      ],
+      enableBackdropDismiss: false
+    }).present();
+  }
+
   friends() {
     if(this.items != null) {
       return this.items.filter((item) => {
@@ -48,6 +65,24 @@ export class ContactList {
       });
     }
     return [];
+  }
+
+  actionsSheetFriends(item) {
+    this.actionSheetCtrl.create({
+      title: item.friend.username,
+      cssClass: 'action-sheets-basic-page',
+      buttons: [
+        { text: 'Block', handler: () => {
+
+           // TODO block friend
+        }},
+        { text: 'Remove', role: 'destructive', handler: () => {
+
+          // TODO remove friend
+        }},
+        { text: 'Cancel', role: 'cancel' }
+      ]
+    }).present();
   }
 
   friendRequestSent() {
@@ -58,7 +93,7 @@ export class ContactList {
     }
     return [];
   }
-  
+
   blockedFriends() {
     if(this.items != null) {
       return this.items.filter((item) => {
@@ -66,6 +101,21 @@ export class ContactList {
       });
     }
     return [];
+  }
+
+  popupBlockedFriends(item) {
+    this.alertCtrl.create({
+      title: 'Unblock ' + item.friend.username + ' ?',
+      message: 'Click OK to unblock',
+      buttons: [
+        { text: 'Cancel' },
+        { text: 'OK', handler: () => {
+
+          // TODO unblock friend
+        }}
+      ],
+      enableBackdropDismiss: false
+    }).present();
   }
 
   /**
