@@ -7,6 +7,7 @@ import { RadyUser } from './user';
  */
 export class RadyFriend {
 
+    id: number;
     friend: RadyUser;
     is_accepted: boolean;
     is_blocked: boolean;

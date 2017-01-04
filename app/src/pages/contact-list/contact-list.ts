@@ -5,6 +5,8 @@ import { AddContact } from '../add-contact/add-contact';
 
 import { RadyFriend } from '../../models/friend';
 import { ContactsService } from '../../providers/contacts-service';
+import { AuthService } from '../../providers/auth-service';
+import { CONFIG } from '../../providers/config';
 
 @Component({
   templateUrl: 'contact-list.html'
@@ -18,7 +20,8 @@ export class ContactList {
               public app: App,
               public contactsService: ContactsService,
               public alertCtrl: AlertController,
-              public actionSheetCtrl: ActionSheetController) {
+              public actionSheetCtrl: ActionSheetController,
+              public authService: AuthService) {
     // nothing
   }
 
@@ -37,7 +40,7 @@ export class ContactList {
   friendRequestReceived() {
     if(this.items != null) {
       return this.items.filter((item) => {
-        return item.is_accepted == false && item.initiator == false;
+        return item.is_accepted == false && item.initiator == false && item.is_hidden == false;
       });
     }
     return [];
@@ -49,9 +52,33 @@ export class ContactList {
       message: 'Click OK to accept the friend request',
       buttons: [
         { text: 'Cancel' },
+        { text: 'Hide', handler: () => {
+
+          // hide friend
+          this.authService.http().patch(
+            CONFIG.API_URL + 'users/friends/' + item.id + '/',
+            { is_hidden: true },
+            this.authService.createOptions([
+              { name: 'Content-Type', value: 'application/json' }
+            ])
+          )
+          .toPromise()
+          .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh
+          .catch((err) => console.log('[ContactList] hiding error: ' + err));
+        }},
         { text: 'OK', handler: () => {
 
-          // TODO accept friend request
+          // accept friend request
+          this.authService.http().patch(
+            CONFIG.API_URL + 'users/friends/' + item.id + '/',
+            { is_accepted: true },
+            this.authService.createOptions([
+              { name: 'Content-Type', value: 'application/json' }
+            ])
+          )
+          .toPromise()
+          .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh
+          .catch((err) => console.log('[ContactList] accepting error: ' + err));
         }}
       ],
       enableBackdropDismiss: false
@@ -61,7 +88,7 @@ export class ContactList {
   friends() {
     if(this.items != null) {
       return this.items.filter((item) => {
-        return item.is_accepted == true && item.is_blocked == false;
+        return item.is_accepted == true && item.is_blocked == false && item.is_hidden == false;
       });
     }
     return [];
@@ -74,11 +101,31 @@ export class ContactList {
       buttons: [
         { text: 'Block', handler: () => {
 
-           // TODO block friend
+           // block friend
+           this.authService.http().patch(
+            CONFIG.API_URL + 'users/friends/' + item.id + '/',
+            { is_blocked: true },
+            this.authService.createOptions([
+              { name: 'Content-Type', value: 'application/json' }
+            ])
+          )
+          .toPromise()
+          .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh
+          .catch((err) => console.log('[ContactList] blocking error: ' + err));
         }},
         { text: 'Remove', role: 'destructive', handler: () => {
 
-          // TODO remove friend
+          // remove friend (hide)
+          this.authService.http().patch(
+            CONFIG.API_URL + 'users/friends/' + item.id + '/',
+            { is_hidden: true },
+            this.authService.createOptions([
+              { name: 'Content-Type', value: 'application/json' }
+            ])
+          )
+          .toPromise()
+          .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh
+          .catch((err) => console.log('[ContactList] hiding error: ' + err));
         }},
         { text: 'Cancel', role: 'cancel' }
       ]
@@ -111,7 +158,17 @@ export class ContactList {
         { text: 'Cancel' },
         { text: 'OK', handler: () => {
 
-          // TODO unblock friend
+          // unblock friend
+          this.authService.http().patch(
+            CONFIG.API_URL + 'users/friends/' + item.id + '/',
+            { is_blocked: false },
+            this.authService.createOptions([
+              { name: 'Content-Type', value: 'application/json' }
+            ])
+          )
+          .toPromise()
+          .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh
+          .catch((err) => console.log('[ContactList] unblocking error: ' + err));
         }}
       ],
       enableBackdropDismiss: false

@@ -5,21 +5,20 @@
 </ion-header>
 
 <!--
-friend request received -> initiator=false, is_accepted=false
-  => name with open alert with accept/decline button
+friend request received -> initiator=false, is_accepted=false, is_hidden=false
+  => name with open alert with accept/hide/decline button
 
-friends -> is_accepted=true, is_blocked=false
+friends -> is_accepted=true, is_blocked=false, is_hidden=false
   => name with checkbox
   => long touch to block
-
-  hidden -> + is_hidden=true
-    => name with hidden written 
 
 friend request sent -> initiator=true, is_accepted=false
   => name with open alert with just an informative message
 
 blocked -> is_blocked=true
   => name with open alert to unblock
+
+not shown in list -> is_hidden=true
 -->
 
 <ion-content padding>
@@ -27,6 +26,10 @@ blocked -> is_blocked=true
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
 
   <ion-list>
+
+    <ion-list-header *ngIf="items == null || items.length == 0">
+      Start adding friend by clicking the PLUS button 
+    </ion-list-header>
 
     <ion-list-header *ngIf="friendRequestReceived().length>0">
       Friend request received
@@ -41,8 +44,7 @@ blocked -> is_blocked=true
     </ion-list-header>
     <ion-item *ngFor="let item of friends()" (press)="actionsSheetFriends(item)">
       <ion-label>{{item.friend.username}}</ion-label>
-      <ion-checkbox *ngIf="!item.is_hidden" item-right checked="false" [(ngModel)]="item.checked"></ion-checkbox>
-      <ion-badge *ngIf="item.is_hidden" item-right>hidden</ion-badge>
+      <ion-checkbox item-right checked="false" [(ngModel)]="item.checked"></ion-checkbox>
     </ion-item>
     
     <ion-list-header *ngIf="friendRequestSent().length>0">
