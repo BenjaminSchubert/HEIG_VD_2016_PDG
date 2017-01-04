@@ -4,6 +4,8 @@
 from django.core.exceptions import SuspiciousOperation
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, UpdateAPIView, DestroyAPIView, ListAPIView
 from rest_framework.parsers import FileUploadParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -131,6 +133,19 @@ class UserProfileView(RetrieveUpdateAPIView):
     def get_object(self):
         """Get the current user on which to perform work."""
         return self.request.user
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Dispatch the request to the correct request.
+
+        This view systematically adds a csrf token to the request, as the web frontend always gets this link at first.
+
+        This allows us to be sure the csrf token is available for our web frontend.
+
+        :param request: request that is made
+        """
+        return super().dispatch(request, *args, **kwargs)
 
 
 class UserAvatarView(UpdateAPIView, DestroyAPIView):

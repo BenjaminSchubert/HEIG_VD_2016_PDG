@@ -1,0 +1,14 @@
+@import "variables";
+
+button {
+  border: none;
+  border-radius: $border-radius;
+  padding: .8rem 1.2rem;
+  font-size: $font-size-button;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: .65;
+  }
+}

@@ -1,0 +1,28 @@
+@import "variables";
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+
+  @for $i from 1 through $grid-columns {
+    .col-#{$i} {
+      padding: $col-padding;
+      box-sizing: border-box;
+      flex-basis: percentage($i / $grid-columns);
+      max-width: percentage($i / $grid-columns);
+      display: flex;
+    }
+    
+    .offset-#{$i} {
+      margin-left: calc(#{$col-padding} + #{percentage($i / $grid-columns)});
+    }
+  }
+}
+
+
+.right {
+  margin-left: auto;
+}

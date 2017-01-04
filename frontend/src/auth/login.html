@@ -1,0 +1,39 @@
+<h1>Please Sign In</h1>
+
+<form [formGroup]="form" (ngSubmit)="login()">
+    <div class="row">
+        <label for="username" class="col-4">Email</label>
+        <div class="col-8">
+            <input type="username" id="username" formControlName="username" placeholder="username">
+        </div>
+    </div>
+    <div class="row" *ngIf="!(form.get('username').valid || form.get('username').pristine)">
+        <div class="offset-4 col-8 alert">
+            {{ display_error(form.get("username").errors) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <label for="password" class="col-4">Password</label>
+        <div class="col-8">
+            <input type="password" id="password" formControlName="password" placeholder="password">
+        </div>
+    </div>
+    <div class="row" *ngIf="!(form.get('password').valid || form.get('password').pristine)">
+        <div class="col-8 offset-4 alert">
+            {{ display_error(form.get("password").errors) }}
+        </div>
+    </div>
+
+    <div class="row alert" *ngIf="form.errors !== null">
+        <div class="col-12">
+            {{ display_error(form.errors) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <button id="submit" type="submit" class="primary right" [disabled]="!form.valid">Sign in</button>
+        </div>
+    </div>
+</form>

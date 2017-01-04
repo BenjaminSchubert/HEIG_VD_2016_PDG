@@ -1,0 +1,52 @@
+{
+  "name": "Rady",
+  "version": "0.0.1",
+  "license": "None",
+  "private": true,
+  "dependencies": {
+    "@angular/common": "2.4.1",
+    "@angular/compiler": "2.4.1",
+    "@angular/compiler-cli": "2.4.1",
+    "@angular/core": "2.4.1",
+    "@angular/forms": "2.4.1",
+    "@angular/http": "2.4.1",
+    "@angular/platform-browser": "2.4.1",
+    "@angular/router": "3.4.1",
+    "@ngtools/webpack": "1.2.1",
+    "@types/node": "6.0.51",
+    "compression-webpack-plugin": "0.3.2",
+    "extract-text-webpack-plugin": "2.0.0-beta.4",
+    "html-webpack-plugin": "^2.25.0",
+    "node-sass": "3.13.0",
+    "raw-loader": "0.5.1",
+    "reflect-metadata": "^0.1.9",
+    "rxjs": "5.0.1",
+    "sass-loader": "4.0.2",
+    "ts-loader": "1.2.2",
+    "typescript": "2.0.10",
+    "url-loader": "0.5.7",
+    "webpack": "2.1.0-beta.27",
+    "webpack-dev-server": "2.1.0-beta.11",
+    "webpack-merge": "^2.0.0",
+    "zone.js": "0.7.2"
+  },
+  "devDependencies": {
+    "codelyzer": "2.0.0-beta.1",
+    "webpack-bundle-size-analyzer": "2.2.0",
+    "rimraf": "2.5.4",
+    "tslint": "4.0.2"
+  },
+  "scripts": {
+    "analyze": "NODE_ENV=production webpack --config config/webpack.config.js --json | webpack-bundle-size-analyzer",
+    "clean": "npm cache clean && npm run clean:dist && rimraf -- node_modules",
+    "clean:dist": "rimraf -- dist",
+    "watch": "webpack-dev-server --config config/webpack.config.js",
+    "watch:progress": "webpack-dev-server --config config/webpack.config.js --progress",
+    "prewatch": "npm run clean:dist",
+    "build": "webpack --config config/webpack.config.js --colors --profile --display-error-details --display-cached --bail",
+    "prebuild": "npm run clean:dist",
+    "build:dev": "NODE_ENV=development npm run build",
+    "build:prod": "NODE_ENV=production npm run build",
+    "lint": "tslint \"src/**/*.ts\""
+  }
+}

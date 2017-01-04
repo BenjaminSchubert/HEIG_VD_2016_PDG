@@ -81,3 +81,7 @@ class APIEndpointTestCase(APITestCase):
     # noinspection PyShadowingBuiltins
     def put(self, data, url=None, format=None):
         return self.request(self.client.put, url, format, data)
+
+    # noinspection PyShadowingBuiltins
+    def delete(self, url=None, format=None):
+        return self.request(self.client.delete, url, format)

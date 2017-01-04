@@ -42,6 +42,7 @@ TEMPORARY_BACKEND_PATH = os.path.join(TEMPORARY_PATH, "backend")
 LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
 LOCAL_APP = os.path.join(LOCAL_PATH, "app")
 LOCAL_BACKEND = os.path.join(LOCAL_PATH, "backend")
+LOCAL_FRONTEND = os.path.join(LOCAL_PATH, "frontend")
 LOCAL_VENV = os.path.join(LOCAL_PATH, os.path.expanduser("~/.virtualenvs/rady"))
 
 
@@ -74,12 +75,23 @@ def lint_backend():
         stop_section()
 
 
+def lint_frontend():
+    """
+    Runs configured linters on the frontend
+    """
+    with lcd(LOCAL_FRONTEND):
+        start_section("linting frontend")
+        local("npm run -s lint")
+        stop_section()
+
+
 def lint():
     """
     Runs all linters on the whole project
     """
     start_section("linting project", green)
     lint_app()
+    lint_frontend()
     lint_backend()
     stop_section(green)
 

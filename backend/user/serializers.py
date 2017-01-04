@@ -304,7 +304,7 @@ class FriendSerializer(ModelSerializer):
         """Defines the fields and models for the `FriendSerializer`."""
 
         model = Friendship
-        fields = ("friend", "initiator", "is_accepted", "is_blocked", "is_hidden")
+        fields = ("id", "friend", "initiator", "is_accepted", "is_blocked", "is_hidden")
 
     def create(self, validated_data):
         """
