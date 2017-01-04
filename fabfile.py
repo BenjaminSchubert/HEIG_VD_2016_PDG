@@ -20,6 +20,8 @@ from fabric.api import cd, hide, lcd, local, prefix, put, run, sudo
 from fabric.colors import blue, green, red
 # noinspection PyUnresolvedReferences
 from fabric.state import output, env
+# noinspection PyUnresolvedReferences
+from fabric.context_managers import shell_env
 
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
@@ -32,12 +34,14 @@ output.running = False
 
 
 REMOTE_PATH = "/srv/rady/"
+REMOTE_FRONTEND = os.path.join(REMOTE_PATH, "frontend")
 REMOTE_BACKEND = os.path.join(REMOTE_PATH, "backend")
 REMOTE_VENV = os.path.join(REMOTE_PATH, "venv")
 UWSGI_WATCHER = os.path.join(REMOTE_PATH, "watch")
 
 TEMPORARY_PATH = "/tmp/rady"
 TEMPORARY_BACKEND_PATH = os.path.join(TEMPORARY_PATH, "backend")
+TEMPORARY_FRONTEND_PATH = os.path.join(TEMPORARY_PATH, "frontend")
 
 LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
 LOCAL_APP = os.path.join(LOCAL_PATH, "app")
@@ -129,6 +133,11 @@ def prepare_deploy():
     """
     Prepare files locally to deploy
     """
+    with lcd(LOCAL_FRONTEND):
+        with shell_env(NODE_ENV="production"):
+            local("npm run -s clean:dist")
+            local("npm run -s build")
+
     with lcd(LOCAL_BACKEND):
         start_section("local cleanup")
         local("""find . -type f -iname "*.pyc" -delete""")
@@ -143,17 +152,21 @@ def copy_files():
     Copy files to the remote server
     """
     start_section("copying to server")
-    for path in [REMOTE_BACKEND]:
+
+    for path in [REMOTE_BACKEND, REMOTE_FRONTEND]:
         sudo("mkdir -p " + path)
         sudo("rm -rf " + os.path.join(path, "*"))
 
-    for path in [TEMPORARY_BACKEND_PATH]:
+    for path in [TEMPORARY_BACKEND_PATH, TEMPORARY_FRONTEND_PATH]:
         run("mkdir -p " + path)
         run("rm -rf " + os.path.join(path, "*"))
 
-    put("./backend/*", TEMPORARY_BACKEND_PATH)
+    put("{}/*".format(LOCAL_BACKEND), TEMPORARY_BACKEND_PATH)
     run("rm -f {}/rady.db".format(TEMPORARY_BACKEND_PATH))
     sudo("cp -r {}/* {}".format(TEMPORARY_BACKEND_PATH, REMOTE_BACKEND))
+
+    put("{}/dist/*".format(LOCAL_FRONTEND), TEMPORARY_FRONTEND_PATH, mode="0644")
+    sudo("cp -r {}/* {}".format(TEMPORARY_FRONTEND_PATH, REMOTE_FRONTEND))
     stop_section()
 
 
