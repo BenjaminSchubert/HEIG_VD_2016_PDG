@@ -1,9 +1,5 @@
-from unittest.mock import patch, ANY
-
-from django.db.models.signals import post_save
 from rest_framework import status
 
-from device.tests import create_device
 from test_utils import APIEndpointTestCase, API_V1, authenticated
 from user.models import User, Friendship
 

@@ -3,13 +3,13 @@ from unittest.mock import patch, ANY
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from device.tests import create_device
+from device.tests import create_device, MockFcmMessagesMixin
 from user.models import Friendship, User
 
 __author__ = "Damien Rochat <rochat.damien@gmail.com>"
 
 
-class MessagesTestCase(TestCase):
+class MessagesTestCase(MockFcmMessagesMixin, TestCase):
 
     def setUp(self):
         super().setUp()
@@ -21,21 +21,21 @@ class MessagesTestCase(TestCase):
             )
             create_device(user)
 
-    @patch("device.models.send_fcm_message")
-    def test_new_friendship_send_push_notification(self, mocked_handler):
+        self.mocked_send_fcm_message.reset_mock()
+
+    def test_new_friendship_send_push_notification(self):
         u1 = User.objects.first()
         u2 = User.objects.last()
         Friendship(from_account=u1, to_account=u2).save()
 
-        mocked_handler.assert_called_once_with(
+        self.mocked_send_fcm_message.assert_called_once_with(
             registration_id=u2.get_device().registration_id,
             title=ANY,
             body=ANY,
             data={"type": "friend-request"},
         )
 
-    @patch("device.models.send_fcm_message")
-    def test_accept_friendship_send_push_notification(self, m):
+    def test_accept_friendship_send_push_notification(self):
         u1 = User.objects.first()
         u2 = User.objects.last()
         friendship = Friendship(from_account=u1, to_account=u2)
@@ -52,16 +52,15 @@ class MessagesTestCase(TestCase):
             data={"type": "friend-request-accepted"},
         )
 
-    @patch("device.models.send_fcm_message")
-    def test_try_to_send_deferred_messages_on_device_registration(self, mocked_handler):
-        mocked_handler.return_value = dict(success=0)
+    def test_try_to_send_deferred_messages_on_device_registration(self):
+        self.mocked_send_fcm_message.return_value = dict(success=0)
         user = User.objects.first()
         device = user.get_device()
         device.send_message()
         device.send_message()
 
-        mocked_handler.reset_mock()
-        mocked_handler.return_value = dict(success=1)
+        self.mocked_send_fcm_message.reset_mock()
+        self.mocked_send_fcm_message.return_value = dict(success=1)
         create_device(user)
 
-        self.assertEqual(mocked_handler.call_count, 2)
+        self.assertEqual(self.mocked_send_fcm_message.call_count, 2)

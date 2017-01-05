@@ -1,4 +1,4 @@
-from unittest.mock import patch, ANY, call
+from unittest.mock import ANY, call
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
