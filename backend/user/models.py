@@ -127,12 +127,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         :param body: the body of the message
         :param type: the type of the message
         :param deferred: define if message can be deferred or not
-        :return: True if the message was successfully sent, False otherwise.
         """
         device = self.get_device()
-        if device is None:
-            return False
-        return device.send_message(title, body, type, deferred)
+        if device is not None:
+            device.send_message(title, body, type, deferred)
 
     def send_deferred_messages(self):
         """
