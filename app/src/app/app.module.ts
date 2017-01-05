@@ -19,6 +19,10 @@ import { AddContactFromList } from '../pages/add-contact-from-list/add-contact-f
 import { AddContactFromScanner } from '../pages/add-contact-from-scanner/add-contact-from-scanner';
 import { MyQrCode } from '../pages/my-qr-code/my-qr-code';
 
+import { CreateGathering, CreateGatheringModalFixed } from '../pages/create-gathering/create-gathering';
+import { PendingGathering } from '../pages/pending-gathering/pending-gathering';
+import { RunningGathering } from '../pages/running-gathering/running-gathering';
+
 import { AuthService } from '../providers/auth-service';
 import { PushService } from '../providers/push-service';
 import { NotificationService } from '../providers/notification-service';
@@ -41,7 +45,10 @@ let COMPONENTS_LIST: any = [
   AddContact,
   AddContactFromList,
   AddContactFromScanner,
-  MyQrCode
+  MyQrCode,
+  CreateGathering, CreateGatheringModalFixed,
+  PendingGathering,
+  RunningGathering
 ]
 
 // put here the providers

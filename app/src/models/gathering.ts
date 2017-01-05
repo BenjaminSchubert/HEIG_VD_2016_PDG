@@ -1,3 +1,5 @@
+import { RadyUser } from './user';
+
 /**
  * RadyGathering
  * Model for meetings
@@ -5,5 +7,9 @@
  */
 export class RadyGathering {
 
-    // empty atm
+    constructor(
+        public initiator: RadyUser,
+        public participants: RadyUser[],
+        public mode: string = null
+    ) {}
 }

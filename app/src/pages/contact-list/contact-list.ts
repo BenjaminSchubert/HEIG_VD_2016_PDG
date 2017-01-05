@@ -2,10 +2,14 @@ import { Component } from '@angular/core';
 import { NavController, App, AlertController, ActionSheetController } from 'ionic-angular';
 
 import { AddContact } from '../add-contact/add-contact';
+import { CreateGathering } from '../create-gathering/create-gathering';
 
 import { RadyFriend } from '../../models/friend';
+import { RadyGathering } from '../../models/gathering';
 import { ContactsService } from '../../providers/contacts-service';
 import { AuthService } from '../../providers/auth-service';
+import { GatheringService } from '../../providers/gathering-service';
+import { MeService } from '../../providers/me-service';
 import { CONFIG } from '../../providers/config';
 
 @Component({
@@ -21,7 +25,9 @@ export class ContactList {
               public contactsService: ContactsService,
               public alertCtrl: AlertController,
               public actionSheetCtrl: ActionSheetController,
-              public authService: AuthService) {
+              public authService: AuthService,
+              public gatheringService: GatheringService,
+              public meService: MeService) {
     // nothing
   }
 
@@ -29,12 +35,9 @@ export class ContactList {
     
     // fetch and init
     this.contactsService.fetch().then(() => this.initializeItems())
-      .catch((err) => console.log('[ContactList] fetching error: ' + JSON.stringify(err)));
-  }
+      .catch((err) => console.log('[ContactList] contacts fetching error: ' + JSON.stringify(err)));
 
-  // TEST
-  diag(item) {
-    return JSON.stringify(item);
+    this.meService.fetch().catch((err) => console.log('[ContactList] me fetching error: ' + JSON.stringify(err)));
   }
 
   friendRequestReceived() {
@@ -115,17 +118,7 @@ export class ContactList {
         }},
         { text: 'Remove', role: 'destructive', handler: () => {
 
-          // remove friend (hide)
-          this.authService.http().patch(
-            CONFIG.API_URL + 'users/friends/' + item.id + '/',
-            { is_hidden: true },
-            this.authService.createOptions([
-              { name: 'Content-Type', value: 'application/json' }
-            ])
-          )
-          .toPromise()
-          .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh
-          .catch((err) => console.log('[ContactList] hiding error: ' + err));
+          // TODO remove friend 
         }},
         { text: 'Cancel', role: 'cancel' }
       ]
@@ -208,9 +201,21 @@ export class ContactList {
     this.app.getRootNav().push(AddContact);
   }
 
-  // nav to ...
+  // nav to CreateGathering
   goToWaitingForParticipant() {
 
+    // Reset gathering
+    this.gatheringService.set(
+      new RadyGathering(
+        this.meService.me, 
+        this.items.filter((i) => {
+          return i.checked;
+        }).map((f) => {
+          return f.friend;
+        })));
+
+    // getRootNav() needed to get out of the Tabs
+    this.app.getRootNav().push(CreateGathering);
   }
 
   /**

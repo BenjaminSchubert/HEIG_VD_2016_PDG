@@ -1,22 +1,75 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { ModalController, ViewController, NavController } from 'ionic-angular';
 
-/*
-  Generated class for the CreateGathering page.
+import { PendingGathering } from '../pending-gathering/pending-gathering';
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+import { GatheringService } from '../../providers/gathering-service';
+
+/**
+ * CreateGathering
+ * Settings page for meetings
+ * Patrick Champion - 05.01.2017
+ */
 @Component({
-  selector: 'page-create-gathering',
   templateUrl: 'create-gathering.html'
 })
 export class CreateGathering {
 
-  constructor(public navCtrl: NavController) {}
+  constructor(
+    public navCtrl: NavController,
+    public gatheringService: GatheringService,
+    public modalCtrl: ModalController
+  ) {}
 
-  ionViewDidLoad() {
-    console.log('Hello CreateGathering Page');
+  // TEST 
+  diag(v) {
+    return JSON.stringify(v);
   }
 
+  ionViewDidLoad() {
+  }
+
+  modeChoosen(modeRef) {
+    let mode = JSON.parse(JSON.stringify(modeRef));
+    this.gatheringService.gathering.mode = null;
+    switch (mode) {
+      case 'fixed': this.fixedMode(); break;
+      case 'somebody': this.somebodyMode(); break;
+      case 'shortest': this.shortestMode(); break;
+      default: console.log('[CreateGathering] unknown mode'); break;
+    }
+    if(this.gatheringService.gathering.mode != null)
+      this.navCtrl.push(PendingGathering);
+  }
+
+  private fixedMode() {
+    this.modalCtrl.create(CreateGatheringModalFixed).present();
+  }
+
+  private somebodyMode() {
+
+  }
+
+  private shortestMode() {
+
+  }
+}
+
+/**
+ * CreateGatheringModalFixed
+ * Modal for fixed mode
+ */
+@Component({
+  templateUrl: 'create-gathering-modal-fixed.html'
+})
+export class CreateGatheringModalFixed {
+    
+    constructor(
+      public viewCtrl: ViewController,
+      public gatheringService: GatheringService
+    ) {}
+
+    dismiss() {
+      this.viewCtrl.dismiss();
+    }
 }

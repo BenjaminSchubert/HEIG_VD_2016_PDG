@@ -2,17 +2,24 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
-/*
-  Generated class for the GatheringService provider.
+import { RadyGathering } from '../models/gathering';
 
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
+/**
+ * GatheringService
+ * Manager for meetings
+ * Patrick Champion - 05.01.2017
+ */
 @Injectable()
 export class GatheringService {
 
+  public gathering: RadyGathering;
+
   constructor(public http: Http) {
-    console.log('Hello GatheringService Provider');
+    this.gathering = null;
+  }
+
+  set(gathering: RadyGathering) {
+    this.gathering = gathering;
   }
 
 }
