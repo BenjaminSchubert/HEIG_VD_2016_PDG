@@ -11,7 +11,13 @@ class ParticipantsDetailsEndpointTestCase(APIEndpointTestCase):
     def setUp(self):
         super().setUp()
 
-        self.meeting = Meeting(organiser=self.user)
+        friend = get_user_model().objects.create_user(
+            email="jack@test.com",
+            password=None,
+        )
+        friend.save()
+
+        self.meeting = Meeting(organiser=friend)
         self.meeting.save()
 
         self.participant = Participant(meeting=self.meeting, user=self.user)

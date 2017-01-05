@@ -76,9 +76,10 @@ class ParticipantSerializer(ModelSerializer):
 
         if "accepted" in attrs and self.instance.accepted is not None:
             raise ValidationError({"accepted": "You have already answered this meeting."})
+
         if "arrived" in attrs:
             if attrs["arrived"] is True and self.instance.accepted is not True:
-                raise ValidationError({"accepted": "You didn't accept this meeting."})
+                raise ValidationError({"accepted": "You have not accepted this meeting."})
             elif attrs["arrived"] is False:
                 raise ValidationError({"accepted": "Operation not permitted."})
 
@@ -134,6 +135,7 @@ class WriteMeetingSerializer(MeetingSerializer):
         """
         participants = validated_data.pop("participants")
         place = validated_data.pop("place", None)
+        current_user = self.context["request"].user
 
         meeting = super().create(validated_data)
 
@@ -142,7 +144,12 @@ class WriteMeetingSerializer(MeetingSerializer):
             place.save()
 
         for participant in participants:
-            Participant(user=participant, place=place, meeting=meeting).save()
+            Participant(
+                user=participant,
+                place=place,
+                meeting=meeting,
+                accepted=True if current_user.id == participant.id else None
+            ).save()
 
         return meeting
 

@@ -163,3 +163,21 @@ class TestMeeting(APIEndpointTestCase):
 
         Participant(meeting=meeting, user=self.user).save()
         self.assertEqual(len(self.get().json()), 1)
+
+    @authenticated
+    def test_organiser_accepted_meeting(self):
+        friend = get_user_model().objects.last()
+        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+
+        self.post(dict(type="place", place=dict(latitude=0, longitude=1), participants=[friend.id]))
+
+        self.assertTrue(Participant.objects.get(user=self.user).accepted)
+
+    @authenticated
+    def test_no_organiser_not_accepted_meeting(self):
+        friend = get_user_model().objects.last()
+        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+
+        self.post(dict(type="place", place=dict(latitude=0, longitude=1), participants=[friend.id]))
+
+        self.assertFalse(Participant.objects.get(user=friend).accepted)
