@@ -40,19 +40,20 @@ class DeviceQuerySet(models.query.QuerySet):
                 DeferredMessage(user_id=device.user_id, title=title, body=body, type=type).save()
 
         devices = list(self.filter(is_active=True).all())
-        result = send_fcm_bulk_message(
-            registration_ids=[d.registration_id for d in devices],
-            title=title,
-            body=body,
-            data=dict(type=type)
-        )
+        if devices:
+            result = send_fcm_bulk_message(
+                registration_ids=[d.registration_id for d in devices],
+                title=title,
+                body=body,
+                data=dict(type=type)
+            )
 
-        for (index, result) in enumerate(result[0]["results"]):
-            if "error" in result:
-                self.filter(id=devices[index].id).update(is_active=False)
+            for (index, result) in enumerate(result[0]["results"]):
+                if "error" in result:
+                    self.filter(id=devices[index].id).update(is_active=False)
 
-                if deferred is True:
-                    DeferredMessage(user_id=devices[index].user_id, title=title, body=body, type=type).save()
+                    if deferred is True:
+                        DeferredMessage(user_id=devices[index].user_id, title=title, body=body, type=type).save()
 
 
 class Device(models.Model):
