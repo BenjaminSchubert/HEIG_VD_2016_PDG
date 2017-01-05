@@ -7,4 +7,4 @@ Based on xtrinch/fcm-django (https://github.com/xtrinch/fcm-django)
 Use lucurious/PyFCM (https://github.com/olucurious/PyFCM)
 """
 
-default_app_config = 'device.apps.DeviceConfig'
+default_app_config = "device.apps.DeviceConfig"
