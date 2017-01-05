@@ -14,7 +14,6 @@ from django.db import models
 from django.db import transaction
 from popo_attribute_tracker.attribute_tracker import AttributeTrackerMixin
 
-from device.fcm import send_fcm_message
 from device.models import Device, DeferredMessage
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
@@ -122,46 +121,28 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def send_message(self, title=None, body=None, type=None, deferred=True):
         """
-        Send a push message to the device of the user, allowing the message to be deferred if sending failed.
-
-        Will mark the device as inactive if sending fails
-        and won't try to send a message to an already inactive device.
+        Send a push message to the device of the user.
 
         :param title: the title of the message
         :param body: the body of the message
         :param type: the type of the message
         :param deferred: define if message can be deferred or not
-        :return: True if the message was successfully sent, False otherwise.
         """
         device = self.get_device()
-        if device is None or device.is_active is False:
-            if deferred is True:
-                DeferredMessage(user=self, title=title, body=body, type=type).save()
-            return False
-        else:
-            result = send_fcm_message(
-                registration_id=device.registration_id,
-                title=title,
-                body=body,
-                data=dict(type=type)
-            )
-            if result["success"] == 0:  # for multiple, it would be necessary to check the result of all messages
-                device.is_active = False
-                device.save()
-                if deferred is True:
-                    DeferredMessage(user=self, title=title, body=body, type=type).save()
-                return False
-            return True
+        if device is not None:
+            device.send_message(title, body, type, deferred)
 
     def send_deferred_messages(self):
         """
-        Try to send eventually pending push notifications.
+        Try to send eventually pending push notifications to the current registered device.
 
         Stop on first failed sent.
         """
-        for message in DeferredMessage.objects.filter(user=self):
-            if message.send() is False:
-                return
+        device = self.get_device()
+        if device is not None:
+            for message in DeferredMessage.objects.filter(user=self):
+                if device.send_deferred_message(message) is False:
+                    return
 
 
 class Friendship(models.Model, AttributeTrackerMixin):

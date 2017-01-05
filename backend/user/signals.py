@@ -3,6 +3,7 @@
 from django.db.models.signals import post_init, post_save
 from django.dispatch import receiver
 
+from device.models import Device
 from user.models import Friendship
 
 __author__ = "Damien Rochat <rochat.damien@gmail.com>"
@@ -41,3 +42,13 @@ def post_save_friendship(instance, created, **kwargs):
             type="friend-request-accepted",
         )
     instance.reset_tracker()
+
+
+@receiver(post_save, sender=Device)
+def post_save_device(instance, **kwargs):
+    """
+    Fired after a device is saved.
+
+    Try to send eventually deferred messages to the user who registered the device.
+    """
+    instance.user.send_deferred_messages()
