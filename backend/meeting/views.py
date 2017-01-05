@@ -2,12 +2,11 @@
 
 
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.response import Response
 
-from meeting.models import Meeting, Place
-from meeting.serializers import MeetingSerializer, WriteMeetingSerializer, PlaceSerializer
-
+from meeting.models import Meeting, Place, Participant
+from meeting.serializers import MeetingSerializer, WriteMeetingSerializer, PlaceSerializer, ParticipantSerializer
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
@@ -38,6 +37,29 @@ class PlaceListView(ListAPIView):
     def get_queryset(self):
         """Get all places for the registered user."""
         return Place.objects.filter(participant__user=self.request.user)
+
+
+class ParticipantDetailsView(UpdateAPIView):
+    """
+    Allows a user to manage his participation to a meeting.
+
+    This view require the user to be authenticated. It supports PUT/PATCH requests.
+
+    This view supports multiple formats: JSon, XML, etc.
+
+    An example of data, in JSon, is:
+
+        {
+            "accepted": true, (optional)
+            "arrived": true, (optional)
+        }
+    """
+
+    serializer_class = ParticipantSerializer
+
+    def get_queryset(self):
+        """Get all participation for the registered user."""
+        return Participant.objects.filter(user=self.request.user)
 
 
 class PlaceDetailsView(RetrieveUpdateAPIView):

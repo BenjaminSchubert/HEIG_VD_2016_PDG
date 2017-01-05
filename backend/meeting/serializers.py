@@ -61,8 +61,28 @@ class ParticipantSerializer(ModelSerializer):
     class Meta:
         """Defines the metaclass for the `ParticipantSerializer`."""
 
-        exclude = ("place", "id", "meeting")
+        exclude = ("place", "id", "meeting", "user")
         model = Participant
+
+    def validate(self, attrs):
+        """
+        Check that the data is valid for the update of a participant.
+
+        :param attrs: attributes to check
+        :exception ValidationError: when any of the attribute is invalid
+        :return: sanitized version of the attributes
+        """
+        attrs = super().validate(attrs)
+
+        if "accepted" in attrs and self.instance.accepted is not None:
+            raise ValidationError({"accepted": "You have already answered this meeting."})
+        if "arrived" in attrs:
+            if attrs["arrived"] is True and self.instance.accepted is not True:
+                raise ValidationError({"accepted": "You didn't accept this meeting."})
+            elif attrs["arrived"] is False:
+                raise ValidationError({"accepted": "Operation not permitted."})
+
+        return attrs
 
 
 class MeetingSerializer(ModelSerializer):
