@@ -1,0 +1,848 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: Rady API
+  description: This is the API used for Rady application
+  version: "1.0.0"
+# the domain of the service
+host: rady.benschubert.me
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /api/v1
+produces:
+  - application/json
+paths:
+  /users/:
+    get:
+      description: |
+        Returns all users registered in the application. 
+        This view requires users to be authenticated.
+        This view accepts three request parameters to allow filtering :
+          - email: to filter users by email 
+          - username: to filter users by username 
+          - phone(list) : to filter users by phone number The `phone` filter accepts a single number or a list of numbers
+      parameters:
+        - name: email
+          in: query
+          description: Filter the users by this email.
+          required: false
+          type: string
+        - name: username
+          in: query
+          description: Filter the users by this username.
+          required: false
+          type: string
+        - name: phone(list)
+          in: query
+          description: Filter the users by this/these phone number(s).
+          required: false
+          type: string
+      responses:
+        200:
+          description: Return an array of User that are registerd filtered with the specified filters 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        401:
+          description: The user isn't authenticated
+    post:
+      description: |
+        Create a new user.
+        This view doesn't require users to be authenticated.
+      parameters:
+        - name: username
+          in: query
+          description: The username of the user.
+          required: true
+          type: string
+        - name: password
+          in: query
+          description: The password of the user.
+          required: true
+          type: string
+        - name: email
+          in: query
+          description: The email adress of the user (must be unique).
+          required: true
+          type: string
+      responses:
+        201:
+          description: Return the created user 
+          
+          
+        400:
+          description: The request is incorect
+          
+  /users/me/:
+    get:
+      description: |
+        Allows a user to get his profile.
+        This view requires the user to be authenticated.
+      responses:
+        200:
+          description: The user informations
+          schema:
+              $ref: '#/definitions/CompleteUser'
+        401:
+          description: 	
+            The user isn't authenticated.
+    put:
+      description: |
+        Allows a user to update his profile.
+        This view requires the user to be authenticated.
+      parameters:
+        - name: username
+          in: query
+          description: Our new user name.
+          required: true
+          type: string
+        - name: email
+          in: query
+          description: Our new email.
+          required: true
+          type: string
+        - name: password
+          in: query
+          description: Our new password.
+          required: false
+          type: string
+        - name: phone_number
+          in: query
+          description: Our new phone number.
+          required: false
+          type: string
+        - name: country
+          in: query
+          description: Our new country for the phone number. This is required if we send a new phone number.
+          required: false
+          type: string
+      
+      responses:
+        200:
+          description: The user informations
+        401:
+          description: 	
+            The user isn't authenticated.
+    patch:
+      description: |
+        Allows a user to update his profile.
+        This view requires the user to be authenticated.
+      parameters:
+        - name: username
+          in: query
+          description: Our new user name.
+          required: false
+          type: string
+        - name: email
+          in: query
+          description: Our new email.
+          required: false
+          type: string
+        - name: password
+          in: query
+          description: Our new password.
+          required: false
+          type: string
+        - name: phone_number
+          in: query
+          description: Our new phone number.
+          required: false
+          type: string
+        - name: country
+          in: query
+          description: Our new country for the phone number. This is required if we send a new phone number.
+          required: false
+          type: string
+      responses:
+        200:
+          description: The user informations
+        401:
+          description: 	
+            The user isn't authenticated.
+            
+  /users/me/avatar/:
+    delete:
+      description: |
+        Allows a user to delete his avatar.
+        This view requires the user to be authenticated.
+      responses:
+        204:
+          description: The avatar has been deleted
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+            
+    put:
+      description: |
+        Allows a user to update his profile.
+        This view requires the user to be authenticated.
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: avatar
+          in: formData
+          description: Our new user name.
+          required: true
+          type: file
+      responses:
+        201:
+          description: The avatar has been saved
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+    patch:
+      description: |
+        Allows a user to update his profile.
+        This view requires the user to be authenticated.
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: avatar
+          in: formData
+          description: Our new user name.
+          required: false
+          type: file
+      responses:
+        201:
+          description: The avatar has been modified
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+            
+  /users/me/friends/:
+    get:
+      description: |
+        Returns user's friends that have accepted the request and that are not blocked by the user.
+        This view requires to be authenticated.
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+            
+    post:
+      description: |
+        Allows a user to update his profile.
+        This view requires the user to be authenticated.
+      parameters:
+        - name: friend
+          in: body
+          description: the friendship to post
+          required: true
+          schema:
+            $ref: '#/definitions/Friend'
+      responses:
+        201:
+          description: The friend request has been done
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+            
+  /users/me/friends/all/:
+    get:
+      description: |
+        Returns user's friends whether they already accepted the request or not, whether they are blocked or not.
+        This view requires to be authenticated.
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+  
+  /users/me/friends/blocked/:
+    get:
+      description: |
+        Returns all friends that the user has blocked.
+        This view requires to be authenticated. 
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+
+  /users/me/friends/pending/:
+    get:
+      description: |
+        Returns all friends requests made to the user that where not yet answered. 
+        This view requires to be authenticated. 
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+    
+  /users/me/friends/hidden/:
+    get:
+      description: |
+        Returns all friends requests made to the user that where not yet answered and marked as hidden. 
+        This view requires to be authenticated. 
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+            
+  /users/me/friends/{<pk>}/:
+    get:
+      description: |
+        Allows a user to get a friendship link.
+        This view requires to be authenticated.
+      parameters:
+        - name: <pk>
+          in: path
+          description: ID of friend
+          required: true
+          type: integer
+          format: int64  
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.          
+    put:
+      description: |
+        Allows a user to update his profile.
+        This view requires the user to be authenticated.
+      parameters:
+        - name: <pk>
+          in: path
+          description: ID of friend
+          required: true
+          type: integer
+          format: int64 
+        - name: friend
+          in: body
+          description: the friendship to put
+          required: true
+          schema:
+            $ref: '#/definitions/Friend'
+      responses:
+        201:
+          description: The friend request has been modified
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+    patch:
+      description: |
+        Allows a user to update his profile.
+        This view requires the user to be authenticated.
+      parameters:
+        - name: <pk>
+          in: path
+          description: ID of friend
+          required: true
+          type: integer
+          format: int64 
+        - name: friend
+          in: body
+          description: the friendship to put
+          required: true
+          schema:
+            $ref: '#/definitions/Friend'
+      responses:
+        201:
+          description: The friend request has been modified
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+  /meetings/:
+    get:
+      description: |
+        Allows a user to get his meetings
+        This view requires to be authenticated.
+        
+        There are 3 types of meeting :
+        * type = "shortest":
+
+            When the type is "shortest", then the server will compute an approximation of the shortest path between
+
+            all participants and will use this as a meeting point. If this mode is chosen, then the `place` attribute
+
+            will be displayed on `GET` requests, but may be null as long as the server didn't finish its computation.
+
+        
+        * type = "place":
+
+            When the type is "place", then the server expects a `place` attribute on creation, which contains at least
+
+            a `longitude` and `latitude` attributes, representing the coordinates of the place. It also accepts an
+
+            optional `name` that has no influence on the place but allows to give a human readable name of it.
+
+
+        * type = "person":
+
+            When the type is "person", then the server expects a `on` attribute on creation, which contains the id
+
+            of the user on which to make the meeting point. The user must be in the meeting.
+            
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Meeting'
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.          
+    post:
+      description: |
+        Allows a user to create his meetings
+        This view requires the user to be authenticated.
+        
+        There are 3 types of meeting :
+        * type = "shortest":
+
+            When the type is "shortest", then the server will compute an approximation of the shortest path between
+
+            all participants and will use this as a meeting point. If this mode is chosen, then the `place` attribute
+
+            will be displayed on `GET` requests, but may be null as long as the server didn't finish its computation.
+
+        
+        * type = "place":
+
+            When the type is "place", then the server expects a `place` attribute on creation, which contains at least
+
+            a `longitude` and `latitude` attributes, representing the coordinates of the place. It also accepts an
+
+            optional `name` that has no influence on the place but allows to give a human readable name of it.
+
+
+        * type = "person":
+
+            When the type is "person", then the server expects a `on` attribute on creation, which contains the id
+
+            of the user on which to make the meeting point. The user must be in the meeting.
+        
+      parameters:
+        - name: meeting
+          in: body
+          description: The meeting to post
+          required: true
+          schema:
+            $ref: '#/definitions/MeetingPost'
+      responses:
+        201:
+          description: The meeting request has been posted
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.   
+            
+  /meetings/places/:
+    get:
+      description: |
+        Returns all places known to the registered user.
+        This view requires to be authenticated.
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Place'
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.   
+  
+  /meetings/places/{<pk>}/:
+    get:
+      description: |
+        Allows a user to get the places he knows.
+        This view requires to be authenticated.
+      parameters:
+        - name: <pk>
+          in: path
+          description: ID of place
+          required: true
+          type: integer
+          format: int64  
+      responses:
+        200:
+          description: Return an the place pk 
+          schema:
+              $ref: '#/definitions/Place'
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.          
+    put:
+      description: |
+        Allows a user to update a place he knows.
+        This view requires the user to be authenticated.
+      parameters:
+        - name: <pk>
+          in: path
+          description: ID of friend
+          required: true
+          type: integer
+          format: int64 
+        - name: place
+          in: body
+          description: the place to put
+          required: true
+          schema:
+            $ref: '#/definitions/Place'
+      responses:
+        201:
+          description: The friend request has been modified
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+    patch:
+      description: |
+        Allows a user to update a place he knows.
+        This view requires the user to be authenticated.
+      parameters:
+        - name: <pk>
+          in: path
+          description: ID of place
+          required: true
+          type: integer
+          format: int64 
+        - name: place
+          in: body
+          description: the place to put
+          required: true
+          schema:
+            $ref: '#/definitions/Place'
+      responses:
+        201:
+          description: The friend request has been modified
+        400:
+          description: 	
+            An error has occured.
+        401:
+          description: 	
+            The user isn't authenticated.
+        403:
+          description: 	
+            You don't have permission to perform that action.
+            
+  /auth/login/:
+    post:
+      description: |
+        Returns a JSON Web Token that can be used for authenticated requests.
+      parameters:
+        - name: username
+          in: query
+          description: The username of the user.
+          required: true
+          type: string
+        - name: password
+          in: query
+          description: The password of the user.
+          required: true
+          type: string   
+      responses:
+        200:
+          description: Return a token
+          schema:
+            $ref: '#/definitions/Token'
+        400:
+          description: 	
+            An error has occured.
+  /auth/refresh/:
+    post:
+      description: |
+        Returns a JSON Web Token that can be used for authenticated requests.
+      parameters:
+        - name: token
+          in: body
+          description: the old token
+          required: true
+          schema:
+            $ref: '#/definitions/Token'
+      responses:
+        200:
+          description: Return a new token
+          schema:
+            $ref: '#/definitions/Token'
+        400:
+          description: An error has occured.    
+  /fcm/devices/:
+    post:
+      description: |
+        Allow to register a new device, related to the current logged in user.
+        This view requires the user to be authenticated.
+      parameters:
+        - name: email
+          in: query
+          description: Filter the users by this email.
+          required: false
+          type: string
+      responses:
+        200:
+          description: The device was already registered
+        201:
+          description: The device has been registered
+        400:
+          description: An error has occured.    
+  
+  
+definitions:
+  User:
+    type: object
+    properties:
+      username:
+        type: string
+        description: The username of the user
+      avatar:
+        type: string
+        description: The url of the avatar.
+  CompleteUser:
+    type: object
+    properties:
+      username:
+        type: string
+        description: The username of the user.
+      email:
+        type: string
+        description: The email adress of the user. 
+      avatar:
+        type: string
+        description: The url of the picture of the user.
+  Friend:
+    type: object
+    properties:
+      username:
+        type: string
+        description: The username of the friend
+      avatar:
+        type: string
+        description: The url of the avatar.
+      is_hidden:
+        type: boolean
+        description: True if the friend is hidden.
+      is_accepted:
+        type: boolean
+        description: True if the friend is accepted.
+      is_blocked:
+        type: boolean
+        description: True if the friend is blocked.
+  Meeting:
+    type: object
+    properties:
+      end_time:
+        type: string
+        format: date-time
+        description: The time at which the meeting ended.
+      id:
+        type: integer
+        format: int64
+        description: Id of the meeting.
+      meeting_time:
+        type: string
+        format: date-time
+        description: The time at which the meeting is planned.
+      organiser :
+        type: integer
+        format: int64
+        description: Id of the organiser.
+      participant:
+        type: array
+        items:
+          $ref: '#/definitions/Participant'
+        description: List of participant.
+      place:
+          $ref: '#/definitions/Place'
+      start_time:
+        type: string
+        format: date-time
+        description: The time at which the meeting was created. 
+      type:
+        type: string
+        description: The type of the meeting (place | shortest | person).
+  Participant:
+    type: object
+    properties:
+      accepted:
+        type: boolean
+        description: The time at which the meeting ended.
+      arrived:
+        type: boolean
+        description: Id of the meeting.
+      user:
+        type: integer
+        format: int64
+        description: Id of the participants.
+  Place:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Id of the of the meeting place.
+      latitude:
+        type: number
+        format: DECIMAL(6)
+        description: The latitude of the meeting place.
+      longitude:
+        type: number
+        format: DECIMAL(6)
+        description: The longitude of the meeting place.
+      name:
+        type: string
+        description: Name of the meeting place.
+  MeetingPost:
+    type: object
+    properties:
+      meeting_time:
+        type: string
+        format: date-time
+        description: The time at which the meeting is planned.
+      participants:
+        type: array
+        items:
+          type: integer
+          format: int64
+        description: The id of the participants.
+      place:
+          $ref: '#/definitions/Place'
+      type:
+        type: string
+        description: The type of the meeting (place | shortest | person). 
+  Token:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+      
