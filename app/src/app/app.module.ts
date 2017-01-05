@@ -24,6 +24,7 @@ import { PushService } from '../providers/push-service';
 import { NotificationService } from '../providers/notification-service';
 import { ContactsService } from '../providers/contacts-service';
 import { MeService } from '../providers/me-service';
+import { GatheringService } from '../providers/gathering-service';
 
 // put here the components
 let COMPONENTS_LIST: any = [
@@ -49,7 +50,8 @@ let PROVIDERS_LIST: any = [
   PushService,
   NotificationService,
   ContactsService,
-  MeService
+  MeService,
+  GatheringService
 ]
 
 @NgModule({
