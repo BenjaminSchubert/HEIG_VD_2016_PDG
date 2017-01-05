@@ -121,7 +121,7 @@ def test():
     stop_section(green)
 
 
-def check_status():
+def check():
     """
     Checks that the application is in a working state
     """
@@ -204,7 +204,7 @@ def deploy():
     Deploys the complete application
     """
     try:
-        check_status()
+        check()
     except SystemExit:
         if not env.get("force"):
             raise
