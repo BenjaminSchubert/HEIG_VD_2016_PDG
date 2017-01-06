@@ -1,52 +1,104 @@
 from unittest.mock import ANY, call
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 
 from device.tests import create_device, MockFcmMessagesMixin
 from meeting.models import Meeting, Participant
-from user.models import User, Friendship
+from test_utils import APIEndpointTestCase, authenticated, API_V1
+from user.models import Friendship
 
 __author__ = "Damien Rochat <rochat.damien@gmail.com>"
 
 
-class MessagesTestCase(MockFcmMessagesMixin, TestCase):
+class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
+    number_of_other_users = 4
 
     def setUp(self):
         super().setUp()
 
-        users = []
-        for i in range(5):
-            user = get_user_model().objects.create_user(
-                username="user-{}".format(i),
-                email="email-{}@test.com".format(i),
-            )
+        for user in get_user_model().objects.all():
             create_device(user)
-            users.append(user)
-
-        for i in range(5):
-            for j in range(5):
-                if users[i].id > users[j].id:
-                    Friendship(from_account=users[i], to_account=users[j]).save()
+            Friendship(from_account=self.user, to_account=user, is_accepted=True).save()
 
         self.mocked_send_fcm_message.reset_mock()
 
+    @authenticated
     def test_new_meeting_send_push_notifications(self):
-        calls = []
+        participants = get_user_model().objects.exclude(id=self.user.id)
 
-        organiser = User.objects.first()
-        meeting = Meeting(organiser=organiser)
-        meeting.save()
-
-        participants = User.objects.exclude(id=organiser.id)
-        for participant in participants:
-            Participant(meeting=meeting, user=participant).save()
-            calls.append(call(
-                registration_id=participant.get_device().registration_id,
-                title=ANY,
-                body=ANY,
-                data={"type": "new-gathering"},
-            ))
+        self.post(
+            dict(
+                type="place",
+                place=dict(latitude=0, longitude=1),
+                participants=participants.values_list("id", flat=True)
+            ),
+            url=API_V1 + "meetings/"
+        )
 
         self.assertEqual(self.mocked_send_fcm_message.call_count, participants.count())  # no message to organiser
-        self.mocked_send_fcm_message.assert_has_calls(calls, any_order=True)
+        self.mocked_send_fcm_message.assert_has_calls([
+            call(
+                registration_id=u.get_device().registration_id,
+                title=ANY,
+                body=ANY,
+                data={"type": "new-meeting"},
+            )
+            for u in participants
+        ], any_order=True)
+
+    @authenticated
+    def test_accept_meeting_send_push_notifications(self):
+        meeting = Meeting(organiser=get_user_model().objects.exclude(id=self.user.id).last())
+        meeting.save()
+        for user in get_user_model().objects.all():
+            Participant(meeting=meeting, user=user).save()
+        my_participant = Participant.objects.get(user=self.user)
+
+        self.put(dict(accepted=True), url=API_V1 + "meetings/participants/{}/".format(my_participant.id))
+
+        users = get_user_model().objects.exclude(id=self.user.id).all()  # no message to actuator
+
+        self.mocked_send_fcm_bulk_message.assert_called_once_with(
+            registration_ids=[u.get_device().registration_id for u in users],
+            title=ANY,
+            body=ANY,
+            data={"type": "user-accepted-meeting"},
+        )
+
+    @authenticated
+    def test_refused_meeting_send_push_notifications(self):
+        meeting = Meeting(organiser=get_user_model().objects.exclude(id=self.user.id).last())
+        meeting.save()
+        for user in get_user_model().objects.all():
+            Participant(meeting=meeting, user=user).save()
+        my_participant = Participant.objects.get(user=self.user)
+
+        self.put(dict(accepted=False), url=API_V1 + "meetings/participants/{}/".format(my_participant.id))
+
+        users = get_user_model().objects.exclude(id=self.user.id).all()  # no message to actuator
+
+        self.mocked_send_fcm_bulk_message.assert_called_once_with(
+            registration_ids=[u.get_device().registration_id for u in users],
+            title=ANY,
+            body=ANY,
+            data={"type": "user-refused-meeting"},
+        )
+
+    @authenticated
+    def test_user_arrived_at_meeting_send_push_notifications(self):
+        meeting = Meeting(organiser=get_user_model().objects.exclude(id=self.user.id).last())
+        meeting.save()
+        for user in get_user_model().objects.all():
+            Participant(meeting=meeting, user=user, accepted=True).save()
+        my_participant = Participant.objects.get(user=self.user)
+
+        self.put(dict(arrived=True), url=API_V1 + "meetings/participants/{}/".format(my_participant.id))
+
+        users = get_user_model().objects.exclude(id=self.user.id).all()  # no message to actuator
+
+        self.mocked_send_fcm_bulk_message.assert_called_once_with(
+            registration_ids=[u.get_device().registration_id for u in users],
+            title=ANY,
+            body=ANY,
+            data={"type": "user-arrived-to-meeting"},
+        )

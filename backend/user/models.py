@@ -62,6 +62,29 @@ class AccountManager(BaseUserManager):
 
         return self._create_user(**fields)
 
+    def get_queryset(self):
+        """Provide a custom QuerySet for users."""
+        return UserQuerySet(self.model)
+
+
+class UserQuerySet(models.query.QuerySet):
+    """
+    Overrides the default QuerySet with our custom one.
+
+    Provide a function to send a message to a QuerySet (a selection of users).
+    """
+
+    def send_message(self, title=None, body=None, type=None, deferred=True):
+        """
+        Send a push message to the users.
+
+        :param title: the title of the message
+        :param body: the body of the message
+        :param type: the type of the message
+        :param deferred: define if message can be deferred or not
+        """
+        Device.objects.filter(user__in=self.all()).send_message(title, body, type, deferred)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Extends `AbstractBaseUser` to accommodate the User model to our needs."""

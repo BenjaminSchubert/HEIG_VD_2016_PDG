@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.conf import settings
-
+from popo_attribute_tracker.attribute_tracker import AttributeTrackerMixin
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
@@ -33,7 +33,7 @@ class Meeting(models.Model):
     participants = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Participant")
 
 
-class Participant(models.Model):
+class Participant(models.Model, AttributeTrackerMixin):
     """
     Extends `Model` to define participants to meetings.
 
@@ -46,6 +46,8 @@ class Participant(models.Model):
     accepted = models.NullBooleanField(default=None)
     arrived = models.BooleanField(default=False)
     place = models.ForeignKey(Place, null=True, max_length=255)
+
+    TRACKED_ATTRS = ("accepted", "arrived")
 
     class Meta:
         """Metaclass for the `Participant` model."""
