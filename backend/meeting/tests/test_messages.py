@@ -42,7 +42,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
                 message_title=ANY,
                 message_body=ANY,
                 message_icon=ANY,
-                data_message={"type": "new-meeting"},
+                data_message={"type": "new-meeting", "meeting": Meeting.objects.first().id},
                 sound=ANY,
                 badge=ANY,
             )
@@ -66,7 +66,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             message_title=ANY,
             message_body=ANY,
             message_icon=ANY,
-            data_message={"type": "user-accepted-meeting"},
+            data_message={"type": "user-accepted-meeting", "meeting": meeting.id, "participant": my_participant.id},
             sound=ANY,
             badge=ANY,
         )
@@ -88,7 +88,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             message_title=ANY,
             message_body=ANY,
             message_icon=ANY,
-            data_message={"type": "user-refused-meeting"},
+            data_message={"type": "user-refused-meeting", "meeting": meeting.id, "participant": my_participant.id},
             sound=ANY,
             badge=ANY,
         )
@@ -110,7 +110,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             message_title=ANY,
             message_body=ANY,
             message_icon=ANY,
-            data_message={"type": "user-arrived-to-meeting"},
+            data_message={"type": "user-arrived-to-meeting", "meeting": meeting.id, "participant": my_participant.id},
             sound=ANY,
             badge=ANY,
         )

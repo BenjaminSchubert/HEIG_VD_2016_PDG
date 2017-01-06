@@ -1,4 +1,5 @@
 """Contains all signal handlers from the `meeting` module."""
+
 from django.db.models.signals import post_save, post_init
 from django.dispatch import receiver
 
@@ -33,7 +34,7 @@ def post_save_participant(instance, created, **kwargs):
             instance.user.send_message(
                 title="New meeting",
                 body="{} added you to a meeting".format(instance.meeting.organiser.username),
-                type="new-meeting",
+                data=dict(type="new-meeting", meeting=instance.meeting.id),
             )
     else:
         meeting_users = instance.meeting.participants.exclude(id=instance.user.id).all()
@@ -43,21 +44,21 @@ def post_save_participant(instance, created, **kwargs):
                 meeting_users.send_message(
                     title="Meeting update",
                     body="{} accepted the meeting".format(instance.user.username),
-                    type="user-accepted-meeting",
+                    data=dict(type="user-accepted-meeting", meeting=instance.meeting.id, participant=instance.id),
                     deferred=False,
                 )
             elif instance.accepted is False:
                 meeting_users.send_message(
                     title="Meeting update",
                     body="{} refused the meeting".format(instance.user.username),
-                    type="user-refused-meeting",
+                    data=dict(type="user-refused-meeting", meeting=instance.meeting.id, participant=instance.id),
                     deferred=False,
                 )
         elif instance.has_changed("arrived") and instance.arrived is True:
             meeting_users.send_message(
                 title="Meeting update",
                 body="{} has arrived to the meeting".format(instance.user.username),
-                type="user-arrived-to-meeting",
+                data=dict(type="user-arrived-to-meeting", meeting=instance.meeting.id, participant=instance.id),
                 deferred=False,
             )
     instance.reset_tracker()

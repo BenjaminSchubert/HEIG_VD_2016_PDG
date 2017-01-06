@@ -31,7 +31,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             message_title=ANY,
             message_body=ANY,
             message_icon=ANY,
-            data_message={"type": "friend-request"},
+            data_message={"type": "friend-request", "friendship": Friendship.objects.first().id},
             sound=ANY,
             badge=ANY,
         )
@@ -51,7 +51,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             message_title=ANY,
             message_body=ANY,
             message_icon=ANY,
-            data_message={"type": "friend-request-accepted"},
+            data_message={"type": "friend-request-accepted", "friendship": friendship.id},
             sound=ANY,
             badge=ANY,
         )
