@@ -39,9 +39,12 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
         self.mocked_send_fcm_message.assert_has_calls([
             call(
                 registration_id=u.get_device().registration_id,
-                title=ANY,
-                body=ANY,
-                data={"type": "new-meeting"},
+                message_title=ANY,
+                message_body=ANY,
+                message_icon=ANY,
+                data_message={"type": "new-meeting"},
+                sound=ANY,
+                badge=ANY,
             )
             for u in participants
         ], any_order=True)
@@ -60,9 +63,12 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
             registration_ids=[u.get_device().registration_id for u in users],
-            title=ANY,
-            body=ANY,
-            data={"type": "user-accepted-meeting"},
+            message_title=ANY,
+            message_body=ANY,
+            message_icon=ANY,
+            data_message={"type": "user-accepted-meeting"},
+            sound=ANY,
+            badge=ANY,
         )
 
     @authenticated
@@ -79,9 +85,12 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
             registration_ids=[u.get_device().registration_id for u in users],
-            title=ANY,
-            body=ANY,
-            data={"type": "user-refused-meeting"},
+            message_title=ANY,
+            message_body=ANY,
+            message_icon=ANY,
+            data_message={"type": "user-refused-meeting"},
+            sound=ANY,
+            badge=ANY,
         )
 
     @authenticated
@@ -98,7 +107,10 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
             registration_ids=[u.get_device().registration_id for u in users],
-            title=ANY,
-            body=ANY,
-            data={"type": "user-arrived-to-meeting"},
+            message_title=ANY,
+            message_body=ANY,
+            message_icon=ANY,
+            data_message={"type": "user-arrived-to-meeting"},
+            sound=ANY,
+            badge=ANY,
         )

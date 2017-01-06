@@ -28,9 +28,12 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
 
         self.mocked_send_fcm_message.assert_called_once_with(
             registration_id=friend.get_device().registration_id,
-            title=ANY,
-            body=ANY,
-            data={"type": "friend-request"},
+            message_title=ANY,
+            message_body=ANY,
+            message_icon=ANY,
+            data_message={"type": "friend-request"},
+            sound=ANY,
+            badge=ANY,
         )
 
     @authenticated
@@ -45,9 +48,12 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
 
         self.mocked_send_fcm_message.assert_called_once_with(
             registration_id=friend.get_device().registration_id,
-            title=ANY,
-            body=ANY,
-            data={"type": "friend-request-accepted"},
+            message_title=ANY,
+            message_body=ANY,
+            message_icon=ANY,
+            data_message={"type": "friend-request-accepted"},
+            sound=ANY,
+            badge=ANY,
         )
 
     @authenticated
