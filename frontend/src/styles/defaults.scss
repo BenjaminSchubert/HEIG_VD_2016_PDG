@@ -18,7 +18,7 @@ input {
 #content {
   margin-top: $font-size-default * 3;
   margin-bottom: $font-size-default * 3;
-  height: calc(100% - #{$font-size-default * 6});
+  min-height: calc(100% - #{$font-size-default * 6} - 1pt);
 }
 
 h1 {

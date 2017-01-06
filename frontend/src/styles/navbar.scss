@@ -34,8 +34,9 @@
   }
 
   &.bottom {
-    position: fixed;
-    bottom: 0;
+    margin-top: - $font-size-default * 3;
+    //position: fixed;
+    //bottom: 0;
   }
 
   ul {

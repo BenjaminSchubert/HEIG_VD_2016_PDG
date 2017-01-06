@@ -4,6 +4,7 @@ import { HttpModule, RequestOptions, XSRFStrategy, CookieXSRFStrategy } from "@a
 import { RouterModule } from "@angular/router";
 import { ReactiveFormsModule } from "@angular/forms";
 import { ExtendedRequestOptions } from "./headers";
+import { ChartComponent } from "./components/chart.component";
 
 
 /**
@@ -18,7 +19,11 @@ export function getXSRFStrategy(): CookieXSRFStrategy {
  * This module contains utilities used across the application.
  */
 @NgModule({
-    exports: [CommonModule, ReactiveFormsModule, RouterModule],
+    declarations: [ChartComponent],
+    exports: [
+        CommonModule, ReactiveFormsModule, RouterModule,
+        ChartComponent,
+    ],
     imports: [HttpModule],
 })
 export class UtilsModule {

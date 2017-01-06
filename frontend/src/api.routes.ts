@@ -8,3 +8,5 @@ export const AUTH_URL = BASE_URL + "auth/session/";
 
 export const USERS_URL = BASE_URL + "users/";
 export const ACCOUNT_URL = USERS_URL + "me/";
+
+export const STATS_URL = BASE_URL + "statistics/";
