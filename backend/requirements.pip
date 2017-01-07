@@ -7,3 +7,4 @@ phonenumberslite==8.0.0
 pyfcm==1.2.1
 git+git://github.com/damienrochat/popo_attribute_tracker.git
 jsonfield==1.0.3
+pytz==2016.7
