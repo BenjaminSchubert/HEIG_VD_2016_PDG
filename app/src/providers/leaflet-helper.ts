@@ -14,9 +14,22 @@ export class LeafletHelper {
   public LEAFLET_URL: string = 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?access_token={accessToken}'; 
   public LEAFLET_TOKEN: string = 'pk.eyJ1IjoiY2hsYWJsYWsiLCJhIjoiY2l4a2hycG5uMDAxMTJxcDY1M2x2N2s3NiJ9.7cr1RyAverGU3AIeEIUGHA';
 
+  public radyIcon: L.Icon;
+
   constructor(
     public geolocationService: GeolocationService
-  ) {}
+  ) {
+    this.radyIcon = L.icon({
+      iconUrl: 'assets/img/leaflet-icon.png',
+      shadowUrl: 'assets/img/leaflet-shadow.png',
+
+      iconSize:     [55, 100], // size of the icon
+      shadowSize:   [55, 49], // size of the shadow
+      iconAnchor:   [28, 87], // point of the icon which will correspond to marker's location
+      shadowAnchor: [6, 47],  // the same for the shadow
+      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+  }
 
   L() {
     return L;
@@ -60,6 +73,6 @@ export class LeafletHelper {
   }
 
   marker(pos: L.LatLng): L.Marker {
-    return this.L().marker(pos);
+    return this.L().marker(pos, { icon: this.radyIcon });
   }
 }

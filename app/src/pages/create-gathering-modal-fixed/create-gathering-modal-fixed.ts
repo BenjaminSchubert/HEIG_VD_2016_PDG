@@ -55,7 +55,6 @@ export class CreateGatheringModalFixed {
       if(this.point == null) {
         this.marker = this.leafletHelper.marker(e.latlng);
         this.marker.addTo(this.map);
-        this.marker.bindPopup('Selected place').openPopup();
         this.point = e.latlng;
       }
       else {
