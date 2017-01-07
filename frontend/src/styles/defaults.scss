@@ -16,9 +16,11 @@ input {
 }
 
 #content {
+  display: flex;
   margin-top: $font-size-default * 3;
   margin-bottom: $font-size-default * 3;
   min-height: calc(100% - #{$font-size-default * 6} - 1pt);
+  height: calc(100% - #{$font-size-default * 6} - 1pt);
 }
 
 h1 {

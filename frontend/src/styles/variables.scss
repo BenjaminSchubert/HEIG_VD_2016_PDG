@@ -4,8 +4,8 @@ $grid-columns: 12;
  * colors
  */
 $background-color: #3B3F40;
-$color: #878a8b;
-$link-color: #bcbebf;
+$color: #abaeaf;
+$link-color: lighten($color, 30%);
 
 $primary-text: lighten($color, 30%);
 $primary-background: rgba(71, 188, 47, 0.91);
@@ -37,3 +37,4 @@ $font-size-button: $font-size-default;
  * Borders
  */
 $border-radius: .25rem;
+

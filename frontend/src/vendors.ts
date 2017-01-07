@@ -20,3 +20,4 @@ import "rxjs/add/operator/take";
 
 // charts
 import "chart.js";
+import "chartjs-plugin-zoom";

@@ -14,7 +14,7 @@ declare let Chart: any;
  */
 @Component({
     selector: "rd-chart",
-    styles: [":host { display: block; }"],
+    styles: [":host { display: flex; flex-grow: 1; }"],
     template: "<canvas></canvas>",
 })
 export class ChartComponent implements OnInit, OnChanges {
@@ -59,9 +59,18 @@ export class ChartComponent implements OnInit, OnChanges {
         }
 
         if (this.chart && (changes["type"] || changes["options"])) {
-            this.chart.delete();
+            this.chart.destroy();
             this.createChart();
         }
+    }
+
+    /**
+     * Reset the zoom of the chart.
+     *
+     * This needs the chartjs-plugin-zoom to be installed
+     */
+    public resetZoom() {
+        this.chart.resetZoom();
     }
 
     /**

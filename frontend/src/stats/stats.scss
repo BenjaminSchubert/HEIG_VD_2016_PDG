@@ -1,0 +1,36 @@
+@import "../styles/variables";
+
+button {
+  font-size: 0.7 * $font-size-button;
+  padding: .4rem .6rem;
+  margin-right: .4rem;
+  margin-left: .4rem;
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  .numeric-stats {
+    flex-direction: column;
+
+    span {
+      padding-bottom: .4rem;
+    }
+  }
+
+  .top {
+    align-self: flex-start;
+  }
+
+  .chart-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+
+    div {
+      align-self: stretch;
+    }
+  }
+}

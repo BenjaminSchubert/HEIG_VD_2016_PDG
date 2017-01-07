@@ -4,6 +4,7 @@
 export interface IStatistics {
     new_users: IDailyStat[];
     meetings_per_user: IDailyStat[];
+    active_users_per_month: IDailyStat[];
     total_meetings: number;
     total_users: number;
 }
@@ -27,7 +28,8 @@ export interface IChartData {
  * Interface of a dataset, used by Chart.js
  */
 interface IDataSet {
-    label: string;
+    // tslint:disable-next-line:no-any
+    [key: string]: any;
     data: number[];
 }
 
@@ -66,7 +68,8 @@ export class DataContainer {
      */
     public static readonly PRECISIONS = [DataContainer.DAY, DataContainer.MONTH, DataContainer.YEAR];
 
-    private titles: {[key: string]: string};
+    // tslint:disable-next-line:no-any
+    private additionalDatasetInformation: {[key: string]: {[key: string]: any}};
     private labels: {[precision: string]: string[]};
     private datasets: {[key: string]: {[precision: string]: number[]}};
 
@@ -79,7 +82,8 @@ export class DataContainer {
      *
      * @param datasetLabels a javascript object mapping keys to look for in the statistics to their title.
      */
-    constructor(datasetLabels: {[name: string]: string}) {
+    // tslint:disable-next-line:no-any
+    constructor(datasetLabels: {[key: string]: {[key: string]: any}}) {
         this.clearData(datasetLabels);
     }
 
@@ -97,12 +101,19 @@ export class DataContainer {
         let datasets: IDataSet[] = [];
 
         // tslint:disable-next-line:forin
-        for (let key in this.titles) {
-            datasets.push({
+        for (let key in this.additionalDatasetInformation) {
+            let dataset: IDataSet = {
                 data: this.datasets[key][precision],
-                label: this.titles[key],
-            });
+            };
+
+            // tslint:disable-next-line:forin
+            for (let entry in this.additionalDatasetInformation[key]) {
+                dataset[entry] = this.additionalDatasetInformation[key][entry];
+            }
+
+            datasets.push(dataset);
         }
+
         return {
             datasets: datasets,
             labels: this.labels[precision],
@@ -149,7 +160,9 @@ export class DataContainer {
             let month = `${year}-${date[1]}`;
             let day = `${month}-${date[2]}`;
 
-            this.add_entry(min, DataContainer.YEAR, year);
+            // conversion to a javascript Date object is required by the moment library we use afterwards
+            // as a year is not a valid ISO date format.
+            this.add_entry(min, DataContainer.YEAR, new Date(year).toISOString());
             this.add_entry(min, DataContainer.MONTH, month);
             this.add_entry(min, DataContainer.DAY, day);
         }
@@ -160,18 +173,19 @@ export class DataContainer {
      *
      * @param datasetLabels optional labels to use as new keys to look for.
      */
-    private clearData(datasetLabels?: {[name: string]: string}) {
+    // tslint:disable-next-line:no-any
+    private clearData(datasetLabels?: {[name: string]: {[key: string]: any}}) {
         if (datasetLabels === undefined) {
-            datasetLabels = this.titles || {};
+            datasetLabels = this.additionalDatasetInformation || {};
         }
 
         this.datasets = {};
-        this.titles = {};
+        this.additionalDatasetInformation = {};
         this.labels = {};
 
         // tslint:disable-next-line:forin
         for (let name in datasetLabels) {
-            this.titles[name] = datasetLabels[name];
+            this.additionalDatasetInformation[name] = datasetLabels[name];
 
             this.datasets[name] = {};
             for (let precision of DataContainer.PRECISIONS) {
@@ -254,4 +268,5 @@ export class DataContainer {
         }
         // tslint:enable:no-any
     }
+
 }
