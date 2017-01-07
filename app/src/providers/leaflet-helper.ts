@@ -44,13 +44,15 @@ export class LeafletHelper {
       func: (position, eachid, lmap) => {
         if(lmap) {
           let latLng = this.L().latLng(position.coords.latitude, position.coords.longitude);
-          if(callback.first) {
+          if(callback.first) 
             lmap.setView(latLng, 16);
-            callback.first = false;
-          }
           if(callback.circle != null)
             lmap.removeLayer(callback.circle);
           callback.circle = this.L().circle(latLng, { radius: position.coords.accuracy/2 }).addTo(lmap);
+          if(callback.first) {
+            callback.circle.bindPopup('You are here').openPopup();
+            callback.first = false;
+          }
         }
         else // remove callback when map is deleted
           this.geolocationService.each = this.geolocationService.each.splice(eachid, 1);
