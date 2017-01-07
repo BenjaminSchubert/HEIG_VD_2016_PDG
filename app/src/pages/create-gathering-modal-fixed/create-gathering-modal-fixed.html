@@ -18,9 +18,6 @@
   </div>
   <p class="information" *ngIf="point==null">
     Click a place of your choice on the map
-
-    <!-- TEST -->
-    <br>{{diag(geolocationService.position)}}
   </p>
   <button ion-button full *ngIf="point!=null" (click)="confirm()">Confirm</button>
 </ion-content>
