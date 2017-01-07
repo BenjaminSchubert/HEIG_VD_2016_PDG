@@ -62,6 +62,29 @@ class AccountManager(BaseUserManager):
 
         return self._create_user(**fields)
 
+    def get_queryset(self):
+        """Provide a custom QuerySet for users."""
+        return UserQuerySet(self.model)
+
+
+class UserQuerySet(models.query.QuerySet):
+    """
+    Overrides the default QuerySet with our custom one.
+
+    Provide a function to send a message to a QuerySet (a selection of users).
+    """
+
+    def send_message(self, title=None, body=None, data=None, deferred=True):
+        """
+        Send a push message to the users.
+
+        :param title: the title of the message
+        :param body: the body of the message
+        :param data: a Json object attached to the message
+        :param deferred: define if message can be deferred or not
+        """
+        Device.objects.filter(user__in=self.all()).send_message(title, body, data, deferred)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Extends `AbstractBaseUser` to accommodate the User model to our needs."""
@@ -119,18 +142,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         return Device.objects.filter(user=self).first()
 
-    def send_message(self, title=None, body=None, type=None, deferred=True):
+    def send_message(self, title=None, body=None, data=None, deferred=True):
         """
         Send a push message to the device of the user.
 
         :param title: the title of the message
         :param body: the body of the message
-        :param type: the type of the message
+        :param data: a Json object attached to the message
         :param deferred: define if message can be deferred or not
         """
         device = self.get_device()
         if device is not None:
-            device.send_message(title, body, type, deferred)
+            device.send_message(title, body, data, deferred)
 
     def send_deferred_messages(self):
         """
