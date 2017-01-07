@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Fixed point
+      Fixed point gathering mode
     </ion-title>
     <ion-buttons start>
       <button ion-button (click)="dismiss()">
@@ -12,6 +12,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  
+<ion-content class="create-gathering-modal-fixed">
+  <div id="mapid" class="leaflet-map">
+    <p *ngIf="map==null">loading map...</p>
+  </div>
+  <p class="information">
+    Hold a place of your choice on the map
+
+    <!-- TEST -->
+    <br>{{diag(geolocationService.position)}}
+  </p>
 </ion-content>

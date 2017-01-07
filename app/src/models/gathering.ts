@@ -7,9 +7,11 @@ import { RadyUser } from './user';
  */
 export class RadyGathering {
 
+    public mode: string = null;
+    public fixed: any = null;
+
     constructor(
         public initiator: RadyUser,
-        public participants: RadyUser[],
-        public mode: string = null
+        public participants: RadyUser[]
     ) {}
 }

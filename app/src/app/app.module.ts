@@ -29,6 +29,7 @@ import { NotificationService } from '../providers/notification-service';
 import { ContactsService } from '../providers/contacts-service';
 import { MeService } from '../providers/me-service';
 import { GatheringService } from '../providers/gathering-service';
+import { GeolocationService } from '../providers/geolocation-service';
 
 // put here the components
 let COMPONENTS_LIST: any = [
@@ -58,7 +59,8 @@ let PROVIDERS_LIST: any = [
   NotificationService,
   ContactsService,
   MeService,
-  GatheringService
+  GatheringService,
+  GeolocationService
 ]
 
 @NgModule({
@@ -70,4 +72,4 @@ let PROVIDERS_LIST: any = [
   entryComponents: COMPONENTS_LIST,
   providers: PROVIDERS_LIST
 })
-export class AppModule {}
+export class RadyAppModule {}

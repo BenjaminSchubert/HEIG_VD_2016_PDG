@@ -62,7 +62,7 @@ export class AuthService {
 
     // get the token if any
     this.token().then((token) => {
-      console.log('[AuthService] token found at init: ' + token);
+      console.log('[AuthService] token found at init');
       this.setTokenString(token);
     }).catch(() => {
       console.log('[AuthService] no token at init');
@@ -124,7 +124,6 @@ export class AuthService {
 
     // look for the storaged token, and refresh it
     return this.token().then((token) => {
-      console.log('REFRESH token found');
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ 'headers': headers });
         this.baseHttp.post(
@@ -135,7 +134,6 @@ export class AuthService {
         .map(res => res.json())
         .toPromise()
         .then((data) => {
-      console.log('REFRESH token refreshed');
 
           // we have a token, save it in the storage
           this.setTokenString(data.token);

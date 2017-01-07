@@ -31,6 +31,7 @@
     "ionic-native": "2.2.3",
     "ionicons": "3.0.0",
     "leaflet": "^1.0.2",
+    "lodash": "^4.17.4",
     "rxjs": "5.0.0-beta.12",
     "zone.js": "0.6.21"
   },
@@ -40,12 +41,17 @@
   },
   "description": "",
   "cordovaPlugins": [
-    "cordova-plugin-device",
+    "cordova-plugin-compat",
     "cordova-plugin-console",
-    "cordova-plugin-whitelist",
+    "cordova-plugin-device",
+    "cordova-plugin-geolocation",
+    "cordova-plugin-mauron85-background-geolocation",
+    "cordova-plugin-secure-storage",
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
-    "ionic-plugin-keyboard"
+    "cordova-plugin-whitelist",
+    "ionic-plugin-keyboard",
+    "phonegap-plugin-push"
   ],
   "cordovaPlatforms": []
 }
