@@ -34,12 +34,16 @@ def post_save_friendship(instance, created, **kwargs):
             title="New friend request",
             body="{} wants to be your friend".format(instance.from_account.username),
             data=dict(type="friend-request", friendship=instance.id),
+            related_type="friendship",
+            related_id=instance.id,
         )
     elif instance.has_changed("is_accepted") and instance.is_accepted is True:
         instance.from_account.send_message(
             title="Friend request accepted",
             body="{} is now your friend".format(instance.to_account.username),
             data=dict(type="friend-request-accepted", friendship=instance.id),
+            related_type="friendship",
+            related_id=instance.id,
         )
     instance.reset_tracker()
 

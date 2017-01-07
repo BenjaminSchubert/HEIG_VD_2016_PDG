@@ -1,7 +1,9 @@
+from unittest import expectedFailure
 from unittest.mock import ANY, call
 
 from django.contrib.auth import get_user_model
 
+from device.models import DeferredMessage
 from device.tests import create_device, MockFcmMessagesMixin
 from meeting.models import Meeting, Participant
 from test_utils import APIEndpointTestCase, authenticated, API_V1
@@ -114,3 +116,16 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             sound=ANY,
             badge=ANY,
         )
+
+    @authenticated
+    def test_ended_meeting_cancel_related_deferred_messages(self):
+        self.mocked_send_fcm_message.return_value = dict(success=0)
+
+        meeting = Meeting(organiser=self.user)
+        meeting.save()
+        for user in get_user_model().objects.all():
+            Participant(meeting=meeting, user=user, accepted=True).save()
+
+        r = self.put(dict(status=meeting.STATUS_ENDED), url=API_V1 + "meetings/{}/".format(meeting.id))
+
+        self.assertEqual(DeferredMessage.objects.count(), 0)

@@ -18,13 +18,22 @@ class DeferredMessagesTestCase(MockFcmMessagesMixin, TestCase):
         self.mocked_send_fcm_message.reset_mock()
 
     def test_deferred_message_is_saved(self):
-        DeferredMessage(user=self.user, title="title", body="body", data=dict(type="test-message", id=1)).save()
+        DeferredMessage(
+            user=self.user,
+            title="title",
+            body="body",
+            data=dict(type="test-message", id=1),
+            related_type="meeting",
+            related_id=1,
+        ).save()
 
         message = DeferredMessage.objects.last()
         self.assertEqual(message.user, self.user)
         self.assertEqual(message.title, "title")
         self.assertEqual(message.body, "body")
         self.assertDictEqual(message.data, dict(type="test-message", id=1))
+        self.assertEqual(message.related_type, "meeting")
+        self.assertEqual(message.related_id, 1)
 
     def test_successful_deferred_message_remove_it_from_db(self):
         self.mocked_send_fcm_message.return_value = dict(success=0)

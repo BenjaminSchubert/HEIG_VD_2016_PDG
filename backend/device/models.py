@@ -24,7 +24,7 @@ class DeviceQuerySet(models.query.QuerySet):
     Provide a function to send a message to a QuerySet (a selection of devices).
     """
 
-    def send_message(self, title=None, body=None, data=None, deferred=True):
+    def send_message(self, title=None, body=None, data=None, deferred=True, related_type=None, related_id=None):
         """
         Send a push message to the devices, allowing the message to be deferred if sending failed.
 
@@ -35,10 +35,19 @@ class DeviceQuerySet(models.query.QuerySet):
         :param body: the body of the message
         :param data: a Json object attached to the message
         :param deferred: define if message can be deferred or not
+        :param related_type: define a type of object to which the message is attached
+        :param related_id: define an id of object to which the message is attached
         """
         if deferred is True:
             for device in self.filter(is_active=False):
-                DeferredMessage(user_id=device.user_id, title=title, body=body, data=data).save()
+                DeferredMessage(
+                    user_id=device.user_id,
+                    title=title,
+                    body=body,
+                    data=data,
+                    related_type=related_type,
+                    related_id=related_id,
+                ).save()
 
         devices = list(self.filter(is_active=True).all())
         if devices:
@@ -54,7 +63,14 @@ class DeviceQuerySet(models.query.QuerySet):
                     self.filter(id=devices[index].id).update(is_active=False)
 
                     if deferred is True:
-                        DeferredMessage(user_id=devices[index].user_id, title=title, body=body, data=data).save()
+                        DeferredMessage(
+                            user_id=devices[index].user_id,
+                            title=title,
+                            body=body,
+                            data=data,
+                            related_type=related_type,
+                            related_id=related_id,
+                        ).save()
 
 
 class Device(models.Model):
@@ -77,7 +93,7 @@ class Device(models.Model):
         Device.objects.filter(user_id=self.user_id).delete()
         super(Device, self).save(force_insert, force_update, using, update_fields)
 
-    def send_message(self, title=None, body=None, data=None, deferred=True):
+    def send_message(self, title=None, body=None, data=None, deferred=True, related_type=None, related_id=None):
         """
         Send a push message to the device, allowing the message to be deferred if sending failed.
 
@@ -88,11 +104,20 @@ class Device(models.Model):
         :param body: the body of the message
         :param data: a Json object attached to the message
         :param deferred: define if message can be deferred or not
+        :param related_type: define a type of object to which the message is attached
+        :param related_id: define an id of object to which the message is attached
         :return: True if the message was successfully sent, False otherwise.
         """
         if self.is_active is False:
             if deferred is True:
-                DeferredMessage(user_id=self.user_id, title=title, body=body, data=data).save()
+                DeferredMessage(
+                    user_id=self.user_id,
+                    title=title,
+                    body=body,
+                    data=data,
+                    related_type=related_type,
+                    related_id=related_id,
+                ).save()
             return False
 
         else:
@@ -106,7 +131,14 @@ class Device(models.Model):
                 Device.objects.filter(id=self.id).update(is_active=False)
 
                 if deferred is True:
-                    DeferredMessage(user_id=self.user_id, title=title, body=body, data=data).save()
+                    DeferredMessage(
+                        user_id=self.user_id,
+                        title=title,
+                        body=body,
+                        data=data,
+                        related_type=related_type,
+                        related_id=related_id,
+                    ).save()
                 return False
 
             return True
@@ -132,3 +164,6 @@ class DeferredMessage(models.Model):
     title = models.TextField(null=True)
     body = models.TextField(null=True)
     data = JSONField(null=True)
+    related_type = models.CharField(max_length=16, null=True)
+    related_id = models.PositiveIntegerField(null=True)
+
