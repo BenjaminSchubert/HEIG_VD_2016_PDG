@@ -1,22 +1,28 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
-/*
-  Generated class for the PendingGathering page.
+import { GatheringService } from '../../providers/gathering-service';
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+/**
+ * PendingGathering
+ * Patrick Champion - 07.01.2017
+ */
 @Component({
-  selector: 'page-pending-gathering',
   templateUrl: 'pending-gathering.html'
 })
 export class PendingGathering {
 
-  constructor(public navCtrl: NavController) {}
+  constructor(
+    public navCtrl: NavController,
+    public gatheringService: GatheringService
+  ) {}
+
+  // TEST
+  diag(v) {
+    return JSON.stringify(v);
+  }
 
   ionViewDidLoad() {
-    console.log('Hello PendingGathering Page');
   }
 
 }

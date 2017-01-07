@@ -39,12 +39,12 @@ export class CreateGathering {
       case 'shortest': this.shortestMode(); break;
       default: console.log('[CreateGathering] unknown mode'); break;
     }
-    if(this.gatheringService.gathering.mode != null)
-      this.navCtrl.push(PendingGathering);
   }
 
   private fixedMode() {
-    this.modalCtrl.create(CreateGatheringModalFixed).present();
+    let modal = this.modalCtrl.create(CreateGatheringModalFixed);
+    modal.onDidDismiss(() => this.goToPending());
+    modal.present();
   }
 
   private somebodyMode() {
@@ -53,5 +53,10 @@ export class CreateGathering {
 
   private shortestMode() {
 
+  }
+
+  private goToPending() {
+    if(this.gatheringService.gathering.mode != null)
+      this.navCtrl.push(PendingGathering);
   }
 }

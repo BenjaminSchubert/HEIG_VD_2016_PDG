@@ -9,12 +9,6 @@ import { AuthService } from '../../providers/auth-service';
 import { PushService } from '../../providers/push-service';
 import { NotificationService } from '../../providers/notification-service';
 
-// TEST
-import { CreateGathering } from '../create-gathering/create-gathering';
-import { RadyGathering } from '../../models/gathering';
-import { RadyUser } from '../../models/user';
-import { GatheringService } from '../../providers/gathering-service';
-
 /**
  * Splashscreen
  * Entry point of the app
@@ -30,10 +24,7 @@ export class Splashscreen {
               public alertCtrl: AlertController,
               public authService: AuthService,
               public pushService: PushService,
-              public notificationService: NotificationService,
-
-              // TEST
-              public gatheringService: GatheringService) {
+              public notificationService: NotificationService) {
 
       // Set the default notification handler
       this.notificationService.setDefaultHandler((n) => {
@@ -59,13 +50,9 @@ export class Splashscreen {
 
       platform.ready().then(() => {
 
-        // TEST
-        this.gatheringService.set(new RadyGathering(new RadyUser('AAA'), []));
-        this.navCtrl.setRoot(CreateGathering);
-
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
-        /*StatusBar.styleDefault();
+        StatusBar.styleDefault();
         this.authService.initialize();
         this.pushService.initialize();
 
@@ -78,7 +65,7 @@ export class Splashscreen {
           }).catch((err) => {
             console.log('[Splashscreen] refresh error: ' + err);
             this.navCtrl.setRoot(SignIn);
-          });*/
+          });
     });
   }
 }
