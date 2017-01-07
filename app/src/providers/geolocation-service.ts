@@ -81,6 +81,7 @@ export class GeolocationService {
   }
 
   private execute() {
+    console.log('[GeolocationService] position: ' + JSON.stringify(this.position));
     for(let f of this.once)
       f(this.position);
     for(let f of this.each)

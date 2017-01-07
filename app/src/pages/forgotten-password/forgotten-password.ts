@@ -19,16 +19,18 @@ export class ForgottenPassword {
 
   constructor(public navCtrl: NavController,
   			  private formBuilder: FormBuilder,
-  			  private alertCtrl: AlertController) {}
+  			  private alertCtrl: AlertController) {
 
-  ionViewDidLoad() {
-  	// create the form with validation
-  	this.form = this.formBuilder.group({
+    // create the form with validation
+    this.form = this.formBuilder.group({
       email: ['']
-  	}, { validator: Validators.compose([
+    }, { validator: Validators.compose([
       RadyModule.Validators.email('email', 'is not valid'),
       RadyModule.Validators.required(['email'], 'is required')])
     });
+  }
+
+  ionViewDidLoad() {
   }
 
   get errors() {

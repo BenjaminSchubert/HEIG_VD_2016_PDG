@@ -25,17 +25,19 @@ export class SignIn {
   constructor(public navCtrl: NavController,
   			      private formBuilder: FormBuilder,
               private authService: AuthService,
-              private alertCtrl: AlertController) {}
-
-  ionViewDidLoad() {
-  	// create the form with validation
-  	this.form = this.formBuilder.group({
-  		email: [''], 
-  		password: ['']
-  	}, { validator: Validators.compose([
+              private alertCtrl: AlertController) {
+    
+    // create the form with validation
+    this.form = this.formBuilder.group({
+      email: [''], 
+      password: ['']
+    }, { validator: Validators.compose([
       RadyModule.Validators.email('email', 'is not valid'),
       RadyModule.Validators.required(['email', 'password'], 'is required')]) 
     });
+  }
+
+  ionViewDidLoad() {
   }
 
   get errors() {

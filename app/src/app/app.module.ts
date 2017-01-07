@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { IonicApp, IonicModule } from 'ionic-angular';
+import { NgModule, ErrorHandler } from '@angular/core';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 
 import { RadyApp } from './app.component';
 
@@ -19,7 +19,8 @@ import { AddContactFromList } from '../pages/add-contact-from-list/add-contact-f
 import { AddContactFromScanner } from '../pages/add-contact-from-scanner/add-contact-from-scanner';
 import { MyQrCode } from '../pages/my-qr-code/my-qr-code';
 
-import { CreateGathering, CreateGatheringModalFixed } from '../pages/create-gathering/create-gathering';
+import { CreateGathering } from '../pages/create-gathering/create-gathering';
+import { CreateGatheringModalFixed } from '../pages/create-gathering-modal-fixed/create-gathering-modal-fixed';
 import { PendingGathering } from '../pages/pending-gathering/pending-gathering';
 import { RunningGathering } from '../pages/running-gathering/running-gathering';
 
@@ -47,13 +48,15 @@ let COMPONENTS_LIST: any = [
   AddContactFromList,
   AddContactFromScanner,
   MyQrCode,
-  CreateGathering, CreateGatheringModalFixed,
+  CreateGathering, 
+  CreateGatheringModalFixed,
   PendingGathering,
   RunningGathering
 ]
 
 // put here the providers
 let PROVIDERS_LIST: any = [
+  {provide: ErrorHandler, useClass: IonicErrorHandler},
   AuthService,
   PushService,
   NotificationService,

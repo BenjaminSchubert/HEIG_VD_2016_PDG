@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Splashscreen as S } from 'ionic-native';
 
 import { Splashscreen } from '../pages/splashscreen/splashscreen';
 
@@ -12,4 +13,8 @@ import { Splashscreen } from '../pages/splashscreen/splashscreen';
 })
 export class RadyApp {
   rootPage = Splashscreen;
+
+  constructor() {
+    S.hide();
+  }
 }

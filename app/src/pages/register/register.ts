@@ -21,23 +21,25 @@ export class Register {
   constructor(public navCtrl: NavController,
   	          private formBuilder: FormBuilder,
               private authService: AuthService,
-              private alertCtrl: AlertController) {}
+              private alertCtrl: AlertController) {
 
-  ionViewDidLoad() {
-  	// create the form with validation
-  	this.form = this.formBuilder.group({
+    // create the form with validation
+    this.form = this.formBuilder.group({
       username: [''],
       email: [''], 
       phone: [''], 
       country: [''],
       password: [''],
       passwordConfirmation: ['']
-  	}, { validator: Validators.compose([
+    }, { validator: Validators.compose([
       RadyModule.Validators.email('email', 'is not valid'),
       RadyModule.Validators.phone('phone', 'country', 'is not valid'),
       RadyModule.Validators.areEqual(['password', 'passwordConfirmation'], 'is not equal with password'), 
       RadyModule.Validators.required(['username', 'email', 'password', 'passwordConfirmation'], 'is required')]) 
     });
+  }
+
+  ionViewDidLoad() {
   }
 
   get errors() {
