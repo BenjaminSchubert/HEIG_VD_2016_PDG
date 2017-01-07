@@ -1,11 +1,9 @@
 import { Component, ElementRef, Inject } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 
-import L from 'leaflet';
-
 import { GatheringService } from '../../providers/gathering-service';
 import { GeolocationService } from '../../providers/geolocation-service';
-import { CONFIG } from '../../providers/config';
+import { LeafletHelper } from '../../providers/leaflet-helper';
 
 /**
  * CreateGatheringModalFixed
@@ -26,7 +24,8 @@ export class CreateGatheringModalFixed {
     public viewCtrl: ViewController,
     public gatheringService: GatheringService,
     @Inject(ElementRef) elementRef: ElementRef,
-    public geolocationService: GeolocationService
+    public geolocationService: GeolocationService,
+    public leafletHelper: LeafletHelper
   ) {
     this.map = null;
     this.elementRef = elementRef;
@@ -42,28 +41,19 @@ export class CreateGatheringModalFixed {
 
   ionViewDidLoad() {
 
-    // load map
-    this.mapid = this.elementRef.nativeElement.querySelector('#mapid');
-    this.map = L.map(this.mapid)
-      .setView(L.latLng(
-          this.geolocationService.position.coords.latitude, 
-          this.geolocationService.position.coords.longitude),
-        1);
-    L.tileLayer(CONFIG.LEAFLET_URL, { maxZoom: 18, accessToken: CONFIG.LEAFLET_TOKEN }).addTo(this.map);
-
     // try to find our position
     this.geolocationService.on();
-    this.geolocationService.once.push((position) => {
-      let latLng = L.latLng(position.coords.latitude, position.coords.longitude);
-      this.map.setView(latLng, 16);
-      L.marker(latLng).addTo(this.map);
-      L.circle(latLng, { radius: position.coords.accuracy/2 }).addTo(this.map);
-    });   
+
+    // load map
+    this.mapid = this.elementRef.nativeElement.querySelector('#mapid');
+    this.map = this.leafletHelper.L().map(this.mapid, { center: [0, 0], zoom: 1 });
+    this.leafletHelper.tileLayer().addTo(this.map);
+    this.leafletHelper.addGeolocationTo(this.map);
 
     // add click event to choose place
     this.map.on('click', (e) => {
       if(this.point == null) {
-        this.marker = L.marker(e.latlng);
+        this.marker = this.leafletHelper.marker(e.latlng);
         this.marker.addTo(this.map);
         this.marker.bindPopup('Selected place').openPopup();
         this.point = e.latlng;
@@ -77,6 +67,7 @@ export class CreateGatheringModalFixed {
   }
 
   dismiss() {
+    this.map = null;
     this.geolocationService.off();
     this.viewCtrl.dismiss();
   }

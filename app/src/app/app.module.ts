@@ -31,6 +31,7 @@ import { ContactsService } from '../providers/contacts-service';
 import { MeService } from '../providers/me-service';
 import { GatheringService } from '../providers/gathering-service';
 import { GeolocationService } from '../providers/geolocation-service';
+import { LeafletHelper } from '../providers/leaflet-helper';
 
 // put here the components
 let COMPONENTS_LIST: any = [
@@ -63,7 +64,8 @@ let PROVIDERS_LIST: any = [
   ContactsService,
   MeService,
   GatheringService,
-  GeolocationService
+  GeolocationService,
+  LeafletHelper
 ]
 
 @NgModule({

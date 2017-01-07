@@ -8,6 +8,13 @@ import { MainTabs } from '../main-tabs/main-tabs';
 import { AuthService } from '../../providers/auth-service';
 import { PushService } from '../../providers/push-service';
 import { NotificationService } from '../../providers/notification-service';
+import { GeolocationService } from '../../providers/geolocation-service';
+
+// TEST
+import { CreateGathering } from '../create-gathering/create-gathering';
+import { RadyGathering } from '../../models/gathering';
+import { RadyUser } from '../../models/user';
+import { GatheringService } from '../../providers/gathering-service';
 
 /**
  * Splashscreen
@@ -24,7 +31,11 @@ export class Splashscreen {
               public alertCtrl: AlertController,
               public authService: AuthService,
               public pushService: PushService,
-              public notificationService: NotificationService) {
+              public notificationService: NotificationService,
+              public geolocationService: GeolocationService,
+
+              // TEST
+              public gatheringService: GatheringService) {
 
       // Set the default notification handler
       this.notificationService.setDefaultHandler((n) => {
@@ -50,11 +61,17 @@ export class Splashscreen {
 
       platform.ready().then(() => {
 
+        // TEST
+        this.geolocationService.initialize();
+        this.gatheringService.set(new RadyGathering(new RadyUser('AAA'), []));
+        this.navCtrl.setRoot(CreateGathering);
+
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
-        StatusBar.styleDefault();
+        /*StatusBar.styleDefault();
         this.authService.initialize();
         this.pushService.initialize();
+        this.geolocationService.initialize();
 
         // if we are auth => go to MainTabs
         // otherwise      => go to SignIn
@@ -65,7 +82,7 @@ export class Splashscreen {
           }).catch((err) => {
             console.log('[Splashscreen] refresh error: ' + err);
             this.navCtrl.setRoot(SignIn);
-          });
+          });*/
     });
   }
 }
