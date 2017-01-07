@@ -120,17 +120,18 @@ class TestMeeting(APIEndpointTestCase):
             self.post(dict(type="place", place=dict(latitude=0, longitude=1), participants=[friend.id])).status_code,
             status.HTTP_201_CREATED
         )
+        self.assertEqual(Meeting.objects.first().status, Meeting.STATUS_PROGRESS)
 
-    @expectedFailure
     @authenticated
     def test_can_create_new_meeting_on_person(self):
         friend = get_user_model().objects.last()
         Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
 
         self.assertEqual(
-            self.post(dict(type="on", participants=[friend.id])).status_code,
+            self.post(dict(type="person", participants=[friend.id])).status_code,
             status.HTTP_201_CREATED
         )
+        self.assertEqual(Meeting.objects.first().status, Meeting.STATUS_PENDING)
 
     @expectedFailure
     @authenticated
@@ -181,3 +182,60 @@ class TestMeeting(APIEndpointTestCase):
         self.post(dict(type="place", place=dict(latitude=0, longitude=1), participants=[friend.id]))
 
         self.assertFalse(Participant.objects.get(user=friend).accepted)
+
+
+class TestMeetingDetails(APIEndpointTestCase):
+    url = API_V1 + "meetings/{}/"
+    number_of_other_users = 1
+
+    @authenticated
+    def test_organiser_can_update_meeting(self):
+        friend = get_user_model().objects.last()
+        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+
+        meeting = Meeting(organiser=self.user)
+        meeting.save()
+        Participant(meeting=meeting, user=friend).save()
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_ENDED)
+
+    @authenticated
+    def test_only_organiser_can_update_meeting(self):
+        friend = get_user_model().objects.last()
+        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+
+        meeting = Meeting(organiser=friend)
+        meeting.save()
+        Participant(meeting=meeting, user=self.user).save()
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_404_NOT_FOUND
+        )
+
+    @authenticated
+    def test_cannot_update_ended_meeting(self):
+        meeting = Meeting(organiser=self.user, status=Meeting.STATUS_ENDED)
+        meeting.save()
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_PROGRESS), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_ENDED)
+
+    @authenticated
+    def test_cannot_set_meeting_has_pending(self):
+        meeting = Meeting(organiser=self.user, status=Meeting.STATUS_PROGRESS)
+        meeting.save()
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_PENDING), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_PROGRESS)
+

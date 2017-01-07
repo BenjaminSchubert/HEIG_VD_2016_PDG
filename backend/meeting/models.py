@@ -16,21 +16,36 @@ class Place(models.Model):
     name = models.CharField(max_length=255, null=True)
 
 
-class Meeting(models.Model):
+class Meeting(models.Model, AttributeTrackerMixin):
     """Extends `Model` to define meetings."""
+
+    STATUS_PENDING = "pending"
+    STATUS_PROGRESS = "progress"
+    STATUS_ENDED = "ended"
+
+    TYPE_PLACE = "place"
+    TYPE_PERSON = "person"
+    TYPE_SHORTEST = "shortest"
 
     start_time = models.DateTimeField(auto_now_add=True)
     meeting_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     type = models.CharField(
-        choices=(("place", "place",), ("person", "person",), ("shortest", "shortest",)),
-        max_length=16
+        choices=((TYPE_PLACE, TYPE_PLACE), (TYPE_PERSON, TYPE_PERSON), (TYPE_SHORTEST, TYPE_SHORTEST)),
+        max_length=8
+    )
+    status = models.CharField(
+        choices=((STATUS_PENDING, STATUS_PENDING), (STATUS_PROGRESS, STATUS_PROGRESS), (STATUS_ENDED, STATUS_ENDED)),
+        max_length=8,
+        default=STATUS_PENDING
     )
 
     organiser = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="organizing")
     on = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, default=None, related_name="meeting_point_for")
 
     participants = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Participant")
+
+    TRACKED_ATTRS = ("status",)
 
 
 class Participant(models.Model, AttributeTrackerMixin):

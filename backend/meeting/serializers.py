@@ -121,6 +121,7 @@ class WriteMeetingSerializer(MeetingSerializer):
     class Meta(MeetingSerializer.Meta):
         """Metaclass for the `WriteMeetingSerializer`."""
 
+        exclude = ("status",)
         depth = 0
 
     @transaction.atomic
@@ -130,12 +131,18 @@ class WriteMeetingSerializer(MeetingSerializer):
 
         This operation is atomic and will create every participant and places accordingly.
 
+        If this is a 'place' meeting, set the status as 'in progress'. Other types of meetings
+        needs more information to start.
+
         :param validated_data: data to use for the creation of the meeting
         :return: the newly created meeting
         """
         participants = validated_data.pop("participants")
         place = validated_data.pop("place", None)
         current_user = self.context["request"].user
+
+        if "type" in validated_data and validated_data["type"] == Meeting.TYPE_PLACE:
+            validated_data["status"] = Meeting.STATUS_PROGRESS
 
         meeting = super().create(validated_data)
 
@@ -190,5 +197,31 @@ class WriteMeetingSerializer(MeetingSerializer):
 
         if len(errors):
             raise ValidationError(errors)
+
+        return attrs
+
+
+class UpdateMeetingSerializer(ModelSerializer):
+
+    class Meta:
+
+        fields = ("status",)
+        model = Meeting
+
+    def validate(self, attrs):
+        """
+        Check that the data is valid for the update of a meeting.
+
+        :param attrs: attributes to check
+        :exception ValidationError: when any of the attribute is invalid
+        :return: sanitized version of the attributes
+        """
+        attrs = super().validate(attrs)
+
+        if self.instance.status == Meeting.STATUS_ENDED:
+            raise ValidationError("You cannot update an finished meeting.")
+
+        if "status" in attrs and attrs["status"] == Meeting.STATUS_PENDING:
+            raise ValidationError({"status": "You cannot pause a running meeting."})
 
         return attrs

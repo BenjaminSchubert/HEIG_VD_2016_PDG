@@ -1,14 +1,37 @@
 """This module defines the routes available in the `meeting` application."""
 
-
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.response import Response
 
 from meeting.models import Meeting, Place, Participant
-from meeting.serializers import MeetingSerializer, WriteMeetingSerializer, PlaceSerializer, ParticipantSerializer
+from meeting.serializers import MeetingSerializer, WriteMeetingSerializer, PlaceSerializer, ParticipantSerializer, \
+    UpdateMeetingSerializer
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
+
+
+class ParticipantDetailsView(UpdateAPIView):
+    """
+    Allows a user to manage his participation to a meeting.
+
+    This view require the user to be authenticated. It supports PUT/PATCH requests.
+
+    This view supports multiple formats: JSon, XML, etc.
+
+    An example of data, in JSon, is:
+
+        {
+            "accepted": true, (optional)
+            "arrived": true, (optional)
+        }
+    """
+
+    serializer_class = ParticipantSerializer
+
+    def get_queryset(self):
+        """Get all participation for the registered user."""
+        return Participant.objects.filter(user=self.request.user)
 
 
 class PlaceListView(ListAPIView):
@@ -37,29 +60,6 @@ class PlaceListView(ListAPIView):
     def get_queryset(self):
         """Get all places for the registered user."""
         return Place.objects.filter(participant__user=self.request.user)
-
-
-class ParticipantDetailsView(UpdateAPIView):
-    """
-    Allows a user to manage his participation to a meeting.
-
-    This view require the user to be authenticated. It supports PUT/PATCH requests.
-
-    This view supports multiple formats: JSon, XML, etc.
-
-    An example of data, in JSon, is:
-
-        {
-            "accepted": true, (optional)
-            "arrived": true, (optional)
-        }
-    """
-
-    serializer_class = ParticipantSerializer
-
-    def get_queryset(self):
-        """Get all participation for the registered user."""
-        return Participant.objects.filter(user=self.request.user)
 
 
 class PlaceDetailsView(RetrieveUpdateAPIView):
@@ -191,3 +191,25 @@ class MeetingListView(ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         serializer = MeetingSerializer(serializer.instance, context=self.get_serializer_context())
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class MeetingDetailsView(UpdateAPIView):
+    """
+    Allows a user to manage meetings he created.
+
+    This view require the user to be authenticated. It supports PUT/PATCH requests.
+
+    This view supports multiple formats: JSon, XML, etc.
+
+    An example of data, in JSon, is:
+
+        {
+            "status": "ended", (options: pending, progress, ended)
+        }
+    """
+
+    serializer_class = UpdateMeetingSerializer
+
+    def get_queryset(self):
+        """Get all meetings to which the user is organiser."""
+        return Meeting.objects.filter(organiser=self.request.user)
