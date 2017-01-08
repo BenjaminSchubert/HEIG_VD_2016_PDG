@@ -3,7 +3,10 @@ from unittest import expectedFailure
 from django.contrib.auth import get_user_model
 from rest_framework import status
 
+from device.models import DeferredMessage
+from device.tests import MockFcmMessagesMixin
 from meeting.models import Meeting, Participant
+from meeting.tests import create_meeting
 from test_utils import APIEndpointTestCase, API_V1, authenticated
 from user.models import Friendship
 
@@ -120,17 +123,18 @@ class TestMeeting(APIEndpointTestCase):
             self.post(dict(type="place", place=dict(latitude=0, longitude=1), participants=[friend.id])).status_code,
             status.HTTP_201_CREATED
         )
+        self.assertEqual(Meeting.objects.first().status, Meeting.STATUS_PROGRESS)
 
-    @expectedFailure
     @authenticated
     def test_can_create_new_meeting_on_person(self):
         friend = get_user_model().objects.last()
         Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
 
         self.assertEqual(
-            self.post(dict(type="on", participants=[friend.id])).status_code,
+            self.post(dict(type="person", participants=[friend.id])).status_code,
             status.HTTP_201_CREATED
         )
+        self.assertEqual(Meeting.objects.first().status, Meeting.STATUS_PENDING)
 
     @expectedFailure
     @authenticated
@@ -181,3 +185,106 @@ class TestMeeting(APIEndpointTestCase):
         self.post(dict(type="place", place=dict(latitude=0, longitude=1), participants=[friend.id]))
 
         self.assertFalse(Participant.objects.get(user=friend).accepted)
+
+
+class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
+    url = API_V1 + "meetings/{}/"
+    number_of_other_users = 1
+
+    @authenticated
+    def test_organiser_can_set_meeting_status_has_progress(self):
+        meeting = create_meeting(self.user)
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_PROGRESS), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_PROGRESS)
+
+    @authenticated
+    def test_organiser_can_set_meeting_status_has_ended(self):
+        meeting = create_meeting(self.user)
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_ENDED)
+
+    @authenticated
+    def test_organiser_can_set_meeting_status_has_canceled(self):
+        meeting = create_meeting(self.user)
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_CANCELED), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_CANCELED)
+
+    @authenticated
+    def test_only_organiser_can_update_meeting(self):
+        meeting = create_meeting(get_user_model().objects.exclude(id=self.user.id).first())
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_404_NOT_FOUND
+        )
+
+    @authenticated
+    def test_cannot_update_ended_meeting(self):
+        meeting = create_meeting(self.user)
+
+        meeting.status = Meeting.STATUS_ENDED
+        meeting.save(update_fields=("status",))
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_PROGRESS), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_ENDED)
+
+    @authenticated
+    def test_cannot_update_canceled_meeting(self):
+        meeting = create_meeting(self.user)
+
+        meeting.status = Meeting.STATUS_CANCELED
+        meeting.save(update_fields=("status",))
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_CANCELED)
+
+    @authenticated
+    def test_cannot_set_meeting_has_pending(self):
+        meeting = create_meeting(self.user)
+
+        meeting.status = Meeting.STATUS_PROGRESS
+        meeting.save(update_fields=("status",))
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_PENDING), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_PROGRESS)
+
+    @authenticated
+    def test_ended_meeting_cancel_related_deferred_messages(self):
+        self.mocked_send_fcm_message.return_value = dict(success=0)
+
+        meeting = create_meeting(self.user)
+
+        self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id))
+
+        self.assertEqual(DeferredMessage.objects.count(), 0)
+
+    @authenticated
+    def test_canceled_meeting_cancel_related_deferred_messages(self):
+        self.mocked_send_fcm_message.return_value = dict(success=0)
+
+        meeting = create_meeting(self.user)
+
+        self.put(dict(status=Meeting.STATUS_CANCELED), url=self.url.format(meeting.id))
+
+        self.assertEqual(DeferredMessage.objects.count(), 0)
