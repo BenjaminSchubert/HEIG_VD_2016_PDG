@@ -31,7 +31,7 @@ class ParticipantDetailsView(UpdateAPIView):
 
     def get_queryset(self):
         """Get all participation for the registered user."""
-        return Participant.objects.filter(user=self.request.user)
+        return Participant.objects.filter(Q(user=self.request.user) & ~Q(accepted=False))
 
 
 class PlaceListView(ListAPIView):

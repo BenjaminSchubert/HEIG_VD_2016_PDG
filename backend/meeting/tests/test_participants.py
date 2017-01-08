@@ -60,15 +60,25 @@ class ParticipantsDetailsEndpointTestCase(APIEndpointTestCase):
         self.assertFalse(Participant.objects.get(user=self.participant.id).accepted)
 
     @authenticated
-    def test_cannot_change_accepted_option(self):
+    def test_can_cancel_meeting(self):
         self.participant.accepted = True
         self.participant.save()
 
         self.assertEqual(
             self.put(dict(accepted=False), url=self.url.format(self.participant.id)).status_code,
-            status.HTTP_400_BAD_REQUEST
+            status.HTTP_200_OK
         )
-        self.assertTrue(Participant.objects.get(user=self.participant.id).accepted)
+        self.assertFalse(Participant.objects.get(user=self.participant.id).accepted)
+
+    @authenticated
+    def test_cannot_update_refused_meeting(self):
+        self.participant.accepted = False
+        self.participant.save()
+
+        self.assertEqual(
+            self.put(dict(), url=self.url.format(self.participant.id)).status_code,
+            status.HTTP_404_NOT_FOUND
+        )
 
     @authenticated
     def test_can_be_arrived_to_meeting(self):
@@ -83,9 +93,6 @@ class ParticipantsDetailsEndpointTestCase(APIEndpointTestCase):
 
     @authenticated
     def test_cannot_be_arrived_to_meeting_without_accepted(self):
-        self.participant.accepted = False
-        self.participant.save()
-
         self.assertEqual(
             self.put(dict(arrived=True), url=self.url.format(self.participant.id)).status_code,
             status.HTTP_400_BAD_REQUEST

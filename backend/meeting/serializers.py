@@ -92,9 +92,6 @@ class ParticipantSerializer(ModelSerializer):
         """
         attrs = super().validate(attrs)
 
-        if "accepted" in attrs and self.instance.accepted is not None:
-            raise ValidationError({"accepted": "You have already answered this meeting."})
-
         if "arrived" in attrs:
             if attrs["arrived"] is True and self.instance.accepted is not True:
                 raise ValidationError({"accepted": "You have not accepted this meeting."})
