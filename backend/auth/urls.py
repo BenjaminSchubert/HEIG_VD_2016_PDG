@@ -4,6 +4,8 @@ from django.conf.urls import url
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 from django.contrib.auth import views as auth_views
 
+from auth.views import SessionLoginView
+
 urlpatterns = [
     url(r'^password-reset/$', auth_views.password_reset, name='password_reset'),
     url(r'^password-reset/done/$', auth_views.password_reset_done, name='password_reset_done'),
@@ -12,5 +14,6 @@ urlpatterns = [
     url(r'^password-reset/complete/$', auth_views.password_reset_complete, name='password_reset_complete'),
 
     url(r'^login/$', obtain_jwt_token),
+    url(r"^session/$", SessionLoginView.as_view()),
     url(r'^refresh/$', refresh_jwt_token),
 ]

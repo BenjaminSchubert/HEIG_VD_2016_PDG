@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="row title">
+        <div class="col-2">ID</div>
+        <div class="col-3">Email</div>
+        <div class="col-3">Username</div>
+        <div class="col-2 center">Active</div>
+        <div class="col-2 center">Admin</div>
+    </div>
+
+    <div *ngFor="let user of service.$ | async" class="row">
+        <div class="col-2">{{ user.id }}</div>
+        <div class="col-3">{{ user.email }}</div>
+        <div class="col-3">{{ user.username }}</div>
+        <div class="col-2 center">
+            <div class="round" (click)="activate(user)">
+                <input type="checkbox" [checked]="user.is_active" class="round">
+                <label class="good"></label>
+            </div>
+        </div>
+
+        <div class="col-2 center">
+            <div class="round" (click)="makeAdmin(user)">
+                <input type="checkbox" [checked]="user.is_staff" class="round">
+                <label></label>
+            </div>
+        </div>
+    </div>
+
+</div>

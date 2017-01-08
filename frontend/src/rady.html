@@ -1,0 +1,37 @@
+<div>
+    <!-- menu -->
+    <nav class="navbar top">
+        <!-- left menu -->
+        <ul>
+            <li routerLinkActive="active" *ngIf="account.isStaff$ | async">
+                <a [routerLink]="['stats']">Stats</a>
+            </li>
+            <li routerLinkActive="active" *ngIf="account.isStaff$ | async">
+                <a [routerLink]="['users']">Users</a>
+            </li>
+            <li routerLinkActive="active">
+                <a href="#">About</a>
+            </li>
+        </ul>
+
+        <!-- right menu -->
+        <ul class="right">
+            <li [ngSwitch]="account.isLoggedIn$ | async">
+                <a [routerLink]="['login']" *ngSwitchCase="false">Login</a>
+                <a *ngSwitchCase="true" (click)="logout()">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="content">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<footer class="navbar bottom">
+    <ul class="right">
+        <li>
+            <a href="mailto:ben.c.schubert@gmail.com">Contact</a>
+        </li>
+    </ul>
+</footer>

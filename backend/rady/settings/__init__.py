@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     "user",
     "meeting",
     "device",
+    "stats",
+    "admin.apps.AdminConfig",
 ]
 
 MIDDLEWARE = [
@@ -89,7 +91,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_URL = "/static/"
+STATIC_URL = "/api/static/"
 MEDIA_URL = "/resources/"
 
 APPEND_SLASH = True
@@ -101,6 +103,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     )
 }
 

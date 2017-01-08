@@ -1,0 +1,37 @@
+@import "variables";
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+
+  margin-right: -$col-padding;
+  margin-left: -$col-padding;
+
+
+  @for $i from 1 through $grid-columns {
+    .col-#{$i} {
+      display: flex;
+      padding-right: $col-padding;
+      padding-left: $col-padding;
+      flex: 0 1 percentage($i / $grid-columns);
+      max-width: percentage($i / $grid-columns);
+      flex-wrap: wrap;
+      box-sizing: border-box;
+    }
+    
+    .offset-#{$i} {
+      margin-left: calc(#{$col-padding} + #{percentage($i / $grid-columns)});
+    }
+
+  }
+
+  .center {
+    justify-content: center;
+  }
+}
+
+
+.right {
+  margin-left: auto;
+  justify-content: flex-end;
+}

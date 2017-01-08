@@ -10,9 +10,11 @@ apiv1_urls = [
     url(r"^docs/", include("rest_framework_docs.urls")),
     url(r"^auth/", include("auth.urls")),
     url(r"^fcm/devices/", include("device.urls")),
+    url(r"^statistics/", include("stats.urls")),
+    url(r"^admin/", include("admin.urls")),
 ]
 
 urlpatterns = [
-    url(r"^v1/", include(apiv1_urls)),
+    url(r"^api/v1/", include(apiv1_urls)),
     url(r"^admin/", admin.site.urls),
 ]

@@ -92,6 +92,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(upload_to="avatars/", null=True)
     last_avatar_update = models.DateTimeField(auto_now_add=True)
     hidden = models.DateTimeField(null=True, default=None)
+    joined = models.DateTimeField(auto_now_add=True)
 
     friends = models.ManyToManyField("User", through="Friendship")
 

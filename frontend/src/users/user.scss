@@ -1,0 +1,31 @@
+@import "../styles/variables";
+
+:host {
+  flex: 1 1 auto;
+}
+
+.row {
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+
+  justify-content: center;
+}
+
+.title {
+  background: darken($background-color, 5%);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (min-width: 1080px) {
+    margin-right: 5%;
+    margin-left: 5%;
+  }
+
+  @media screen and (min-width: 1420px) {
+    margin-right: 10%;
+    margin-left: 10%;
+  }
+}

@@ -54,3 +54,15 @@ class TestMeeting(APIEndpointTestCase):
             url=self.url + "{}/".format(place.id)
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @authenticated
+    def test_cannot_send_latitude_greater_than_180(self):
+        response = self.put(dict(latitude=190, longitude=1), url=self.url + "1/")
+        self.assert400WithError(response, "latitude")
+
+    @authenticated
+    def test_can_send_latitude_with_more_precision(self):
+        self.assertEqual(
+            self.put(dict(latitude=0.0042342334, longitude=0), url=self.url + "1/").status_code,
+            status.HTTP_200_OK
+        )

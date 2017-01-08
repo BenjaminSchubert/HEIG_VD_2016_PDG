@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-grow: 1;
+
+  h1 {
+    margin: .8em .5em .5em .8em;
+  }
+
+  input {
+    margin: 1rem;
+  }
+
+  button {
+    margin-top: 1rem;
+    margin-right: 1rem;
+  }
+
+  input,
+  button,
+  label {
+    align-self: center;
+  }
+}

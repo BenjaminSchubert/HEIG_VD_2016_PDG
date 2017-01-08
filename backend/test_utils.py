@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 
-API_V1 = "/v1/"
+API_V1 = "/api/v1/"
 
 
 def authenticated(f):
@@ -81,3 +81,7 @@ class APIEndpointTestCase(APITestCase):
     # noinspection PyShadowingBuiltins
     def put(self, data, url=None, format=None):
         return self.request(self.client.put, url, format, data)
+
+    # noinspection PyShadowingBuiltins
+    def delete(self, url=None, format=None):
+        return self.request(self.client.delete, url, format)
