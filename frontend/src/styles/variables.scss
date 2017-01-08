@@ -1,0 +1,46 @@
+$grid-columns: 12;
+
+/**
+ * colors
+ */
+$background-color: #3B3F40;
+$color: #abaeaf;
+$link-color: lighten($color, 30%);
+
+$primary-text: lighten($color, 30%);
+$primary-background: rgba(71, 188, 47, 0.91);
+
+$danger-text: #4e4444;
+$danger-background: #a94442;
+
+$nav-background-color: darken($background-color, 10%);
+$nav-link-color: darken($link-color, 10%);
+
+/**
+ * inputs
+ */
+$round-checkbox-size: 1.2rem;
+$box-shadow-color: #6c6c6c;
+
+
+/**
+ * Paddings
+ */
+$nav-item-padding: 15px;
+$nav-padding: $nav-item-padding * 2;
+$col-padding: 15px;
+
+
+/**
+ * Font sizes
+ */
+$font-size-default: 16pt;
+$font-size-label: ceil($font-size-default * 1.5);
+$font-size-input: floor($font-size-label * 0.9);
+$font-size-button: $font-size-default;
+
+
+/**
+ * Borders
+ */
+$border-radius: .25rem;

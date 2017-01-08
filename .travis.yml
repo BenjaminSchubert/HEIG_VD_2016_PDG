@@ -1,0 +1,12 @@
+language: python
+
+python:
+  - "3.5"
+
+install:
+  - pip install fabric3 prospector
+  - pip install -r backend/requirements.pip
+
+script:
+  - FCM_SERVER_TOKEN="" fab test_backend
+  - fab lint_backend

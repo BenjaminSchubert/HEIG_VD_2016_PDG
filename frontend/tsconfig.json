@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": false,
+
+    "noEmitHelpers": false,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "alwaysStrict": true,
+
+    "pretty": true,
+    "outDir": "output",
+
+    "sourceMap": true,
+    "lib": ["es5", "dom"],
+
+    "baseUrl": "./src",
+
+    "types": [
+      "node",
+      "core-js"
+    ]
+
+  },
+
+  "exclude": [
+    "node_modules",
+    "main.ts"
+  ],
+
+  "angularCompilerOptions": {
+    "genDir": "compiled",
+    "skipMetadataEmit" : true,
+    "debug": true
+  }
+}
+

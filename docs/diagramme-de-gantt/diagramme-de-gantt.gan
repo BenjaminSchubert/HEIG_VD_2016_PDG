@@ -46,77 +46,77 @@
         <task id="26" name="Flux d'utilisation" color="#ff3333" meeting="false" start="2016-10-03" duration="5" complete="100" expand="true">
             <customproperty taskproperty-id="tpc2" value="4h"/>
         </task>
-        <task id="215" name="Maquette de l'interface" color="#ff3333" meeting="false" start="2016-10-03" duration="12" complete="100" expand="true">
+        <task id="215" name="Maquette de l'interface" color="#ff3333" meeting="false" start="2016-10-03" duration="12" complete="42" expand="true">
             <customproperty taskproperty-id="tpc2" value="6h"/>
         </task>
-        <task id="85" name="Conception Structure Application" color="#6699ff" meeting="false" start="2016-10-07" duration="19" complete="100" expand="true">
+        <task id="85" name="Conception Structure Application" color="#6699ff" meeting="false" start="2016-10-07" duration="19" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="16h"/>
         </task>
-        <task id="24" name="Prise en main Gyroscope/Géolocalisation" color="#33ff00" meeting="false" start="2016-10-07" duration="10" complete="99" expand="true">
+        <task id="24" name="Prise en main Gyroscope/Géolocalisation" color="#33ff00" meeting="false" start="2016-10-07" duration="10" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="7h"/>
         </task>
-        <task id="27" name="Apprentissage HTML CSS" color="#33ff00" meeting="false" start="2016-10-07" duration="10" complete="100" expand="true">
+        <task id="27" name="Apprentissage HTML CSS" color="#33ff00" meeting="false" start="2016-10-07" duration="10" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="7h"/>
         </task>
-        <task id="20" name="Apprentissage Ionic" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="100" expand="true">
+        <task id="20" name="Apprentissage Meteor" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="9h"/>
         </task>
-        <task id="22" name="Apprentissage FCM (Firebase Cloud Messaging)" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="100" expand="true">
-            <customproperty taskproperty-id="tpc2" value="10h"/>
-        </task>
-        <task id="25" name="Apprentissage Django" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="100" expand="true">
+        <task id="22" name="Apprentissage FCM (Firebase Cloud Messaging)" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="10h"/>
         </task>
         <task id="23" name="Apprentissage Open Street Map" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="10h"/>
         </task>
-        <task id="95" name="Test de faisabilité Django" color="#ccff00" meeting="false" start="2016-10-17" duration="9" complete="100" expand="true">
+        <task id="25" name="Apprentissage Django" color="#33ff00" meeting="false" start="2016-10-07" duration="15" complete="0" expand="true">
+            <customproperty taskproperty-id="tpc2" value="10h"/>
+        </task>
+        <task id="95" name="Test de faisabilité Django" color="#ccff00" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="8h"/>
         </task>
-        <task id="96" name="Test de faisabilité Meteor" color="#ccff00" meeting="false" start="2016-10-17" duration="9" complete="100" expand="true">
+        <task id="96" name="Test de faisabilité Meteor" color="#ccff00" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="8h"/>
         </task>
-        <task id="79" name="Infrastructure" color="#000000" meeting="false" start="2016-10-17" duration="9" complete="100" expand="true">
-            <task id="81" name="Set up d'un serveur d'integration continue" color="#ff9900" meeting="false" start="2016-10-17" duration="9" complete="100" expand="true">
+        <task id="79" name="Infrastructure" color="#000000" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
+            <task id="81" name="Set up d'un serveur d'integration continue" color="#ff9900" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="8h"/>
             </task>
-            <task id="82" name="Set up Serveur" color="#ff9900" meeting="false" start="2016-10-17" duration="9" complete="100" expand="true">
+            <task id="82" name="Set up Serveur" color="#ff9900" meeting="false" start="2016-10-17" duration="9" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="8h"/>
             </task>
         </task>
-        <task id="45" name="Sécurité" meeting="false" start="2016-10-21" duration="10" complete="100" expand="true">
-            <task id="49" name="Hash des données sensibles" color="#6699ff" meeting="false" start="2016-10-21" duration="6" complete="100" expand="true">
+        <task id="45" name="Sécurité" meeting="false" start="2016-10-21" duration="10" complete="0" expand="true">
+            <task id="49" name="Hash des données sensibles" color="#6699ff" meeting="false" start="2016-10-21" duration="6" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="4h"/>
             </task>
-            <task id="50" name="Chiffrage de la communication Client/Serveur" color="#6699ff" meeting="false" start="2016-10-21" duration="6" complete="100" expand="true">
+            <task id="50" name="Chiffrage de la communication Client/Serveur" color="#6699ff" meeting="false" start="2016-10-21" duration="6" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="2h"/>
             </task>
-            <task id="51" name="Création de droits" color="#6699ff" meeting="false" start="2016-10-24" duration="7" complete="100" expand="true">
+            <task id="51" name="Création de droits" color="#6699ff" meeting="false" start="2016-10-24" duration="7" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="4h"/>
             </task>
         </task>
-        <task id="37" name="Base de données" color="#000000" meeting="false" start="2016-10-21" duration="36" complete="71" expand="true">
-            <task id="179" name="Création du protocole" color="#6699ff" meeting="false" start="2016-10-21" duration="15" complete="80" expand="true">
+        <task id="37" name="Base de données" color="#000000" meeting="false" start="2016-10-21" duration="36" complete="0" expand="true">
+            <task id="179" name="Création du protocole" color="#6699ff" meeting="false" start="2016-10-21" duration="15" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="16h"/>
             </task>
-            <task id="41" name="Structure de la BDD" color="#6699ff" meeting="false" start="2016-10-21" duration="8" complete="100" expand="true">
+            <task id="41" name="Structure de la BDD" color="#6699ff" meeting="false" start="2016-10-21" duration="8" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="6h"/>
             </task>
-            <task id="42" name="Création de la BDD" color="#6699ff" meeting="false" start="2016-10-28" duration="8" complete="100" expand="true">
+            <task id="42" name="Création de la BDD" color="#6699ff" meeting="false" start="2016-10-28" duration="8" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="2h"/>
             </task>
             <task id="43" name="Remplissage de la BDD" color="#6699ff" meeting="false" start="2016-11-04" duration="3" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="2h"/>
             </task>
-            <task id="44" name="Création de l'API" color="#6699ff" meeting="false" start="2016-10-28" duration="29" complete="59" expand="true">
+            <task id="44" name="Création de l'API" color="#6699ff" meeting="false" start="2016-10-28" duration="29" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="16h"/>
             </task>
         </task>
-        <task id="191" name="Implémentation des modèles" color="#6699ff" meeting="false" start="2016-10-21" duration="10" complete="60" expand="true">
+        <task id="191" name="Implémentation des modèles" color="#6699ff" meeting="false" start="2016-10-21" duration="10" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="4h"/>
         </task>
-        <task id="28" name="Implémentation du Design" color="#000000" meeting="false" start="2016-10-21" duration="78" complete="23" expand="true">
-            <task id="177" name="Menus et interface" color="#6699ff" meeting="false" start="2016-10-21" duration="18" complete="69" expand="true">
+        <task id="28" name="Implémentation du Design" color="#000000" meeting="false" start="2016-10-21" duration="78" complete="0" expand="true">
+            <task id="177" name="Menus et interface" color="#6699ff" meeting="false" start="2016-10-21" duration="18" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="16h"/>
             </task>
             <task id="35" name="Boussole" color="#6699ff" meeting="false" start="2016-11-07" duration="8" complete="0" expand="true">
@@ -132,20 +132,6 @@
                 <customproperty taskproperty-id="tpc2" value="2h"/>
             </task>
         </task>
-        <task id="86" name="Création de compte" meeting="false" start="2016-11-19" duration="12" complete="100" expand="true">
-            <task id="88" name="Génération d'un id unique" color="#6699ff" meeting="false" start="2016-11-19" duration="7" complete="100" expand="true">
-                <customproperty taskproperty-id="tpc2" value="2h"/>
-            </task>
-            <task id="90" name="Gestion de la déconnection" color="#6699ff" meeting="false" start="2016-11-19" duration="7" complete="100" expand="true">
-                <customproperty taskproperty-id="tpc2" value="2h"/>
-            </task>
-            <task id="93" name="Suppression du compte" color="#6699ff" meeting="false" start="2016-11-25" duration="6" complete="100" expand="true">
-                <customproperty taskproperty-id="tpc2" value="3h"/>
-            </task>
-            <task id="94" name="Changement de numro de telephone" color="#6699ff" meeting="false" start="2016-11-25" duration="6" complete="100" expand="true">
-                <customproperty taskproperty-id="tpc2" value="4h"/>
-            </task>
-        </task>
         <task id="29" name="Liaison Design - Models" color="#6699ff" meeting="false" start="2016-11-19" duration="9" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="8h"/>
         </task>
@@ -155,6 +141,20 @@
             </task>
             <task id="154" name="Bloquage utilisateur" color="#6699ff" meeting="false" start="2016-11-28" duration="7" complete="0" expand="true">
                 <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+        </task>
+        <task id="86" name="Création de compte" meeting="false" start="2016-11-19" duration="12" complete="0" expand="true">
+            <task id="88" name="Génération d'un id unique" color="#6699ff" meeting="false" start="2016-11-19" duration="7" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+            <task id="90" name="Gestion de la déconnection" color="#6699ff" meeting="false" start="2016-11-19" duration="7" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="2h"/>
+            </task>
+            <task id="93" name="Suppression du compte" color="#6699ff" meeting="false" start="2016-11-25" duration="6" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="3h"/>
+            </task>
+            <task id="94" name="Changement de numro de telephone" color="#6699ff" meeting="false" start="2016-11-25" duration="6" complete="0" expand="true">
+                <customproperty taskproperty-id="tpc2" value="4h"/>
             </task>
         </task>
         <task id="63" name="Gestion de la liste de contact" meeting="false" start="2016-11-25" duration="43" complete="0" expand="true">
@@ -185,7 +185,7 @@
                 <customproperty taskproperty-id="tpc2" value="8h"/>
             </task>
         </task>
-        <task id="146" name="Documentation du projet" color="#cccccc" meeting="false" start="2016-09-28" duration="106" complete="54" expand="true">
+        <task id="146" name="Documentation du projet" color="#cccccc" meeting="false" start="2016-09-28" duration="106" complete="0" expand="true">
             <customproperty taskproperty-id="tpc2" value="45h"/>
         </task>
         <task id="148" name="Redaction du rapport" color="#cccccc" meeting="false" start="2016-12-17" duration="26" complete="0" expand="true">

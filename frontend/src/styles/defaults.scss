@@ -1,0 +1,34 @@
+@import "variables";
+
+body {
+  margin: 0;
+  padding-left: $col-padding;
+  padding-right: $col-padding;
+
+  background-color: $background-color;
+  color: $color;
+  font-size: $font-size-default;
+}
+
+label {
+  font-size: $font-size-label;
+}
+
+input {
+  font-size: $font-size-label * 0.8;
+}
+
+#content {
+  margin-top: $font-size-default * 3;
+  margin-bottom: $font-size-default * 3;
+  min-height: calc(100vh - #{$font-size-default * 6 + 1});
+  display: flex;
+}
+
+h1 {
+  font-size: $font-size-default * 3;
+}
+
+a {
+  cursor: hand;
+}

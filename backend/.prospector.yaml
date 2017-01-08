@@ -1,0 +1,26 @@
+output-format: grouped
+
+strictness: veryhigh
+test-warnings: false
+doc-warnings: true
+member-warnings: true
+
+ignore-paths:
+  - migrations
+
+pep8:
+  full: true
+  disable:
+  options:
+    max-line-length: 120
+
+pep257:
+  full: true
+  disable:
+    - D105
+    - D203
+
+
+pylint:
+  full: true
+

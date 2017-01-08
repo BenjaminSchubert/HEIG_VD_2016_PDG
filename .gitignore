@@ -14,4 +14,19 @@
 # archives
 *.zip
 
-backup/
+# JetBrains
+*.iml
+*.idea
+
+# languages
+*.pyc
+
+# databases
+*.db
+
+# migrations
+migrations/
+
+# python coverage
+.coverage
+htmlcov/

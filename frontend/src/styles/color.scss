@@ -1,0 +1,14 @@
+@import "variables";
+
+@mixin color($_text, $_background, $_border: null) {
+  $_border: $_background !default;
+
+  color: $_text;
+  background-color: $_background;
+  border-color: $_border;
+}
+
+
+.primary {
+  @include color($primary-text, $primary-background);
+}
