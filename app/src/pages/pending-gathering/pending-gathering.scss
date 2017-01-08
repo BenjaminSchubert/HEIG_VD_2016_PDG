@@ -1,3 +1,11 @@
-page-pending-gathering {
+div.page-pending-gathering {
 
+  div.minimap {
+    width: 100vw;
+    height: 50vw;
+  }
+
+  p.information {
+    text-align: center;
+  }
 }

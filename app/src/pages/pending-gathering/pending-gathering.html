@@ -1,12 +1,78 @@
-<ion-header>
-
+<ion-header class="hidden">
   <ion-navbar>
-    <ion-title>pending-gathering</ion-title>
+    <ion-title>Pending Gathering</ion-title>
   </ion-navbar>
-
 </ion-header>
 
+<ion-content>
+  <div class="content">
+    <div class="page-pending-gathering">
+      <h1>Gathering</h1>
 
-<ion-content padding>
-{{diag(gatheringService.gathering)}}
+      <!-- Options when waiting -->
+      <ion-grid *ngIf="gatheringService.status=='pending'">
+        <ion-row>
+          <ion-col width-33>
+            <button ion-button block color="light" (click)="cancel()">Cancel</button>
+          </ion-col>
+          <ion-col width-67>
+            <button ion-button block (click)="continueAnyway()">Continue</button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <!-- Options when request -->
+      <ion-grid *ngIf="gatheringService.status=='request'">
+        <ion-row>
+          <ion-col width-50>
+            <button ion-button block color="danger" (click)="decline()">Decline</button>
+          </ion-col>
+          <ion-col width-50>
+            <button ion-button block (click)="accept()">Accept</button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <!-- Gathering infos -->
+      <ion-list>
+        <ion-list-header>
+          Gathering informations
+        </ion-list-header>
+
+        <!-- Show a mini-map -->
+        <ion-item>
+          <div id="mapid" class="minimap">
+            <p class="information" *ngIf="map==null">loading map...</p>
+          </div>
+        </ion-item>
+
+        <!-- informations -->
+        <ion-item>
+          Mode
+          <ion-badge item-right color="light">{{gatheringService.gathering.mode}}</ion-badge>
+        </ion-item>
+        <ion-item>
+          Distance
+          <ion-badge item-right color="light">{{distance()}}m</ion-badge>
+        </ion-item>
+      </ion-list>
+
+      <!-- Participants infos --> 
+      <ion-list>
+        <ion-list-header>
+          Participants
+        </ion-list-header>
+        <ion-item>
+          <strong>{{gatheringService.gathering.initiator.username}}</strong>
+          <ion-badge item-right color="light">initiator</ion-badge>
+        </ion-item>
+        <ion-item *ngFor="let participant of gatheringService.gathering.participants">
+          <strong *ngIf="participant.status=='accepted'">{{participant.username}}</strong>
+          <span *ngIf="participant.status!='accepted'">{{participant.username}}</span>
+          <ion-badge item-right color="light" *ngIf="participant.status=='waiting'"><ion-spinner name="dots"></ion-spinner></ion-badge>
+          <ion-badge item-right color="light" *ngIf="participant.status!='waiting'">{{participant.status}}</ion-badge>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
 </ion-content>

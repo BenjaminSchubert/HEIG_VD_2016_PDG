@@ -8,7 +8,7 @@ import { RadyUser } from './user';
 export class RadyGathering {
 
     public mode: string = null;
-    public fixed: any = null;
+    public destination: any = null;
 
     constructor(
         public initiator: RadyUser,

@@ -57,6 +57,6 @@ export class CreateGathering {
 
   private goToPending() {
     if(this.gatheringService.gathering.mode != null)
-      this.navCtrl.push(PendingGathering);
+      this.navCtrl.setRoot(PendingGathering);
   }
 }

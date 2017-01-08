@@ -10,6 +10,12 @@ import { PushService } from '../../providers/push-service';
 import { NotificationService } from '../../providers/notification-service';
 import { GeolocationService } from '../../providers/geolocation-service';
 
+// TEST
+import { GatheringService } from '../../providers/gathering-service';
+import { RadyGathering } from '../../models/gathering';
+import { RadyUser } from '../../models/user';
+import { CreateGathering } from '../create-gathering/create-gathering';
+
 /**
  * Splashscreen
  * Entry point of the app
@@ -26,7 +32,10 @@ export class Splashscreen {
               public authService: AuthService,
               public pushService: PushService,
               public notificationService: NotificationService,
-              public geolocationService: GeolocationService) {
+              public geolocationService: GeolocationService
+
+              // TEST
+              , public gatheringService: GatheringService) {
 
       // Set the default notification handler
       this.notificationService.setDefaultHandler((n) => {
@@ -51,6 +60,11 @@ export class Splashscreen {
       console.log = logger(this.notificationService);
 
       platform.ready().then(() => {
+
+        // TEST
+        /*this.geolocationService.initialize();
+        this.gatheringService.set(new RadyGathering(new RadyUser('AAA'), [new RadyUser('BBB'), new RadyUser('CCC')]));
+        this.navCtrl.setRoot(CreateGathering);*/
 
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.

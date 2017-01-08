@@ -59,14 +59,6 @@ export class AuthService {
       tokenName: this.TOKEN_NAME,
       tokenGetter: (() => this.tokenString()) 
     }), this.baseHttp);
-
-    // get the token if any
-    this.token().then((token) => {
-      console.log('[AuthService] token found at init');
-      this.setTokenString(token);
-    }).catch(() => {
-      console.log('[AuthService] no token at init');
-    });
   }
 
   /**
@@ -126,7 +118,7 @@ export class AuthService {
     return this.token().then((token) => {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ 'headers': headers });
-        this.baseHttp.post(
+        return this.baseHttp.post(
           this.REFRESH_URL,
           JSON.stringify({ 'token': token }),
           options
@@ -168,7 +160,10 @@ export class AuthService {
    * @return a promise
    */
   token() {
-    return this.storage.get(this.TOKEN_NAME);
+    return this.storage.get(this.TOKEN_NAME).then((token) => {
+      this.setTokenString(token);
+      return token;
+    });
   }
 
   /**

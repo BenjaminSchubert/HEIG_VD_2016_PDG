@@ -73,11 +73,9 @@ export class CreateGatheringModalFixed {
 
   confirm() {
     this.gatheringService.gathering.mode = 'fixed';
-    this.gatheringService.gathering.fixed = {
-      destination: {
-        latitude: this.point.lat,
-        longitude: this.point.lng,
-      }
+    this.gatheringService.gathering.destination = {
+      latitude: this.point.lat,
+      longitude: this.point.lng,
     };
     this.dismiss();
   }
