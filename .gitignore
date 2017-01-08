@@ -32,3 +32,4 @@ migrations/
 htmlcov/
 
 backup/
+app/res
