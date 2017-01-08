@@ -2,11 +2,12 @@
 
 from itertools import chain
 
+from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Q
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CurrentUserDefault, HiddenField, IntegerField
+from rest_framework.fields import CurrentUserDefault, HiddenField, IntegerField, DecimalField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
@@ -17,8 +18,19 @@ from user.models import Friendship
 __author__ = "Benjamin Schubert, <ben.c.schubert@gmail.com>"
 
 
+class AutoShrinkDecimal(DecimalField):
+    """Extend `DecimalField` to automatically strip to the number of decimal given."""
+
+    def validate_precision(self, value):
+        """Round the value to 6 numbers before sending to the parent for further validation."""
+        return super().validate_precision(Decimal(round(value, self.decimal_places)))
+
+
 class PlaceSerializer(ModelSerializer):
     """Defines a serializer for the `Place` model for editing."""
+
+    latitude = AutoShrinkDecimal(decimal_places=6, max_digits=9, max_value=90, min_value=-90)
+    longitude = AutoShrinkDecimal(decimal_places=6, max_digits=9, max_value=180, min_value=-180)
 
     class Meta:
         """Defines the metaclass for the `PlaceSerializer`."""
