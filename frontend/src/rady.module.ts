@@ -5,6 +5,7 @@ import { AuthModule } from "./auth/auth.module";
 import { RadyComponent } from "./rady.component";
 import { routing } from "./rady.routing";
 import { StatsModule } from "./stats/stats.module";
+import { UserModule } from "./users/user.module";
 
 
 /**
@@ -18,6 +19,7 @@ import { StatsModule } from "./stats/stats.module";
         UtilsModule.forRoot(),
         AuthModule.forRoot(),
         StatsModule,
+        UserModule,
     ],
 })
 export class RadyModule {

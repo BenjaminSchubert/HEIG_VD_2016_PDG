@@ -22,7 +22,7 @@ class UserProfileEndpointTestCase(APIEndpointTestCase):
 
         self.assertDictEqual(
             data,
-            dict(username=self.user.username, email=self.user.email, avatar=None)
+            dict(username=self.user.username, email=self.user.email, avatar=None, is_staff=False)
         )
 
     @authenticated

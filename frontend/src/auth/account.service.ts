@@ -23,12 +23,18 @@ export class AccountService {
      */
     public isLoggedIn$: Observable<boolean>;
 
+    /**
+     * Observable telling whether the user is a staff or not
+     */
+    public isStaff$: Observable<boolean>;
+
     private _$: BehaviorSubject<IAccount>;
 
     constructor(private http: Http, private router: Router, private route: ActivatedRoute) {
         this._$ = new BehaviorSubject(null);
         this.$ = this._$.asObservable();
         this.isLoggedIn$ = this._$.map((a: IAccount) => a !== null);
+        this.isStaff$ = this._$.map((a: IAccount) => a !== null && a.is_staff);
 
         this.getAccount().subscribe(noop, noop);
     }

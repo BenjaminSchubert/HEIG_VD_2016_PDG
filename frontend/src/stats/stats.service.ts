@@ -1,30 +1,19 @@
-import { Injectable } from "@angular/core";
-import { Http, Response } from "@angular/http";
 import { Observable } from "rxjs/Observable";
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { Injectable } from "@angular/core";
+import { Http } from "@angular/http";
 import { IStatistics } from "./stubs";
 import { STATS_URL } from "../api.routes";
+import { RestService } from "../base/rest.service";
 
 
 /**
  * This is a service that allows to fetch statistics
  */
 @Injectable()
-export class StatisticsService {
-    /**
-     * Observable of the statistics
-     */
-    public $: Observable<IStatistics>;
-
-    private _$: BehaviorSubject<IStatistics>;
-
-    constructor(private http: Http) {
-        this._$ = new BehaviorSubject(null);
-        this.$ = this._$.asObservable();
-        this.fetch();
-    }
-
-    private fetch(): void {
-        this.http.get(STATS_URL).subscribe((res: Response) => this._$.next(res.json()));
+export class StatisticsService extends RestService<IStatistics> {
+    constructor(http: Http) {
+        super(STATS_URL, http);
+        let updateInterval = 1000 * 60 * 5; // Update every 5 minutes
+        Observable.timer(updateInterval, updateInterval).subscribe(() => this.fetch());
     }
 }

@@ -17,6 +17,13 @@ $nav-background-color: darken($background-color, 10%);
 $nav-link-color: darken($link-color, 10%);
 
 /**
+ * inputs
+ */
+$round-checkbox-size: 1.2rem;
+$box-shadow-color: #6c6c6c;
+
+
+/**
  * Paddings
  */
 $nav-item-padding: 15px;
@@ -37,4 +44,3 @@ $font-size-button: $font-size-default;
  * Borders
  */
 $border-radius: .25rem;
-

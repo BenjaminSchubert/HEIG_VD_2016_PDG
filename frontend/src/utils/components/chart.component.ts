@@ -14,7 +14,7 @@ declare let Chart: any;
  */
 @Component({
     selector: "rd-chart",
-    styles: [":host { display: flex; flex-grow: 1; }"],
+    styles: [":host { position: absolute; height: 100%; width: 100%; }"],
     template: "<canvas></canvas>",
 })
 export class ChartComponent implements OnInit, OnChanges {

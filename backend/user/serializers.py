@@ -230,13 +230,15 @@ class UserProfileSerializer(ModelSerializer, PhoneNumberSerializerMixin):
     """Defines a serializer for users to edit their profiles."""
 
     password = CharField(max_length=255, write_only=True, required=False)
-    avatar = ImageField(read_only=True)
 
     class Meta:
         """This Meta class defines the fields and models for the `UserProfileSerializer`."""
 
-        fields = ("username", "email", "avatar", "password", "phone_number", "last_avatar_update", "country")
+        fields = (
+            "username", "email", "avatar", "password", "phone_number", "last_avatar_update", "country", "is_staff",
+        )
         model = User
+        read_only_fields = ("avatar", "is_staff")
 
     def update(self, instance, validated_data):
         """

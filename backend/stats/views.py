@@ -25,7 +25,45 @@ meeting_per_users = ExpressionWrapper(
 
 
 class StatisticsView(APIView):
-    """View to get statistics about the application."""
+    """
+    This view allows users to get statistics about the application.
+
+    This view requires user to be an administrator to get access to it.
+
+    This view only supports GET requests.
+
+    It will return a 200 OK if the user has the right, with the payload described below.
+    It will return a 403 FORBIDDEN if the user is not administrator.
+
+    This view supports multiple formats: JSon, XML, etc.
+
+    An example response would be :
+        {
+            new_users: [
+                {
+                    day: 2017-01-01T00:00:00Z (an ECMA-262 formatted date),
+                    number: 10 (number of users joined this day),
+                },
+                ...
+            ],
+            meetings_per_user: [
+                {
+                    day: 2017-01-01T00:00:00Z (an ECMA-262 formatted date),
+                    number: 10 (number of meetings done per user having oined a meeting at this date),
+                },
+                ...
+            ],
+            active_users_per_month: [
+                {
+                    month: 2017-01-01T00:00:00Z (an ECMA-262 formatted date), set at the first day of the month,
+                    number: 10 (number of new users during the month),
+                },
+                ...
+            ],
+            total_users: 10 (total number of users registered),
+            total_meetings: 130 (total number of meetings done),
+        }
+    """
 
     permission_classes = (IsAdminUser,)
 

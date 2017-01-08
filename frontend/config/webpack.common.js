@@ -5,6 +5,7 @@ const AotPlugin = require("@ngtools/webpack").AotPlugin;
 
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 
 module.exports = function(projectRoot, appConfig) {
@@ -47,6 +48,9 @@ module.exports = function(projectRoot, appConfig) {
             new webpack.optimize.CommonsChunkPlugin({
                 name: ["app", "vendor", "polyfills"]
             }),
+            new CopyWebpackPlugin([
+                { from: path.resolve(projectRoot, "./assets/icons/"), to: appConfig.outDir },
+            ]),
 
         ],
 

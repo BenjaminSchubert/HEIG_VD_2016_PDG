@@ -13,10 +13,11 @@ export class LoginGuard implements CanActivate {
      * @param router to handle navigation
      * @param user to access user information
      */
-    constructor(protected router: Router, protected user: AccountService) {}
+    constructor(protected router: Router, protected user: AccountService) {
+    }
 
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-        return  this.user.isLoggedIn$.take(1)
+        return this.user.isLoggedIn$.take(1)
             .do((loggedIn: boolean) => {
                 if (!loggedIn) {
                     this.router.navigate(["login"], {queryParams: {redirect: route.url}}).then();
@@ -34,6 +35,18 @@ export class LoginGuard implements CanActivate {
 export class LogoutGuard extends LoginGuard {
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
         return this.user.isLoggedIn$.take(1).map((loggedIn: boolean) => !loggedIn);
+    }
+
+}
+
+
+/**
+ * Guard to check that a user is an administrator.
+ */
+@Injectable()
+export class AdminGuard extends LoginGuard {
+    public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+        return this.user.isStaff$.take(1);
     }
 
 }

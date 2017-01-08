@@ -3,8 +3,11 @@
     <nav class="navbar top">
         <!-- left menu -->
         <ul>
-            <li routerLinkActive="active">
-                <a [routerLink]="['']">Stats</a>
+            <li routerLinkActive="active" *ngIf="account.isStaff$ | async">
+                <a [routerLink]="['stats']">Stats</a>
+            </li>
+            <li routerLinkActive="active" *ngIf="account.isStaff$ | async">
+                <a [routerLink]="['users']">Users</a>
             </li>
             <li routerLinkActive="active">
                 <a href="#">About</a>

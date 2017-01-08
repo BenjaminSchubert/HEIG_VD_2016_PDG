@@ -38,7 +38,7 @@ export class StatsComponent {
             backgroundColor: "#a94442",
             borderColor: "#a94442",
             fill: false,
-            label: "Meetings per User",
+            label: "Meetings per IUser",
         },
         new_users: {
             backgroundColor: "rgba(71, 188, 47, 0.91)",
@@ -111,6 +111,7 @@ export class StatsComponent {
                         tickMarkLength: 15,
                     },
                     ticks: {
+                        autoSkip: true,
                         fontColor: "#abaeaf",
                         fontSize: 16,
                     },
@@ -130,6 +131,7 @@ export class StatsComponent {
                         tickMarkLength: 15,
                     },
                     ticks: {
+                        autoSkip: true,
                         fontColor: "#abaeaf",
                         fontSize: 16,
                         min: 0,

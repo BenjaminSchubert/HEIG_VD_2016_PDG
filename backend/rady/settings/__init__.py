@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "meeting",
     "device",
     "stats",
+    "admin.apps.AdminConfig",
 ]
 
 MIDDLEWARE = [
@@ -90,7 +91,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_URL = "/static/"
+STATIC_URL = "/api/static/"
 MEDIA_URL = "/resources/"
 
 APPEND_SLASH = True

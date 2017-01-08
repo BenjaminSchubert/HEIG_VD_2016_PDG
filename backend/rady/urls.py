@@ -11,6 +11,7 @@ apiv1_urls = [
     url(r"^auth/", include("auth.urls")),
     url(r"^fcm/devices/", include("device.urls")),
     url(r"^statistics/", include("stats.urls")),
+    url(r"^admin/", include("admin.urls")),
 ]
 
 urlpatterns = [

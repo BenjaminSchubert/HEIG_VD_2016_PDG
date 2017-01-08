@@ -1,7 +1,8 @@
 import { Routes, RouterModule } from "@angular/router";
 import { StatsComponent } from "./stats/stats.component";
 import { LoginComponent } from "./auth/login.component";
-import { LogoutGuard, LoginGuard } from "./auth/guards/login.guard";
+import { LogoutGuard, AdminGuard } from "./auth/guards/login.guard";
+import { UserComponent } from "./users/user.component";
 
 
 /**
@@ -11,7 +12,12 @@ const routes: Routes = [
     {
         children: [
             {
-                canActivate: [LoginGuard],
+                canActivate: [AdminGuard],
+                component: UserComponent,
+                path: "users",
+            },
+            {
+                canActivate: [AdminGuard],
                 component: StatsComponent,
                 path: "stats",
 

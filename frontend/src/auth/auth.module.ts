@@ -2,7 +2,7 @@ import { NgModule, ModuleWithProviders } from "@angular/core";
 import { LoginComponent } from "./login.component";
 import { UtilsModule } from "../utils/utils.module";
 import { AccountService } from "./account.service";
-import { LoginGuard, LogoutGuard } from "./guards/login.guard";
+import { LoginGuard, LogoutGuard, AdminGuard } from "./guards/login.guard";
 
 
 /**
@@ -22,7 +22,7 @@ export class AuthModule {
         return {
             ngModule: AuthModule,
             providers: [
-                AccountService, LoginGuard, LogoutGuard,
+                AccountService, LoginGuard, LogoutGuard, AdminGuard,
             ],
         };
     }

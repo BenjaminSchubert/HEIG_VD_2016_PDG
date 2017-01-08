@@ -1,6 +1,10 @@
+/**
+ * Beware that import order is important and will define which css takes precedence.
+ */
+
 @import "styles/navbar";
 @import "styles/defaults";
-@import "styles/form";
 @import "styles/layout";
 @import "styles/button";
 @import "styles/color";
+@import "styles/form";

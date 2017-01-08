@@ -1,19 +1,21 @@
 @import "../styles/variables";
 
-button {
-  font-size: 0.7 * $font-size-button;
-  padding: .4rem .6rem;
-  margin-right: .4rem;
-  margin-left: .4rem;
-}
 
 :host {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1 1 auto;
+
+  button {
+    font-size: 0.7 * $font-size-button;
+    padding: .4rem .6rem;
+    margin-right: .4rem;
+    margin-left: .4rem;
+  }
 
   .numeric-stats {
     flex-direction: column;
+    padding-top: .8rem;
 
     span {
       padding-bottom: .4rem;
@@ -22,15 +24,11 @@ button {
 
   .top {
     align-self: flex-start;
+    padding-top: .8rem;
   }
 
   .chart-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-
-    div {
-      align-self: stretch;
-    }
+    flex: 1 1 auto;
+    position: relative;
   }
 }
