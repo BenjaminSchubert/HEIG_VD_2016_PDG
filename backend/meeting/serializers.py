@@ -13,7 +13,7 @@ from rest_framework.serializers import ModelSerializer
 
 from meeting.models import Meeting, Place, Participant
 from user.models import Friendship
-
+from user.serializers import UserProfileSerializer
 
 __author__ = "Benjamin Schubert, <ben.c.schubert@gmail.com>"
 
@@ -73,6 +73,8 @@ class ParticipantSerializer(ModelSerializer):
     This will not give information that are redundant with the `MeetingSerializer`.
     """
 
+    user = UserProfileSerializer(read_only=True)
+
     class Meta:
         """Defines the metaclass for the `ParticipantSerializer`."""
 
@@ -89,9 +91,6 @@ class ParticipantSerializer(ModelSerializer):
         :return: sanitized version of the attributes
         """
         attrs = super().validate(attrs)
-
-        if "accepted" in attrs and self.instance.accepted is not None:
-            raise ValidationError({"accepted": "You have already answered this meeting."})
 
         if "arrived" in attrs:
             if attrs["arrived"] is True and self.instance.accepted is not True:
@@ -217,11 +216,11 @@ class WriteMeetingSerializer(MeetingSerializer):
         return attrs
 
 
-class UpdateMeetingSerializer(ModelSerializer):
+class MeetingUpdateSerializer(ModelSerializer):
     """Defines a serializer for the `Meeting` model for editing."""
 
     class Meta:
-        """Defines the metaclass for the `UpdateMeetingSerializer`."""
+        """Defines the metaclass for the `MeetingUpdateSerializer`."""
 
         fields = ("status",)
         model = Meeting
@@ -234,7 +233,11 @@ class UpdateMeetingSerializer(ModelSerializer):
         :exception ValidationError: when any of the attribute is invalid
         :return: sanitized version of the attributes
         """
+        current_user = self.context["request"].user
         attrs = super().validate(attrs)
+
+        if self.instance.organiser != current_user:
+            raise ValidationError("Only the organiser can update the meeting.")
 
         if self.instance.status == Meeting.STATUS_ENDED:
             raise ValidationError("You cannot update an finished meeting.")
