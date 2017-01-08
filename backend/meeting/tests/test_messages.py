@@ -25,7 +25,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
         self.mocked_send_fcm_message.reset_mock()
 
     @authenticated
-    def test_new_meeting_send_push_notifications_to_all_participants(self):
+    def test_new_meeting_send_push_notifications_participants_except_organiser(self):
         other_participants = get_user_model().objects.exclude(id=self.user.id)  # no message to organiser
 
         self.post(
@@ -180,3 +180,33 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             sound=ANY,
             badge=ANY,
         )
+
+    @authenticated
+    def test_new_meeting_do_not_send_push_notification_to_hidden(self):
+        other_participants = get_user_model().objects.exclude(id=self.user.id)  # no message to organiser
+        hidden = other_participants.first()
+        hidden.hidden = True
+        hidden.save(update_fields=("hidden",))
+
+        self.post(
+            dict(
+                type="place",
+                place=dict(latitude=0, longitude=1),
+                participants=other_participants.values_list("id", flat=True)
+            ),
+            url=API_V1 + "meetings/"
+        )
+
+        self.assertEqual(self.mocked_send_fcm_message.call_count, other_participants.count() - 1)
+        self.mocked_send_fcm_message.assert_has_calls([
+            call(
+                registration_id=u.get_device().registration_id,
+                message_title=ANY,
+                message_body=ANY,
+                message_icon=ANY,
+                data_message={"type": "new-meeting", "meeting": Meeting.objects.first().id},
+                sound=ANY,
+                badge=ANY,
+            )
+            for u in other_participants.exclude(id=hidden.id)
+        ], any_order=True)

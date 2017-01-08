@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Q
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CurrentUserDefault, HiddenField, IntegerField, DecimalField
+from rest_framework.fields import CurrentUserDefault, HiddenField, DecimalField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
@@ -149,6 +149,8 @@ class WriteMeetingSerializer(MeetingSerializer):
         If this is a 'place' meeting, set the status as 'in progress'. Other types of meetings
         needs more information to start.
 
+        For 'hidden' user, automatically refuse all meetings.
+
         :param validated_data: data to use for the creation of the meeting
         :return: the newly created meeting
         """
@@ -166,11 +168,17 @@ class WriteMeetingSerializer(MeetingSerializer):
             place.save()
 
         for participant in participants:
+            accepted = None
+            if participant.hidden is True:
+                accepted = False
+            elif current_user.id == participant.id:
+                accepted = True
+
             Participant(
                 user=participant,
                 place=place,
                 meeting=meeting,
-                accepted=True if current_user.id == participant.id else None
+                accepted=accepted
             ).save()
 
         return meeting

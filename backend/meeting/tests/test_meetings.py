@@ -186,6 +186,15 @@ class TestMeeting(APIEndpointTestCase):
 
         self.assertFalse(Participant.objects.get(user=friend).accepted)
 
+    @authenticated
+    def test_hidden_user_auto_refuse_meetings(self):
+        friend = get_user_model().objects.last()
+        friend.hidden = True
+        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+
+        self.post(dict(type="place", place=dict(latitude=0, longitude=1), participants=[friend.id]))
+        self.assertFalse(Participant.objects.get(user=friend).accepted)
+
 
 class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
     url = API_V1 + "meetings/{}/"
