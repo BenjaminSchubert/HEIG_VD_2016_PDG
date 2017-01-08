@@ -91,9 +91,9 @@ export class AccountService {
      */
     private redirect() {
         if (this.route.snapshot.queryParams["redirect"] !== undefined) {
-            this.router.navigate([this.route.snapshot.queryParams["redirect"]]).then();
+            this.router.navigate([this.route.snapshot.queryParams["redirect"]]).then((a: any) => console.log(a));
         } else  {
-            this.router.navigate([""]).then();
+            this.router.navigate([""]).then((a: any) => console.log(a));
         }
     }
 }

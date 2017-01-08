@@ -47,6 +47,9 @@ class MeetingPlaceSerializer(ModelSerializer):
     each others.
     """
 
+    latitude = AutoShrinkDecimal(decimal_places=6, max_digits=9, max_value=90, min_value=-90)
+    longitude = AutoShrinkDecimal(decimal_places=6, max_digits=9, max_value=180, min_value=-180)
+
     class Meta:
         """Defines the metaclass for the `MeetingPlaceSerializer`."""
 
@@ -73,8 +76,9 @@ class ParticipantSerializer(ModelSerializer):
     class Meta:
         """Defines the metaclass for the `ParticipantSerializer`."""
 
-        exclude = ("place", "id", "meeting", "user")
+        exclude = ("place", "id", "meeting")
         model = Participant
+        read_only_fields = ("user",)
 
     def validate(self, attrs):
         """

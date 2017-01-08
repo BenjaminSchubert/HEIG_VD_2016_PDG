@@ -46,7 +46,13 @@ export class LogoutGuard extends LoginGuard {
 @Injectable()
 export class AdminGuard extends LoginGuard {
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-        return this.user.isStaff$.take(1);
+        return this.user.isStaff$.combineLatest(this.user.isLoggedIn$).take(1)
+            .do((data: [boolean, boolean]) => {
+                 if (!data[1]) {
+                    this.router.navigate(["login"], {queryParams: {redirect: route.url}}).then();
+                }
+            })
+            .map((data: [boolean, boolean]) => data[0]);
     }
 
 }
