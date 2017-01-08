@@ -22,7 +22,7 @@ export class UserComponent {
     public makeAdmin(user: IUser) {
         let copy = JSON.parse(JSON.stringify(user));
         copy.is_staff = !copy.is_staff;
-        this.service.update(user).subscribe();
+        this.service.update(copy).subscribe();
     }
 
     /**
@@ -33,7 +33,7 @@ export class UserComponent {
     public activate(user: IUser) {
         let copy = JSON.parse(JSON.stringify(user));
         copy.is_active = !copy.is_active;
-        this.service.update(user).subscribe();
+        this.service.update(copy).subscribe();
     }
 
 }
