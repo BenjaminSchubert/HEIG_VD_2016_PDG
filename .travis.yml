@@ -10,3 +10,4 @@ install:
 script:
   - FCM_SERVER_TOKEN="" fab test_backend
   - fab lint_backend
+  - fab lint_frontend
