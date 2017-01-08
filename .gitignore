@@ -30,3 +30,5 @@ migrations/
 # python coverage
 .coverage
 htmlcov/
+
+app/res

@@ -4,10 +4,12 @@
   "homepage": "",
   "private": true,
   "scripts": {
+    "postinstall": "mkdir -p www && ionic state reset --verbose && ncp res platforms/android/res",
     "clean": "ionic-app-scripts clean",
-    "build": "ionic-app-scripts build",
+    "clean:all": "npm run clean && npm cache clean && rimraf -- npm-debug.log www platforms plugins node_modules",
     "ionic:build": "ionic-app-scripts build",
-    "ionic:serve": "ionic-app-scripts serve"
+    "ionic:serve": "ionic-app-scripts serve",
+    "run:android": "ionic run android --device --prod"
   },
   "dependencies": {
     "@angular/common": "2.2.1",
@@ -20,17 +22,22 @@
     "@angular/platform-browser-dynamic": "2.2.1",
     "@angular/platform-server": "2.2.1",
     "@ionic/storage": "1.1.7",
+    "@types/google-libphonenumber": "7.4.7",
+    "@types/leaflet": "1.0.41",
+    "angular2-jwt": "0.1.25",
+    "cordova": "6.4.0",
+    "google-libphonenumber": "2.0.4",
+    "ionic": "2.1.18",
     "ionic-angular": "2.0.0-rc.4",
     "ionic-native": "2.2.11",
     "ionicons": "3.0.0",
+    "leaflet": "1.0.2",
+    "lodash": "4.17.4",
+    "mkdirp": "0.5.1",
+    "ncp": "2.0.0",
+    "rimraf": "2.5.4",
     "rxjs": "5.0.0-beta.12",
-    "zone.js": "0.6.26",
-    "@types/google-libphonenumber": "^7.4.7",
-    "@types/leaflet": "^1.0.41",
-    "angular2-jwt": "^0.1.25",
-    "google-libphonenumber": "^2.0.4",
-    "leaflet": "^1.0.2",
-    "lodash": "^4.17.4"
+    "zone.js": "0.6.26"
   },
   "devDependencies": {
     "@ionic/app-scripts": "0.0.47",
