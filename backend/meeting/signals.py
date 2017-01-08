@@ -1,5 +1,5 @@
 """Contains all signal handlers from the `meeting` module."""
-
+from django.db.models import Q
 from django.db.models.signals import post_save, post_init
 from django.dispatch import receiver
 
@@ -28,7 +28,8 @@ def post_save_participant(instance, created, **kwargs):
     - Send a push notification to the user to inform him of the new meeting (prevent to inform
       the organiser of is own meeting).
     Update :
-    - Send a push notification to the other users to inform them of the event.
+    - Send a push notification to the other users to inform them of the event (no push message to
+      the person at the origin of the action and the participants who declined the meeting).
     """
     if created:
         if instance.meeting.organiser_id != instance.user_id:
@@ -39,10 +40,13 @@ def post_save_participant(instance, created, **kwargs):
                 related_type="meeting",
                 related_id=instance.meeting.id,
             )
-    else:
-        meeting_users = instance.meeting.participants.exclude(id=instance.user.id).all()
 
+    else:
         if instance.has_changed("accepted"):
+            meeting_users = instance.meeting.participants \
+                .exclude(Q(id=instance.user.id) | Q(participant__accepted=False)) \
+                .all()
+
             if instance.accepted is True:
                 meeting_users.send_message(
                     title="Meeting update",
@@ -50,6 +54,7 @@ def post_save_participant(instance, created, **kwargs):
                     data=dict(type="user-accepted-meeting", meeting=instance.meeting.id, participant=instance.id),
                     deferred=False,
                 )
+
             elif instance.accepted is False:
                 meeting_users.send_message(
                     title="Meeting update",
@@ -57,7 +62,13 @@ def post_save_participant(instance, created, **kwargs):
                     data=dict(type="user-refused-meeting", meeting=instance.meeting.id, participant=instance.id),
                     deferred=False,
                 )
+
         elif instance.has_changed("arrived") and instance.arrived is True:
+            meeting_users = instance.meeting.participants \
+                .exclude(id=instance.user.id) \
+                .filter(participant__accepted=True) \
+                .all()
+
             meeting_users.send_message(
                 title="Meeting update",
                 body="{} has arrived to the meeting".format(instance.user.username),
@@ -91,7 +102,9 @@ def post_save_meeting(instance, created, **kwargs):
     """
     if created is False:
         if instance.has_changed("status"):
-            meeting_users = instance.participants.filter(participant__accepted=True).all()
+            meeting_users = instance.participants\
+                .filter(participant__accepted=True)\
+                .all()
 
             if instance.status == Meeting.STATUS_PROGRESS:
                 meeting_users.send_message(
@@ -101,7 +114,7 @@ def post_save_meeting(instance, created, **kwargs):
                     deferred=False,
                 )
 
-            if instance.status == Meeting.STATUS_ENDED:
+            elif instance.status == Meeting.STATUS_ENDED:
                 meeting_users.send_message(
                     title="Meeting finished",
                     body="The meeting is now finished",
@@ -109,3 +122,13 @@ def post_save_meeting(instance, created, **kwargs):
                     deferred=False,
                 )
                 DeferredMessage.objects.filter(related_type="meeting", related_id=instance.id).delete()
+
+            elif instance.status == Meeting.STATUS_CANCELED:
+                meeting_users.send_message(
+                    title="Meeting canceled",
+                    body="The meeting has been canceled",
+                    data=dict(type="canceled-meeting", meeting=instance.id),
+                    deferred=False,
+                )
+                DeferredMessage.objects.filter(related_type="meeting", related_id=instance.id).delete()
+    instance.reset_tracker()

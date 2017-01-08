@@ -6,6 +6,7 @@ from rest_framework import status
 from device.models import DeferredMessage
 from device.tests import MockFcmMessagesMixin
 from meeting.models import Meeting, Participant
+from meeting.tests import create_meeting
 from test_utils import APIEndpointTestCase, API_V1, authenticated
 from user.models import Friendship
 
@@ -192,12 +193,7 @@ class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
 
     @authenticated
     def test_organiser_can_set_meeting_status_has_progress(self):
-        friend = get_user_model().objects.last()
-        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
-
-        meeting = Meeting(organiser=self.user)
-        meeting.save()
-        Participant(meeting=meeting, user=friend).save()
+        meeting = create_meeting(self.user)
 
         self.assertEqual(
             self.put(dict(status=Meeting.STATUS_PROGRESS), url=self.url.format(meeting.id)).status_code,
@@ -207,12 +203,7 @@ class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
 
     @authenticated
     def test_organiser_can_set_meeting_status_has_ended(self):
-        friend = get_user_model().objects.last()
-        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
-
-        meeting = Meeting(organiser=self.user)
-        meeting.save()
-        Participant(meeting=meeting, user=friend).save()
+        meeting = create_meeting(self.user)
 
         self.assertEqual(
             self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id)).status_code,
@@ -221,13 +212,18 @@ class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
         self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_ENDED)
 
     @authenticated
-    def test_only_organiser_can_update_meeting(self):
-        friend = get_user_model().objects.last()
-        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+    def test_organiser_can_set_meeting_status_has_canceled(self):
+        meeting = create_meeting(self.user)
 
-        meeting = Meeting(organiser=friend)
-        meeting.save()
-        Participant(meeting=meeting, user=self.user).save()
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_CANCELED), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_CANCELED)
+
+    @authenticated
+    def test_only_organiser_can_update_meeting(self):
+        meeting = create_meeting(get_user_model().objects.exclude(id=self.user.id).first())
 
         self.assertEqual(
             self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id)).status_code,
@@ -236,8 +232,10 @@ class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
 
     @authenticated
     def test_cannot_update_ended_meeting(self):
-        meeting = Meeting(organiser=self.user, status=Meeting.STATUS_ENDED)
-        meeting.save()
+        meeting = create_meeting(self.user)
+
+        meeting.status = Meeting.STATUS_ENDED
+        meeting.save(update_fields=("status",))
 
         self.assertEqual(
             self.put(dict(status=Meeting.STATUS_PROGRESS), url=self.url.format(meeting.id)).status_code,
@@ -246,9 +244,24 @@ class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
         self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_ENDED)
 
     @authenticated
+    def test_cannot_update_canceled_meeting(self):
+        meeting = create_meeting(self.user)
+
+        meeting.status = Meeting.STATUS_CANCELED
+        meeting.save(update_fields=("status",))
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_CANCELED)
+
+    @authenticated
     def test_cannot_set_meeting_has_pending(self):
-        meeting = Meeting(organiser=self.user, status=Meeting.STATUS_PROGRESS)
-        meeting.save()
+        meeting = create_meeting(self.user)
+
+        meeting.status = Meeting.STATUS_PROGRESS
+        meeting.save(update_fields=("status",))
 
         self.assertEqual(
             self.put(dict(status=Meeting.STATUS_PENDING), url=self.url.format(meeting.id)).status_code,
@@ -260,11 +273,18 @@ class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
     def test_ended_meeting_cancel_related_deferred_messages(self):
         self.mocked_send_fcm_message.return_value = dict(success=0)
 
-        meeting = Meeting(organiser=self.user)
-        meeting.save()
-        for user in get_user_model().objects.all():
-            Participant(meeting=meeting, user=user, accepted=True).save()
+        meeting = create_meeting(self.user)
 
-        self.put(dict(status=meeting.STATUS_ENDED), url=self.url.format(meeting.id))
+        self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id))
+
+        self.assertEqual(DeferredMessage.objects.count(), 0)
+
+    @authenticated
+    def test_canceled_meeting_cancel_related_deferred_messages(self):
+        self.mocked_send_fcm_message.return_value = dict(success=0)
+
+        meeting = create_meeting(self.user)
+
+        self.put(dict(status=Meeting.STATUS_CANCELED), url=self.url.format(meeting.id))
 
         self.assertEqual(DeferredMessage.objects.count(), 0)

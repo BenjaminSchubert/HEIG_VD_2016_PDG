@@ -222,6 +222,8 @@ class UpdateMeetingSerializer(ModelSerializer):
 
         if self.instance.status == Meeting.STATUS_ENDED:
             raise ValidationError("You cannot update an finished meeting.")
+        elif self.instance.status == Meeting.STATUS_CANCELED:
+            raise ValidationError("You cannot update an canceled meeting.")
 
         if "status" in attrs and attrs["status"] == Meeting.STATUS_PENDING:
             raise ValidationError({"status": "You cannot pause a running meeting."})

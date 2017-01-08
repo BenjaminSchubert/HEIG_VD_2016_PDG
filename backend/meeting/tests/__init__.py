@@ -1,5 +1,3 @@
-import random
-
 from django.contrib.auth import get_user_model
 
 from meeting.models import Meeting, Participant
@@ -21,6 +19,7 @@ def create_meeting(organiser):
     meeting = Meeting(organiser=organiser)
     meeting.save()
     Participant(meeting=meeting, user=organiser, accepted=True).save()
-    for user in get_user_model().objects.exclude(id=organiser.id).all():
-        Participant(meeting=meeting, user=user, accepted=random.choice([True, False])).save()
+    choices = [True, False, None]
+    for i, user in enumerate(get_user_model().objects.exclude(id=organiser.id).all()):
+        Participant(meeting=meeting, user=user, accepted=choices[i % 3]).save()
     return meeting

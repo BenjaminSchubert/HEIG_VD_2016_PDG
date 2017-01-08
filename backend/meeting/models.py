@@ -22,6 +22,7 @@ class Meeting(models.Model, AttributeTrackerMixin):
     STATUS_PENDING = "pending"
     STATUS_PROGRESS = "progress"
     STATUS_ENDED = "ended"
+    STATUS_CANCELED = "canceled"
 
     TYPE_PLACE = "place"
     TYPE_PERSON = "person"
@@ -35,7 +36,12 @@ class Meeting(models.Model, AttributeTrackerMixin):
         max_length=8
     )
     status = models.CharField(
-        choices=((STATUS_PENDING, STATUS_PENDING), (STATUS_PROGRESS, STATUS_PROGRESS), (STATUS_ENDED, STATUS_ENDED)),
+        choices=(
+            (STATUS_PENDING, STATUS_PENDING),
+            (STATUS_PROGRESS, STATUS_PROGRESS),
+            (STATUS_ENDED, STATUS_ENDED),
+            (STATUS_CANCELED, STATUS_CANCELED)
+        ),
         max_length=8,
         default=STATUS_PENDING
     )
