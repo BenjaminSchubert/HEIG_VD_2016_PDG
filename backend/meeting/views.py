@@ -1,12 +1,12 @@
 """This module defines the routes available in the `meeting` application."""
-
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.response import Response
 
 from meeting.models import Meeting, Place, Participant
 from meeting.serializers import MeetingSerializer, WriteMeetingSerializer, PlaceSerializer, ParticipantSerializer, \
-    UpdateMeetingSerializer
+    MeetingUpdateSerializer
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
@@ -175,8 +175,8 @@ class MeetingListView(ListCreateAPIView):
     serializer_class = WriteMeetingSerializer
 
     def get_queryset(self):
-        """Get all meetings to which the user is invited."""
-        return Meeting.objects.filter(participant__user=self.request.user)
+        """Get all meetings to which the user is invited and he didn't refused."""
+        return Meeting.objects.filter(Q(participant__user=self.request.user) & ~Q(participant__accepted=False))
 
     def create(self, request, *args, **kwargs):
         """
@@ -193,23 +193,78 @@ class MeetingListView(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class MeetingDetailsView(UpdateAPIView):
+class MeetingDetailsView(RetrieveUpdateAPIView):
     """
-    Allows a user to manage meetings he created.
+    Allows a user to view and to manage meetings he created.
 
-    This view require the user to be authenticated. It supports PUT/PATCH requests.
+    This view require the user to be authenticated. It supports GET and PUT/PATCH requests.
+
+    The user can only edit de status of the meeting. He can close or cancel it, but never set it has pending.
+    He close or canceled meeting can't be altered.
 
     This view supports multiple formats: JSon, XML, etc.
 
-    An example of data, in JSon, is:
+    GET requests:
+        An example of data, in JSon, is (same payload has the POST requests):
 
-        {
-            "status": "ended", (options: pending, progress, ended)
-        }
+            {
+                "end_time": "2016-12-14T19:32:13.792217Z",  (this is the time at which the meeting ended.
+                                                              if this is null, then the meeting is still going on)
+
+                "id": 1,  (this is the unique id of the meeting)
+
+                "meeting_time": "2016-12-14T19:25:13.792217Z", (this is the time at which the meeting is planned.
+                                                                This may be null)
+
+                "organiser": 1, (this is the unique id of the organiser of the meeting)
+
+                "participants": [  (this is a list of participants, please note that the participants must be friend
+                                    with the organiser)
+
+                    {
+                        "accepted": null,  (this defines whether the user accepted the meeting or not. When null,
+                                            then no answer has been given yet)
+                        "arrived": False,  (whether the user already arrived to the meeting point)
+                        "user": 11,  (the user id)
+                    },
+                    ...
+                ],
+                "place": {
+                    "id": 1, (the unique id of the place to which to go)
+                    "latitude": 0.61,  (the latitude at which the meeting is set)
+                    "longitude": 0.6,  (the longitude at which the meeting is set)
+                    "name": "HEIG-VD", (the user given name of the place, optional)
+                },
+                "start_time": "2016-12-14T19:32:13.792217Z",  (this is the time at which the meeting was created)
+                "type": "shortest",  (the meeting point type, described before)
+            }
+
+    PUT/PATCH requests:
+        An example of data, in JSon, is:
+
+            {
+                "status": "ended", (options: pending, progress, ended)
+            }
     """
 
-    serializer_class = UpdateMeetingSerializer
-
     def get_queryset(self):
-        """Get all meetings to which the user is organiser."""
-        return Meeting.objects.filter(organiser=self.request.user)
+        """Get all meetings to which the user is invited and he didn't refused."""
+        return Meeting.objects.filter(Q(participant__user=self.request.user) & ~Q(participant__accepted=False))
+
+    def retrieve(self, *args, **kwargs):
+        """
+        Override API retrieve method.
+
+        Add custom serializer for meeting details.
+        """
+        self.serializer_class = MeetingSerializer
+        return RetrieveUpdateAPIView.retrieve(self, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Override API update method.
+
+        Add custom serializer for meeting updates.
+        """
+        self.serializer_class = MeetingUpdateSerializer
+        return RetrieveUpdateAPIView.update(self, request, *args, **kwargs)

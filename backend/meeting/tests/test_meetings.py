@@ -191,6 +191,24 @@ class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
     url = API_V1 + "meetings/{}/"
     number_of_other_users = 1
 
+    def test_cannot_retrieve_meetings_details_when_unauthenticated(self):
+        meeting = create_meeting(self.user)
+
+        self.assertEqual(self.get(url=self.url.format(meeting.id)).status_code, status.HTTP_401_UNAUTHORIZED)
+
+    @authenticated
+    def test_can_retrieve_own_meetings_details(self):
+        meeting = create_meeting(self.user)
+
+        self.assertEqual(self.get(url=self.url.format(meeting.id)).status_code, status.HTTP_200_OK)
+
+    @authenticated
+    def test_cannot_retrieve_others_meetings_details(self):
+        meeting = Meeting(organiser=get_user_model().objects.exclude(id=self.user.id).first())
+        meeting.save()
+
+        self.assertEqual(self.get(url=self.url.format(meeting.id)).status_code, status.HTTP_404_NOT_FOUND)
+
     @authenticated
     def test_organiser_can_set_meeting_status_has_progress(self):
         meeting = create_meeting(self.user)
@@ -227,7 +245,7 @@ class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
 
         self.assertEqual(
             self.put(dict(status=Meeting.STATUS_ENDED), url=self.url.format(meeting.id)).status_code,
-            status.HTTP_404_NOT_FOUND
+            status.HTTP_400_BAD_REQUEST
         )
 
     @authenticated

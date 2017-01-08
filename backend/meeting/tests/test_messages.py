@@ -1,4 +1,3 @@
-import random
 from unittest.mock import ANY, call
 
 from django.contrib.auth import get_user_model
