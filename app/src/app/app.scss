@@ -14,3 +14,25 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+// hidden class
+.hidden {
+	display: none;
+}
+
+// content 
+ion-content {
+	div.content {
+
+		// margin left and right
+		margin: auto 5vw auto 5vw;
+
+		// title
+		h1 {
+			font-size: 30pt;
+			font-weight: bold;
+			text-transform: uppercase;
+			text-align: center;
+		}
+	}
+}

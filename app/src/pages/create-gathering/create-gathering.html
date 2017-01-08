@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title class="hidden">Create Gathering</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class="content">
+    <div class="page-create-gathering">
+      <h1>Gathering</h1>
+
+      <!-- Reminder of participants -->
+      <ion-list>
+        <ion-list-header>
+          Participants
+        </ion-list-header>
+        <ion-item>
+          <strong>You ({{gatheringService.gathering.initiator.username}})</strong>
+        </ion-item>
+        <ion-item *ngFor="let participant of gatheringService.gathering.participants">
+          {{participant.username}}
+        </ion-item>
+      </ion-list>
+
+      <!-- Choose gathering mode -->
+      <ion-list radio-group [(ngModel)]="gatheringService.gathering.mode">
+        <ion-list-header>
+          Gathering mode
+        </ion-list-header>
+        <ion-item>
+          <ion-label>Fixed point</ion-label>
+          <ion-radio value="fixed" checked="true"></ion-radio>
+        </ion-item>
+        <ion-item>
+          <ion-label>On somebody</ion-label>
+          <ion-radio value="somebody" disabled="true"></ion-radio>
+        </ion-item>
+        <ion-item>
+          <ion-label>Shortest</ion-label>
+          <ion-radio value="shortest" disabled="true"></ion-radio>
+        </ion-item>
+      </ion-list>
+
+      <!-- Start button -->
+      <button ion-button full 
+        (click)="modeChoosen(gatheringService.gathering.mode)" 
+        [disabled]="gatheringService.gathering.mode==null">
+          Next
+      </button>
+    </div>
+  </div>
+</ion-content>

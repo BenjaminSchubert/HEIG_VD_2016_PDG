@@ -1,0 +1,117 @@
+\documentclass[french]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{ragged2e}
+\usepackage{float}
+
+\geometry{
+	a4paper,
+	total={210mm,297mm},
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm,
+}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\lhead{Champion, Loiseau\\Rochat, Schubert}
+\chead{Mobile UI}
+\rhead{\today}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+	
+	% Page de garde
+	\title{Projet Rady - Mobile UI}
+	\author{Projet de groupe\\
+		Champion, Loiseau, Rochat, Schubert\\
+		Resp. René Rentsch\\
+		HEIG-VD}
+	\date{\today}
+	\maketitle
+	\vspace{5cm}
+	\centering
+	\includegraphics[scale=0.3]{../logo/icone}
+	\thispagestyle{empty}
+	\newpage
+	
+	% Table des matières
+	\tableofcontents
+	\newpage
+	
+	\justify
+	
+	\section{Introduction}
+		 % TODO expliquer le but du document
+		 
+	\section{Technologies}
+		% TODO expliquer quels outils sont utilisés (ionic, leaflet?, etc.)
+		
+	\section{Pages}
+		% TODO expliquer le concept de "page"
+		% TODO montrer les transitions ?
+		% TODO formaliser chaque page présentes dans l'app, pourquoi tel ou tel choix, etc.
+		
+		\subsection{\texttt{Splashscreen}}
+			Cette page est le point d'entrée de l'application, elle permet à celle-ci de charger la page suivante en arrière-plan. Ionic2 nous offre deux manières d'afficher un splashscreen:
+			\begin{enumerate}
+				\item avec le plugin natif \texttt{Splashscreen}, qui utilise une ressource et est assez limité dans ses possibilités
+				\item avec une page HTML/CSS qui affiche une image, beaucoup plus souple au niveau de l'affichage
+			\end{enumerate}
+			La solution (2) a été ici retenue pour ses plus grandes possibilités d'évolution.\\
+			
+			Pour l'instant la page consiste à simplement afficher le logo Rady au centre de l'écran.
+			
+		\subsection{\texttt{SignIn}}
+			Cette page contient le formulaire de connexion (\textit{email}, \textit{password}), ainsi que des liens pour aller à la page \texttt{Register} ou à la page \texttt{ForgottenPassword}. Pour finir le logo Rady vient rappeler dans quelle application on est.
+		
+		\subsection{\texttt{Register}}
+			Cette page contient le formulaire de création d'un compte (\textit{username}, \textit{email}, \textit{phone}, \textit{password}, \textit{passwordConfirmation}). Les champs non-obligatoires (\textit{phone}) possèdent un petit texte afin d'expliquer leur utilité. Quand l'utilisateur commence à entrer son numéro de téléphone, le champ \textit{country} apparaît. Pour finir le logo Rady vient rappeler dans quelle application on est. 
+			
+		\subsection{\texttt{ForgottenPassword}}
+			Cette page contient le formulaire de ré-initialisation du mot de passe. Elle prend un unique champ \textit{email}. Une fois le formulaire traité, une alerte le confirme à l'utilisateur puis retourne à la page \texttt{SignIn}. Pour finir le logo Rady vient rappeler dans quelle application on est. 
+			
+		\subsection{\texttt{ContactList}}
+			Cette page contient la liste des contacts qui doivent être récupérés depuis l'api. L'utilisateur peut rechercher et selectionner les contacts qu'il désire afin de lancer une recherche.
+			
+		\subsection{\texttt{Settings}}
+			% TODO a compléter et implémenter
+			
+		\subsection{\texttt{EditProfile}}
+			% TODO a compléter et implémenter	
+		
+		\subsection{\texttt{History}}
+			% TODO a compléter et implémenter	
+			
+		\subsection{\texttt{AddContact}}
+			Cette page permet de chercher et ajouter des contacts. Plusieurs sources sont possibles: 
+			\begin{itemize}
+				\item via un scan d'un QR Code
+				\item avec un champ de recherche
+				\item en cherchant dans la liste de contact du téléphone (voir \texttt{AddContactFromList})
+			\end{itemize}
+		
+			Le QR code de l'utilisateur (voir \texttt{MyQrCode}) est également accessible depuis un lien à côté du lien du scanner (voir \texttt{AddContactFromScanner}). 
+			
+		\subsection{\texttt{AddContactFromList}}
+			% TODO pas encore faîte
+			
+		\subsection{\texttt{AddContactFromScanner}}
+			% TODO pas encore faîte
+			
+		\subsection{\texttt{MyQrCode}}
+			% TODO pas encore faîte
+		
+		
+	% TODO autres sections? importer le user-flow?
+			
+\end{document}

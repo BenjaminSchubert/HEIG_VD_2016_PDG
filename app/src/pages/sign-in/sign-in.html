@@ -1,0 +1,36 @@
+<ion-header class="hidden">
+	<ion-navbar>
+		<ion-title>Sign In</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<!-- Sign-in form with other options under it -->
+<ion-content>
+	<div class="content">
+		<div class="sign-in-page">
+			<h1>Sign In</h1>
+
+			<p>{{errors}}</p>
+
+			<form [formGroup]="form" (ngSubmit)="doSignIn()">
+				<ion-item>
+					<ion-label floating>Email</ion-label>
+					<ion-input type="email" formControlName="email"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Password</ion-label>
+					<ion-input type="password" formControlName="password"></ion-input>
+				</ion-item>
+				<button ion-button block icon-right round large type="submit" [disabled]="!form.valid">
+					Sign In
+					<ion-icon name="arrow-forward"></ion-icon>
+				</button>
+			</form>
+
+			<button ion-button small clear block (click)="goToRegister()">I don't have an account</button>
+			<button ion-button small clear block (click)="goToForgottenPassword()">Forgot your password?</button>
+
+			<img src="assets/img/rady-logo.png">
+		</div>
+	</div>
+</ion-content>

@@ -14,7 +14,6 @@
 # archives
 *.zip
 
-
 # JetBrains
 *.iml
 *.idea
@@ -31,3 +30,5 @@ migrations/
 # python coverage
 .coverage
 htmlcov/
+
+app/res

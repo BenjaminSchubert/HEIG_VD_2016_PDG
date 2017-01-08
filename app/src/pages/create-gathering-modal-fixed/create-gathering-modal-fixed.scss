@@ -1,0 +1,13 @@
+.create-gathering-modal-fixed {
+  height: 100vh;
+  width: 100vw;
+
+  div.leaflet-map {
+    height: 80vh;
+    width: 100vw;
+  }
+
+  p.information {
+    text-align: center;
+  }
+}
