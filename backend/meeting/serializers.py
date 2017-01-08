@@ -13,7 +13,7 @@ from rest_framework.serializers import ModelSerializer
 
 from meeting.models import Meeting, Place, Participant
 from user.models import Friendship
-
+from user.serializers import UserProfileSerializer
 
 __author__ = "Benjamin Schubert, <ben.c.schubert@gmail.com>"
 
@@ -72,6 +72,8 @@ class ParticipantSerializer(ModelSerializer):
 
     This will not give information that are redundant with the `MeetingSerializer`.
     """
+
+    user = UserProfileSerializer()
 
     class Meta:
         """Defines the metaclass for the `ParticipantSerializer`."""
