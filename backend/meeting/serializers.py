@@ -109,7 +109,7 @@ class MeetingSerializer(ModelSerializer):
     the `WriteMeetingSerializer` which is optimized for write operations.
     """
 
-    organiser = IntegerField(source="organiser.id")
+    organiser = UserProfileSerializer(read_only=True)
     place = MeetingPlaceSerializer(required=False)
     participants = ParticipantSerializer(many=True, source="participant_set")
 
