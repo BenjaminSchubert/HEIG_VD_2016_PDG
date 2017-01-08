@@ -83,9 +83,29 @@ def post_save_meeting(instance, created, **kwargs):
     Fired when meeting is saved (created or updated).
 
     Update :
+    - If the status is now 'progress'
+        - Send a push message to inform the participants.
     - If the status is now 'ended'
+        - Send a push message to inform the participants.
         - Remove eventually pending push messages related to the meeting.
     """
     if created is False:
-        if instance.has_changed("status") and instance.status == Meeting.STATUS_ENDED:
-            DeferredMessage.objects.filter(related_type="meeting", related_id=instance.id).delete()
+        if instance.has_changed("status"):
+            meeting_users = instance.participants.filter(participant__accepted=True).all()
+
+            if instance.status == Meeting.STATUS_PROGRESS:
+                meeting_users.send_message(
+                    title="Meeting in progress",
+                    body="Go to the meeting now",
+                    data=dict(type="meeting-in-progress", meeting=instance.id),
+                    deferred=False,
+                )
+
+            if instance.status == Meeting.STATUS_ENDED:
+                meeting_users.send_message(
+                    title="Meeting finished",
+                    body="The meeting is now finished",
+                    data=dict(type="finished-meeting", meeting=instance.id),
+                    deferred=False,
+                )
+                DeferredMessage.objects.filter(related_type="meeting", related_id=instance.id).delete()

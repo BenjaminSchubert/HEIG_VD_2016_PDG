@@ -202,8 +202,10 @@ class WriteMeetingSerializer(MeetingSerializer):
 
 
 class UpdateMeetingSerializer(ModelSerializer):
+    """Defines a serializer for the `Meeting` model for editing."""
 
     class Meta:
+        """Defines the metaclass for the `UpdateMeetingSerializer`."""
 
         fields = ("status",)
         model = Meeting

@@ -166,4 +166,3 @@ class DeferredMessage(models.Model):
     data = JSONField(null=True)
     related_type = models.CharField(max_length=16, null=True)
     related_id = models.PositiveIntegerField(null=True)
-

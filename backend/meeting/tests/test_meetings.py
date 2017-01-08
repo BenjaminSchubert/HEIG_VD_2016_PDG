@@ -3,6 +3,8 @@ from unittest import expectedFailure
 from django.contrib.auth import get_user_model
 from rest_framework import status
 
+from device.models import DeferredMessage
+from device.tests import MockFcmMessagesMixin
 from meeting.models import Meeting, Participant
 from test_utils import APIEndpointTestCase, API_V1, authenticated
 from user.models import Friendship
@@ -184,12 +186,27 @@ class TestMeeting(APIEndpointTestCase):
         self.assertFalse(Participant.objects.get(user=friend).accepted)
 
 
-class TestMeetingDetails(APIEndpointTestCase):
+class TestMeetingDetails(MockFcmMessagesMixin, APIEndpointTestCase):
     url = API_V1 + "meetings/{}/"
     number_of_other_users = 1
 
     @authenticated
-    def test_organiser_can_update_meeting(self):
+    def test_organiser_can_set_meeting_status_has_progress(self):
+        friend = get_user_model().objects.last()
+        Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
+
+        meeting = Meeting(organiser=self.user)
+        meeting.save()
+        Participant(meeting=meeting, user=friend).save()
+
+        self.assertEqual(
+            self.put(dict(status=Meeting.STATUS_PROGRESS), url=self.url.format(meeting.id)).status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_PROGRESS)
+
+    @authenticated
+    def test_organiser_can_set_meeting_status_has_ended(self):
         friend = get_user_model().objects.last()
         Friendship(from_account=self.user, to_account=friend, is_accepted=True).save()
 
@@ -239,3 +256,15 @@ class TestMeetingDetails(APIEndpointTestCase):
         )
         self.assertEqual(Meeting.objects.get(id=meeting.id).status, Meeting.STATUS_PROGRESS)
 
+    @authenticated
+    def test_ended_meeting_cancel_related_deferred_messages(self):
+        self.mocked_send_fcm_message.return_value = dict(success=0)
+
+        meeting = Meeting(organiser=self.user)
+        meeting.save()
+        for user in get_user_model().objects.all():
+            Participant(meeting=meeting, user=user, accepted=True).save()
+
+        self.put(dict(status=meeting.STATUS_ENDED), url=self.url.format(meeting.id))
+
+        self.assertEqual(DeferredMessage.objects.count(), 0)

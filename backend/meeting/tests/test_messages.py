@@ -1,11 +1,11 @@
-from unittest import expectedFailure
+import random
 from unittest.mock import ANY, call
 
 from django.contrib.auth import get_user_model
 
-from device.models import DeferredMessage
 from device.tests import create_device, MockFcmMessagesMixin
 from meeting.models import Meeting, Participant
+from meeting.tests import create_meeting
 from test_utils import APIEndpointTestCase, authenticated, API_V1
 from user.models import Friendship
 
@@ -96,7 +96,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
         )
 
     @authenticated
-    def test_user_arrived_at_meeting_send_push_notifications(self):
+    def test_user_arrived_at_meeting_send_push_to_participants_who_accepted(self):
         meeting = Meeting(organiser=get_user_model().objects.exclude(id=self.user.id).last())
         meeting.save()
         for user in get_user_model().objects.all():
@@ -118,14 +118,37 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
         )
 
     @authenticated
-    def test_ended_meeting_cancel_related_deferred_messages(self):
-        self.mocked_send_fcm_message.return_value = dict(success=0)
+    def test_progress_meeting_send_push_to_participants_who_accepted(self):
+        meeting = create_meeting(self.user)
 
-        meeting = Meeting(organiser=self.user)
-        meeting.save()
-        for user in get_user_model().objects.all():
-            Participant(meeting=meeting, user=user, accepted=True).save()
+        meeting.status = Meeting.STATUS_PROGRESS
+        meeting.save(update_fields=("status",))
 
-        r = self.put(dict(status=meeting.STATUS_ENDED), url=API_V1 + "meetings/{}/".format(meeting.id))
+        users = meeting.participants.filter(participant__accepted=True).all()
+        self.mocked_send_fcm_bulk_message.assert_called_once_with(
+            registration_ids=[u.get_device().registration_id for u in users],
+            message_title=ANY,
+            message_body=ANY,
+            message_icon=ANY,
+            data_message={"type": "meeting-in-progress", "meeting": meeting.id},
+            sound=ANY,
+            badge=ANY,
+        )
 
-        self.assertEqual(DeferredMessage.objects.count(), 0)
+    @authenticated
+    def test_ended_meeting_send_push_to_participants_who_accepted(self):
+        meeting = create_meeting(self.user)
+
+        meeting.status = Meeting.STATUS_ENDED
+        meeting.save(update_fields=("status",))
+
+        users = meeting.participants.filter(participant__accepted=True).all()
+        self.mocked_send_fcm_bulk_message.assert_called_once_with(
+            registration_ids=[u.get_device().registration_id for u in users],
+            message_title=ANY,
+            message_body=ANY,
+            message_icon=ANY,
+            data_message={"type": "finished-meeting", "meeting": meeting.id},
+            sound=ANY,
+            badge=ANY,
+        )
