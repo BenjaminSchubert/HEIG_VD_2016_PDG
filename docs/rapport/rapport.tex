@@ -1,0 +1,639 @@
+\documentclass[french]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage[normalem]{ulem}
+\usepackage{hyperref} % pour \url{URL}
+\usepackage{color} % pour \textcolor{color}{text}
+\usepackage{listings} % pour afficher du code
+\usepackage{longtable} % pour l'environnement longtable
+\usepackage{float} % pour des figures non flottantes
+\usepackage{amsmath}
+\usepackage{verbatim} % pour les graphes
+\usepackage{caption} % figure et subfigure pour mettre les images côtes à côtes
+\usepackage{subcaption}
+\usepackage{dirtree}
+\usepackage{pdfpages}
+% Pdf
+\setboolean{@twoside}{false}
+
+% Grammaire EBNF
+\usepackage{syntax}
+\setlength{\grammarparsep}{5pt plus 1pt minus 1pt}
+\setlength{\grammarindent}{11em}
+
+% Dessin avec tikz
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,shadows,matrix,automata}
+
+% Matrices
+\usepackage{kbordermatrix}% http://www.hss.caltech.edu/~kcb/TeX/kbordermatrix.sty
+
+% Largeur de colonnes de tableau fixes
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+\lstdefinelanguage{JavaScript}{
+	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+	keywordstyle=\color{blue}\bfseries,
+	ndkeywords={class, export, boolean, throw, implements, import, this},
+	ndkeywordstyle=\color{darkgray}\bfseries,
+	identifierstyle=\color{black},
+	sensitive=false,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{purple}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
+
+\lstdefinelanguage{HTML5}{
+	sensitive=true,
+	keywords={%
+		% JavaScript
+		typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break,
+		% HTML
+		html, title, meta, style, head, body, script, canvas,
+		% CSS
+		border:, transform:, -moz-transform:, transition-duration:, transition-property:,
+		transition-timing-function:
+	},
+	% http://texblog.org/tag/otherkeywords/
+	otherkeywords={<, >, \/},   
+	ndkeywords={class, export, boolean, throw, implements, import, this},   
+	comment=[l]{//},
+	% morecomment=[s][keywordstyle]{<}{>},  
+	morecomment=[s]{/*}{*/},
+	morecomment=[s]{<!}{>},
+	morestring=[b]',
+	morestring=[b]",    
+	alsoletter={-},
+	alsodigit={:}
+}
+
+
+\lstset{
+	language=JavaScript,
+	extendedchars=true,
+	basicstyle=\footnotesize\ttfamily,
+	showstringspaces=false,
+	showspaces=false,
+	numbers=left,
+	numberstyle=\footnotesize,
+	numbersep=9pt,
+	tabsize=1,
+	breaklines=true,
+	showtabs=false,
+	captionpos=b
+}
+
+\geometry{
+	a4paper,
+	total={210mm,297mm},
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm,
+}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlist[enumerate,1]{leftmargin=2cm}
+
+% Entêtes
+\lhead{Champion, Loiseau\\Rochat, Schubert}
+\chead{}
+\rhead{PDG: Rapport}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+	
+	
+	% Titre du document
+	\title{Projet Rady} % ou un autre nom\centering
+	\author{Rapport\\ 
+		Projet de groupe\\
+		Champion, Loiseau, Rochat, Schubert\\
+		Resp. René Rentsch\\
+		HEIG-VD}
+	\date{\today} % date du jour
+	\maketitle
+	\vspace{2cm}
+	\centering
+	\includegraphics[scale=0.3]{../logo/icone}
+	\thispagestyle{empty}
+	
+	\newpage
+	\thispagestyle{empty}
+	$ $
+	\newpage
+	
+	% Pour tout le document
+	\justify
+	\normalsize
+	
+	% Tables des matières
+	\tableofcontents
+	
+	\newpage
+	
+	\section*{Remerciements}
+	Nous tenons tout d'abord à remercier M. Prof. René Rentsch pour son suivi et ses conseils durant toute la période du travail. Nous voulons également M. Prof. Olivier Liechti pour son aide dans le choix des technologies.
+	
+	\section{Introduction}
+	Dans le cadre du cours PDG en troisième année du cursus de Bachelor de la HEIG-VD, il a été demandé de réaliser un projet de semestre sur une période de 10 semaines. Après l'acceptation du cahier des charges à la semaine 4, le projet a pu débuter. Celui-ci porte sur la réalisation d'une application mobile permettant permettant de se retrouver facilement entre amis notamment lors d'évènements. L’application se présenterait sous la forme d’une liste d’amis, laquelle permettrait de créer des groupes et de lancer une géolocalisation. L’utilisateur aurait alors le choix entre une carte en vue du dessus ou une boussole indiquant la direction à
+	prendre.
+	
+		\subsection{Objectif}
+		Les objectifs principaux de notre application peuvent être décomposés en trois grandes parties. Premièrement, la gestion des utilisateur, qui comprends la création de compte, la gestion de ce dit compte, ainsi que la recherche et l'ajout d'amis. Ensuite, l'intégration de la géolocalisation dans notre application doit permettre, par des appels API, aux utilisateurs de se retrouver. Cela constitue la partie centrale de l'application. Enfin étant donné des informations sensibles transiteront sur le réseau par le biais de notre application.\\
+		Toutes les spécifications précises sont disponibles dans le cahier des charges fourni en annexe.
+		
+		\subsection{Architecture}
+		L’application est composée d’une partie cliente (l'application mobile a proprement parlé), d’un serveur (hébergé sur une machine distante) communiquant avec une base de donnée et faisant appel au service FireBase Cloud Messaging (voir \textbf{figure \ref{Architecture simplifié}}). Le serveur sera à même de gérer la connexion et l’interaction avec plusieurs clients simultanément de manière transparente pour les utilisateurs. 
+		Les données de l’application seront stockées dans une base de données dont l’accès direct se fera uniquement par le serveur. Les clients devront passer par l'API mise à disposition par le serveur pour tout accès aux données, pour des raisons évidentes de sécurité.
+		Enfin le serveur fera appel au service FireBase Cloud Messaging (FCM) pour envoyer les notifications de push aux utilisateurs de l'application. 
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.20]{../schema/schema-simplifie.jpg}
+			\caption{Architecture simplifié}
+			\label{Architecture simplifié}
+		\end{figure}
+		
+		La conception générale de l'application a été divisé dans ces mêmes différentes parties afin de réduire les dépendances au niveau du développement (temps d'attente sur le travail des autres) ainsi que le nombre de conflit sur le gestionnaire de version.
+		
+		\subsection{Choix des technologies}
+		Le choix des technologie a été un point clé lors de l'élaboration du cahier des charges et les premières étapes du développement à proprement parlé du projet.
+		Nous avons essayer de choisir les technologies de manières à ce qu'elles soient maintenable, performantes.
+		\begin{itemize}
+			\item \textbf{Interface :} Pour l'interface nous pensions tout d'abord à utiliser \textbf{MeteorJS} \cite{meteor}, étant donné qu'il s'agit d'un framework pemettant un developpement "cross-plateform" performant. Cependant notre choix s'est finalement porté sur un autre framework "cross-plateform" \textbf{Ionic2} \cite{ionic} étant donné que \textbf{MeteorJS} est un framework dit "fullstack". Cela signifie qu'on aurait du développer avec ce framework de bout en bout, ce qui aurait pu compromettre le développement en cas de difficulté sur une des parties.
+			\item \textbf{Serveur :} Concernant le serveur nous avons choisit d'utiliser \textbf{Django} \cite{django}  pour ses performances, sa sécurité, sa scalabilité et sa maintenabilité.
+			\item \textbf{Base de donnée :} Le choix de la base de donnée s'est porté sur \textbf{PostgreSQL} car ce système de gestion de base de données (SGBD) est stable, fonctionne sur de nombreux OS et peut stocker des types de données dit "modernes". De plus ce SGDB fait parti des plus conforme aux norme ANSI SQL.
+			\item \textbf{Serialisation :} Pour la sérialisation des données et leur transfert nous avons opté pour \textbf{JSON} car en comparaison avec \textbf{XML}, le \textbf{JSON} est plus léger, plus simple et peut directement être utilisé par le TypeScript et stocké tel quel dans le SGBD.
+			\item \textbf{Notifications :} Le systeme de notification permettant au serveur de maintenir les utilisateurs à jour concernant les interactions inter-utilisateur se fera via \textbf{Firebase Cloud Messsaging}. FCM  repose sur le Google Cloud Messaging et nous offre un service de transmission de message fiable, une plus grande simplicité de developpement ainsi qu'une prise en charge multi-plateforme 
+		\end{itemize}
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.35]{../schema/schema-techno.png}
+			\caption{Architecture et Technologies}
+			\label{Architecture et Technologies}
+		\end{figure}
+		
+	
+	\section{Cadre de développement} 
+		Le client de l'application a été développé en TypeScript(2.0.9) et angular(2.2.1), avec node.js(6.9.1) et le gestionnaire de paquet npm(3.10.9). Le serveur quand à lui a été développé avec python(3.5.2). 
+		Nous avons également utilisé un service web d'hébergement et de gestion de développement de logiciels : GitHub avec le logiciel de gestion de version Git afin de gérer la mise en commun du code et l'intégration des différentes fonctionnalités au projet.
+		Par ailleurs nous avons aussi utilisé un serveur d'integration continue (Travis) afin de pouvoir vérifier en temps réel le bon déroulement de notre projet
+		Enfin nous avons mis en place des séries de tests visant à faire en sorte que l'api fournie par le serveur soit utilisable et ne contienne pas de faille.
+			
+	\section{Conception de l'application}
+	
+	La première partie du développement de l'application a consisté en l'élaboration de l'interface que l'utilisateur final utilisera. Cette interface a été conçu pour être simple et permettre une utilisation intuitive de l'application.
+	
+	\subsection{Design}
+	
+	Il a tout d'abord fallut établir le design de l'application comprenant les différentes interfaces à afficher, l'ordre d'affichage des ces interface ainsi que les animation et écrans de chargement à afficher. Ainsi nous avons commencé le projet par établir un flux d'utilisation
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.6]{../user-flow/user-flow-1.png}
+		\caption{User flow - Loading}
+		\label{User flow - Loading}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.6]{../user-flow/user-flow-2.png}
+		\caption{User flow - Sign in}
+		\label{User flow - Sign in}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.55]{../user-flow/user-flow-3.png}
+		\caption{User flow - Main app}
+		\label{User flow - Main app}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.55]{../user-flow/user-flow-4.png}
+		\caption{User flow - New Contact}
+		\label{User flow - New Contact}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.6]{../user-flow/user-flow-5.png}
+		\caption{User flow - Gathering}
+		\label{User flow - Gathering}
+	\end{figure}
+	
+	\subsection{Développement avec Ionic}
+	\subsubsection{Structure}
+	Voici la structure des sources de l'application mobile :	
+	\begin{figure}[H]
+		\centering
+		\dirtree{%
+			.1 src/\DTcomment{répertoire contenant les sources de l'application}.
+			.2 app/\DTcomment{répertoire contenant les liens des différents composant de l'application}.
+			.3 app.component.ts\DTcomment{fichier définissant la page d'accueil de l'application}.
+			.3 app.html\DTcomment{permet de lancer la page d'accueil de l'application}.
+			.3 app.modules.ts\DTcomment{permet de charger les différents modules et interfaces de l'application}.
+			.3 app.scss\DTcomment{styles portant sur toute l'application}.
+			.3 main.ts\DTcomment{fichier permettant le lancement de l'application}.
+			.2 assets/\DTcomment{répertoire contenant les éléments utiles à l'application}.
+			.2 lib/\DTcomment{répertoire contenant les librairies utilisés par l'applcation}.
+			.2 models/\DTcomment{répertoire contenant les modèles(classes) utilisés par l'application}.
+			.2 pages/\DTcomment{répertoire contenant les différentes interfaces de l'application}.
+			.3 add-contact/\DTcomment{répertoire contenant les éléments pour l'interface d'ajout de contact}.
+			.4 add-contact.html/\DTcomment{code html définissant les composant de l'interface}.
+			.4 add-contact.scss/\DTcomment{styles s'appliquant aux composant html}.
+			.4 add-contact.ts/\DTcomment{logique appelé par les composants html}.
+			.3 contact-list/\DTcomment{répertoire contenant les éléments pour l'interface de gestion de contact}.
+			.4 contact-list.html/\DTcomment{code html définissant les composant de l'interface}.
+			.4 contact-list.scss/\DTcomment{styles s'appliquant aux composant html}.
+			.4 contact-list.ts/\DTcomment{logique appelé par les composants html}.
+			.3 <...>\DTcomment{autres fichiers d'implémentation}.
+			.2 providers/\DTcomment{répertoire contenant les services utilisés par l'applcation}.
+			.2 theme/\DTcomment{répertoire contenant les fichiers .scss appliqués sur toute l'application}.
+			.2 declarations.d.ts\DTcomment{fichier de déclaration pour le compilateur TypeScript}.
+			.2 index.html\DTcomment{premiere page chargé par ionic permettant le chargement du reste de l'application}.
+			.2 manifest.json\DTcomment{données pour l'affichage de l'application}.
+			.2 service-workers.js\DTcomment{fichier contenant un script qui tournera en tache de fond}.	
+		}
+	\end{figure}
+	
+	Lors de la création d'une nouvelle interface (dans le dossier pages), il faut créer 3 fichiers. Le premier ficher (.html) contient les différents composants de l'interface, comme par exemple les bouton et les champs de texte. Ensuite le deuxième fichier (.scss) définit plus précisément comment les composant doivent d'afficher et enfin le dernier fichier (.ts) détermine toute la logique, fait appels aux validateurs et autres modules permettant les accès serveur etc.
+	
+	\subsubsection{Exemple d'implémentation}
+	
+	Prenons comme exemple le cas de l'interface d'enregistrement.
+	
+	Dans le fichier sign-in.html
+	
+	\lstset{language = HTML5}
+	
+	\begin{lstlisting}
+	
+	<ion-header class="hidden">
+	<ion-navbar>
+	<ion-title>Sign In</ion-title>
+	</ion-navbar>
+	</ion-header>
+	
+	<!-- Sign-in form with other options under it -->
+	<ion-content>
+	<div class="content">
+	<div class="sign-in-page">
+	<h1>Sign In</h1>
+	
+	<p>{{errors}}</p>
+	
+	<form [formGroup]="form" (ngSubmit)="doSignIn()">
+	<ion-item>
+	<ion-label floating>Email</ion-label>
+	<ion-input type="email" formControlName="email"></ion-input>
+	</ion-item>
+	<ion-item>
+	<ion-label floating>Password</ion-label>
+	<ion-input type="password" formControlName="password"></ion-input>
+	</ion-item>
+	<button ion-button block icon-right round large type="submit" [disabled]="!form.valid">
+	Sign In
+	<ion-icon name="arrow-forward"></ion-icon>
+	</button>
+	</form>
+	
+	<button ion-button small clear block (click)="goToRegister()">I don't have an account</button>
+	<button ion-button small clear block (click)="goToForgottenPassword()">Forgot your password?</button>
+	
+	<img src="assets/img/rady-logo.png">
+	</div>
+	</div>
+	</ion-content>
+	
+	\end{lstlisting}
+	
+	On peut voir au travers de ce code l'utilisation de composants fournis par Ionic tel que les <ion-button>, <ion-label> ...
+	Ces composants prédéfinis par Ionic permettent l'implémentation rapide des différentes page.
+	De plus on observe des appels à des fonctions qui sont définit dans un autre fichier : sign-in.ts
+	
+	\lstset{language = JavaScript}
+	
+	\begin{lstlisting}
+	import { Component } from '@angular/core';
+	import { NavController, AlertController } from 'ionic-angular';
+	import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+	
+	import { RadyModule } from '../../lib/validators';
+	import { AuthService } from '../../providers/auth-service';
+	
+	import { Register } from '../register/register';
+	import { ForgottenPassword } from '../forgotten-password/forgotten-password';
+	import { MainTabs } from '../main-tabs/main-tabs';
+	
+	/**
+	* SignIn
+	* Sign-in form
+	* Patrick Champion - 29.10.2016
+	*/
+	@Component({
+	templateUrl: 'sign-in.html'
+	})
+	export class SignIn {
+	
+	// attributes
+	form: FormGroup;
+	
+	constructor(public navCtrl: NavController,
+	private formBuilder: FormBuilder,
+	private authService: AuthService,
+	private alertCtrl: AlertController) {
+	
+	// create the form with validation
+	this.form = this.formBuilder.group({
+	email: [''], 
+	password: ['']
+	}, { validator: Validators.compose([
+	RadyModule.Validators.email('email', 'is not valid'),
+	RadyModule.Validators.required(['email', 'password'], 'is required')]) 
+	});
+	}
+	
+	ionViewDidLoad() {
+	}
+	
+	get errors() {
+	return JSON.stringify(this.form.errors);
+	}
+	
+	doSignIn() {
+	// check if the form is valid
+	if(this.form.valid) {
+	
+	// create the payload
+	let credentials = {
+	email: this.form.get('email').value,
+	password: this.form.get('password').value
+	};
+	
+	// try the log in
+	this.authService.authentificate(credentials)
+	
+	// on success, go to MainTabs
+	.then(() => {
+	this.navCtrl.setRoot(MainTabs);
+	})
+	
+	// on error, show an alert with the error
+	.catch((err) => {
+	console.log(JSON.stringify(err));
+	this.alertCtrl.create({
+	title: 'Sign In error',
+	message: 'Unable to login with provided credentials.\nPlease check your email and password.', 
+	buttons: ['OK'],
+	enableBackdropDismiss: false
+	}).present();
+	});
+	}
+	}
+	
+	// Go to the Register page
+	goToRegister() {
+	this.navCtrl.push(Register);
+	}
+	
+	// Go to the ForgottenPassword page
+	goToForgottenPassword() {
+	this.navCtrl.push(ForgottenPassword);
+	}
+	}
+	
+	\end{lstlisting}
+	
+	Enfin le fichier sign-in.scss qui permet de changer les styles des éléments graphiques :
+	
+	\lstset{language = HTML5}
+	
+	\begin{lstlisting}
+	div.sign-in-page {
+	margin-top: 10vh;
+	
+	form {
+	margin-top: 5vh;
+	margin-bottom: 5vh;
+	
+	button {
+	margin-top: 5vh;
+	text-transform: uppercase;
+	}
+	}
+	
+	img {
+	margin: 7vh auto auto auto;
+	width: 40vw;
+	display: block;
+	}
+	}
+	\end{lstlisting}
+	
+	Ici on peut voir que nous redéfinissons les marges et le style du texte des boutons afin de mieux correspondre au style voulu
+	
+	\subsubsection{Résultat}
+	
+	Avec le code ci-dessus nous obtenons :
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.6]{../user-flow/user-flow-5.png}
+		\caption{Écran de d'enregistrement}
+		\label{Écran de d'enregistrement}
+	\end{figure}
+	
+	\subsection{Composants}
+	\subsubsection{Validateurs}
+	\subsubsection{QR Codes}
+	\subsubsection{Affichage}
+	L'affichage de la carte est réalisé grace à la lirairie leaflet.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.5]{../images/leaflet-logo.png}
+		\caption{Leaflet logo}
+		\label{Leaflet logo}
+	\end{figure} 
+	
+	
+	
+	Cette librairie nous permet non seulement d'afficher une carte mais aussi des marqueurs que nous utilisons pour afficher les positions des utilisateurs que nous souhaitons localiser. 
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.5]{../images/screenshot-carte}
+		\caption{Carte}
+		\label{Carte}
+	\end{figure} 
+	
+	\section{Serveur et Communication}
+	\subsection{Fonctionnement General}
+	\subsection{Base de donnée}
+	\subsubsection{Tables}
+	\subsubsection{Connection avec Django}
+	\subsection{Api}
+	\subsection{Notifications}
+	\subsubsection{Fonctionement}
+	\subsubsection{Firebase Cloud Messaging}
+	
+	\section{Géolocalisation}
+	\subsection{Gestion des coordonnées}
+	\subsection{Gestion de l'orientation}
+	\subsection{Calculs des parcours}
+	
+	\section{Sécurité}
+	\subsection{Communication}
+	\subsection{Tests Unitaires}
+	\subsubsection{Tests API}
+	\subsubsection{Tests du Push}
+	\subsubsection{Coverage}
+	
+		\section{Conclusion}
+		% Conclusion critique sur l'application fournie et le travail de groupe
+		% Indications précises de ce qui ne fonctionne pas correctement
+		% Propositions d'améliorations pour des développements futurs
+		
+		\subsection{Application fournie}			
+		Vis à vis du cahier des charges initial (disponible en annexe), l'application répond à toutes les fonctionnalités prévues hormis l'implémentation de certains algorithmes, dont voici la liste:
+		\begin{itemize}
+			\item Arborescence recouvrante de poids min
+			\item Arborescence recouvrante de section min/max
+			\item Flot de capacité fixée (ou min)
+			\item Flot de capacité fixée (ou min) de poids min
+		\end{itemize}
+		Les fonctionnalités optionnelles et futures n'ont pas pu être intégrées par manque de temps, cependant leur ajout est tout à fait réalisable car la conception générale de l'application a été prévue pour être ouverte aux extensions. Notons encore que l'interface graphique n'est pas tout à fait la même que la maquette présente dans le cahier des charges, néanmoins les fonctionnalités sont les mêmes.\\
+		
+		Concernant la stabilité du programme, la majorité des bugs/crashs découverts pendant le projet a été corrigée. Cependant certains cas posent toujours problème:
+		\begin{enumerate}
+			\item Un graphe ne possédant pas tous les sommets dans l'ordre (ex: \texttt{g=dfs(\{\#2\}, 1);}) pose problème à certaines fonctionnalités (ex: \texttt{draw(g);}, \texttt{egli::deserialize(...);})
+			\item Fuites mémoires détectées au niveau de la couche \textit{graphes et algorithmes}
+			\item La fenêtre d'aide ne se ferme pas lorsque que l'on quitte la fenêtre principale (avec la croix en haut à droite)
+			\item La grammaire du langage ne permet pas de tout faire (ex: \texttt{v=(0); g=\{v\};}, \texttt{v=(0::-1);}, \texttt{draw(dfs(g, 0)[0]);})
+		\end{enumerate}
+		Les cas (1) et (2) sont des priorités absolues pour la suite du développement, mais nous les avons malheureusement découverts trop tard pour pouvoir les corriger en l'état. Par chance, les causes des problèmes sont connues, ce qui permettra de les corriger rapidement. De plus, nous avons découvert l'existence du logiciel DrMemory \cite{drmemory} qui nous offre la possibilité de cibler les fuites mémoires très précisément.\\
+		
+		Un petit mot sur le langage développé spécifiquement pour l'application. Celui-ci demande un petit temps d'apprentissage, mais la prise en main est assez rapide. L'aide intégrée et ses pages bien expliquées (facilement extensible), sa fonction de recherche par mots-clés, ainsi que l'auto-complétion des fonctions et variables prend l'utilisateur par la main et rend l'utilisation de l'application agréable.\\  
+		
+		Au final, nous sommes satisfaits du résultat final bien qu'il reste encore d'importants bugs à corriger. Le projet offre de nombreuses possibilités d'amélioration, tant au niveau de l'interface graphique que du reste, et nous sommes très contents de cela. Voici une liste non-exhaustive des améliorations possibles auxquelles nous avons pensé:
+		\begin{itemize}
+			\item Meilleure visualisation des graphes
+			\item Affichage des variables créées dans une zone de l'interface graphique
+			\item Coloration syntaxique
+			\item Fonctionnalités optionnelles et futures du cahier des charges
+			\item ... et plein d'autres
+		\end{itemize}
+		
+		\subsection{Planification}
+		% Les figures ne prennent pas en compte les tests et la doc, uniquement la conception et l'impl.
+		
+		La planification initiale du projet (disponible en annexe) a fait ressortir plusieurs problèmes. Premièrement, les temps d'analyse et de conception ont été très largement sous-estimés, ce qui a engendré un gros décalage des tâches:
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{Planification/comparaisondates.pdf}
+			\caption{Comparaison entre les dates prévues et effectives des tâches principales}
+			\label{fig:comparaisondates}
+		\end{figure}
+		On peut expliquer cela par deux choses: certains problèmes étaient plus complexes que prévus, et l'apprentissage de Qt était beaucoup plus long. En effet, Qt est très puissant et offre de multiples manières d'aborder un problème, en contre-partie cela induit des pertes de temps lorsque l'on part dans la mauvaise direction. Cependant une fois que Qt est pris en main, les gains lors de l'implémentation sont conséquents.\\ 
+		
+		Deuxièmement, la planification initiale était une suite de tâches à faire complètement avant de passer à la suivante. Dans les faits, les tâches (pour une même personne) ont été réalisées en parallèle, cela a impliqué une dissonance entre les temps prévus et les temps effectifs.\\
+		
+		Troisièmement, la partie sur les graphes et les algorithmes a été la plus largement sous-estimée, le graphique suivant le montre assez clairement:
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{Planification/comparaisonheures.pdf}
+			\caption{Comparaison entre le temps prévu et temps effectif des tâches
+				principales}
+			\label{fig:comparaisonheures}
+		\end{figure}
+		
+		Pour finir, les différentes tâches, bien que mal planifiées, ont été bien cernées dès le début du projet. Cela a permis une séparation du travail correcte et indépendante, ainsi qu'une application finale utilisable. Nous sommes cependant convaincus qu'utiliser un modèle de développement itératif (et non pas en cascade) aurait apporté un plus au projet. En effet, cela nous aurait obligé à mettre les différentes couches en commun plus souvent, et ainsi détecter les problèmes avant la fin du projet. 
+		
+		\subsection{Travail de groupe}
+		Le principal problème, comme mentionné dans la section précédente, a été le fait que nous n'avons pas fixé suffisamment de délais intermédiaires et que la mise en commun n'a été faite qu'à la fin du projet. Cela a posé des problèmes que nous n'avons malheureusement pas pu résoudre dans les temps.\\
+		
+		Le second problème a été un laxisme en début de semestre, nous avons donc dû fournir un gros effort lors des dernières semaines. Lors de ces "rushs", où nous avons travaillé tous ensemble dans la même pièce, il a été intéressant de constater la grande efficacité avec laquelle nous avons travaillé. En effet les problèmes se résolvent beaucoup plus vite et l'ambiance offre un cadre de travail beaucoup plus motivant et encourageant. Il nous semble donc important à l'avenir de planifier ce type de séance plus souvent tout au long d'un projet, pour une meilleure productivité.\\
+		
+		Pour conclure, ce projet a été une expérience enrichissante, autant du point de vue technique et de la planification, que du travail en grand groupe. La collaboration au sein de l'équipe a été très bonne durant toute la durée du semestre, et cela même malgré la grande charge de travail avec les autres cours. Nous sommes donc au final heureux d'avoir pu participer à l'élaboration de A à Z d'un projet complet et complexe, nous profitons de cette conclusion pour nous remercier les uns les autres pour le travail accompli.
+		
+		\newpage
+	
+	\newpage
+	
+
+			
+	
+	% Tables des figures
+	\listoffigures
+			
+	% References
+	\begin{thebibliography}{9}
+		\bibitem{meteor}
+		Open source platform for web, mobile, and desktop developpement. ,\\ \url{https://www.meteor.com/}
+		
+		\bibitem{ionic} 
+		Web app developpement framework for mobile ,\\ \url{http://ionic.io/}
+		
+		\bibitem{django}
+		High-level Python Web framework, \\ \url{https://www.djangoproject.com/}
+		
+		\bibitem{plantuml}
+		PlantUML, Open-source tool that uses simple textual descriptions to draw UML diagrams,\\ \url{http://plantuml.com/}\\ \url{http://www.planttext.com/planttext}
+		
+		\bibitem{Graph data wikipedia.org}
+		Graphs data structures,\\ \url{https://en.wikipedia.org/wiki/Adjacency_matrix#Data_structures}
+		
+		\bibitem{boost.spirit}
+		Boost.Spirit (v2.5.2), is an object-oriented, recursive-descent parser and output generation library for C++,\\ \url{http://www.boost.org/doc/libs/1_60_0/libs/spirit/doc/html/index.html}
+		
+		\bibitem{tries}
+		Robert Sedgewick, Kevin Wayne.\\
+		\emph{Algorithms, fourth edition}\\
+		\url{http://algs4.cs.princeton.edu/lectures/52Tries.pdf}
+		
+		\bibitem{sedgewick}
+		Robert Sedgewick.\\
+		\emph{Course on ternary search tries}
+		\url{https://www.youtube.com/watch?v=CIGyewO7868}
+		
+		\bibitem{drmemory}
+		DrMemory,\\
+		\url{http://drmemory.org/}
+	\end{thebibliography}
+			
+	\newpage
+		
+		
+	\section{Annexes projet}
+		\subsection{Cahier des charges}
+			\includepdf[pages=-,width=\textwidth]{cahierdescharges}
+		\subsection{Journaux de travail}
+			\includepdf[pages=-,width=\textwidth]{journaldetravail}
+		\subsection{Planification initiale}
+			\includepdf[pages=1,angle=90,width=\textwidth]{Planification/gantt}	
+			\includepdf[pages=2,angle=90,width=\textwidth]{Planification/gantt}	
+			\includepdf[pages=3,angle=90,width=\textwidth]{Planification/gantt}	
+			\includepdf[pages=4,angle=90,width=\textwidth]{Planification/gantt}	
+			\includepdf[pages=5,angle=90,width=\textwidth]{Planification/gantt}	
+			\includepdf[pages=6,width=\textwidth]{Planification/gantt}	
+
+\end{document}
