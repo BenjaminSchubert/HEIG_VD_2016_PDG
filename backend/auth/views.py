@@ -69,4 +69,4 @@ def reset_password(request):
         }
         form.save(**opts)
         return JsonResponse({})
-    return JsonResponse({"email": "Not found or not valid"})
+    return JsonResponse({"email": "Not found or not valid"}, status=400)
