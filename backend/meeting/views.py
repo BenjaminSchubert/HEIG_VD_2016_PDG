@@ -1,9 +1,9 @@
 """This module defines the routes available in the `meeting` application."""
-from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.response import Response
 
+from auth.permissions import CanViewXorOwnMeeting, IsParticipantOwner
 from meeting.models import Meeting, Place, Participant
 from meeting.serializers import MeetingSerializer, WriteMeetingSerializer, PlaceSerializer, ParticipantSerializer, \
     MeetingUpdateSerializer
@@ -28,10 +28,11 @@ class ParticipantDetailsView(UpdateAPIView):
     """
 
     serializer_class = ParticipantSerializer
+    permission_classes = (IsParticipantOwner,)
 
     def get_queryset(self):
         """Get all participation for the registered user."""
-        return Participant.objects.filter(Q(user=self.request.user) & ~Q(accepted=False))
+        return Participant.objects
 
 
 class PlaceListView(ListAPIView):
@@ -175,8 +176,8 @@ class MeetingListView(ListCreateAPIView):
     serializer_class = WriteMeetingSerializer
 
     def get_queryset(self):
-        """Get all meetings to which the user is invited and he didn't refused."""
-        return Meeting.objects.filter(Q(participant__user=self.request.user) & ~Q(participant__accepted=False))
+        """No filter."""
+        return Meeting.objects
 
     def create(self, request, *args, **kwargs):
         """
@@ -247,9 +248,11 @@ class MeetingDetailsView(RetrieveUpdateAPIView):
             }
     """
 
+    permission_classes = (CanViewXorOwnMeeting,)
+
     def get_queryset(self):
-        """Get all meetings to which the user is invited and he didn't refused."""
-        return Meeting.objects.filter(Q(participant__user=self.request.user) & ~Q(participant__accepted=False))
+        """No filter."""
+        return Meeting.objects
 
     def retrieve(self, *args, **kwargs):
         """

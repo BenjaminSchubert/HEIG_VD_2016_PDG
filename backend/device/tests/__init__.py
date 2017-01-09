@@ -13,8 +13,10 @@ def generate_device_info():
 
 
 def create_device(user):
-    info = generate_device_info()
-    info["user"] = user
+    info = dict(
+        user=user,
+        registration_id="{}-{}".format(user, uuid.uuid4())
+    )
     device = Device(**info)
     device.save()
     return device

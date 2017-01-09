@@ -40,7 +40,7 @@ class ParticipantsDetailsEndpointTestCase(APIEndpointTestCase):
 
         self.assertEqual(
             self.put(dict(), url=self.url.format(participant.id)).status_code,
-            status.HTTP_404_NOT_FOUND
+            status.HTTP_403_FORBIDDEN
         )
 
     @authenticated
@@ -77,7 +77,7 @@ class ParticipantsDetailsEndpointTestCase(APIEndpointTestCase):
 
         self.assertEqual(
             self.put(dict(), url=self.url.format(self.participant.id)).status_code,
-            status.HTTP_404_NOT_FOUND
+            status.HTTP_400_BAD_REQUEST
         )
 
     @authenticated
@@ -103,5 +103,25 @@ class ParticipantsDetailsEndpointTestCase(APIEndpointTestCase):
     def test_cannot_set_not_arrived(self):
         self.assertEqual(
             self.put(dict(arrived=False), url=self.url.format(self.participant.id)).status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    @authenticated
+    def test_cannot_update_finished_meeting(self):
+        self.meeting.status = Meeting.STATUS_ENDED
+        self.meeting.save(update_fields=("status",))
+
+        self.assertEqual(
+            self.put(dict(), url=self.url.format(self.participant.id)).status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    @authenticated
+    def test_cannot_update_canceled_meeting(self):
+        self.meeting.status = Meeting.STATUS_CANCELED
+        self.meeting.save(update_fields=("status",))
+
+        self.assertEqual(
+            self.put(dict(), url=self.url.format(self.participant.id)).status_code,
             status.HTTP_400_BAD_REQUEST
         )
