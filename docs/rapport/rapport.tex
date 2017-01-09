@@ -43,60 +43,139 @@
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 
-\lstdefinelanguage{JavaScript}{
-	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
-	keywordstyle=\color{blue}\bfseries,
-	ndkeywords={class, export, boolean, throw, implements, import, this},
-	ndkeywordstyle=\color{darkgray}\bfseries,
-	identifierstyle=\color{black},
-	sensitive=false,
-	comment=[l]{//},
+% CSS
+\lstdefinelanguage{CSS}{
+	keywords={color,background-image:,margin,padding,font,weight,display,position,top,left,right,bottom,list,style,border,size,white,space,min,width, transition:, transform:, transition-property, transition-duration, transition-timing-function},	
+	sensitive=true,
+	morecomment=[l]{//},
 	morecomment=[s]{/*}{*/},
-	commentstyle=\color{purple}\ttfamily,
-	stringstyle=\color{red}\ttfamily,
 	morestring=[b]',
-	morestring=[b]"
+	morestring=[b]",
+	alsoletter={:},
+	alsodigit={-}
+}
+
+% JavaScript
+\lstdefinelanguage{JavaScript}{
+	morekeywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, let},
+	morecomment=[s]{/*}{*/},
+	morecomment=[l]//,
+	morestring=[b]",
+	morestring=[b]',
+	morestring=[s]{/[}{/;}
 }
 
 \lstdefinelanguage{HTML5}{
-	sensitive=true,
-	keywords={%
-		% JavaScript
-		typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break,
-		% HTML
-		html, title, meta, style, head, body, script, canvas,
-		% CSS
-		border:, transform:, -moz-transform:, transition-duration:, transition-property:,
-		transition-timing-function:
+	language=html,
+	sensitive=true,	
+	alsoletter={<>=-},	
+	morecomment=[s]{<!-}{-->},
+	tag=[s],
+	otherkeywords={
+		% General
+		>,
+		% Standard tags
+		<!DOCTYPE,
+		</html, <html, <head, <title, </title, <style, </style, <link, </head, <meta, />,
+		% body
+		</body, <body,
+		% Divs
+		</div, <div, </div>, 
+		% Paragraphs
+		</p, <p, </p>,
+		% scripts
+		</script, <script,
+		% More tags...
+		<canvas, /canvas>, <svg, <rect, <animateTransform, </rect>, </svg>, <video, <source, <iframe, </iframe>, </video>, <image, </image>, <header, </header, <article, </article
 	},
-	% http://texblog.org/tag/otherkeywords/
-	otherkeywords={<, >, \/},   
-	ndkeywords={class, export, boolean, throw, implements, import, this},   
-	comment=[l]{//},
-	% morecomment=[s][keywordstyle]{<}{>},  
-	morecomment=[s]{/*}{*/},
-	morecomment=[s]{<!}{>},
-	morestring=[b]',
-	morestring=[b]",    
-	alsoletter={-},
-	alsodigit={:}
+	ndkeywords={
+		% General
+		=,
+		% HTML attributes
+		charset=, src=, id=, width=, height=, style=, type=, rel=, href=,
+		% SVG attributes
+		fill=, attributeName=, begin=, dur=, from=, to=, poster=, controls=, x=, y=, repeatCount=, xlink:href=,
+		% properties
+		margin:, padding:, background-image:, border:, top:, left:, position:, width:, height:, margin-top:, margin-bottom:, font-size:, line-height:,
+		% CSS3 properties
+		transform:, -moz-transform:, -webkit-transform:,
+		animation:, -webkit-animation:,
+		transition:,  transition-duration:, transition-property:, transition-timing-function:,
+	}
 }
 
-
-\lstset{
-	language=JavaScript,
-	extendedchars=true,
-	basicstyle=\footnotesize\ttfamily,
-	showstringspaces=false,
-	showspaces=false,
+\lstdefinestyle{htmlcssjs} {%
+	% General design
+	%  backgroundcolor=\color{editorGray},
+	basicstyle={\footnotesize\ttfamily},   
+	frame=b,
+	% line-numbers
+	xleftmargin={0.75cm},
 	numbers=left,
-	numberstyle=\footnotesize,
-	numbersep=9pt,
-	tabsize=1,
-	breaklines=true,
+	stepnumber=1,
+	firstnumber=1,
+	numberfirstline=true,	
+	% Code design
+	identifierstyle=\color{black},
+	keywordstyle=\color{blue}\bfseries,
+	ndkeywordstyle=\color{black}\bfseries,
+	stringstyle=\color{red}\ttfamily,
+	commentstyle=\color{gray}\ttfamily,
+	% Code
+	language=HTML5,
+	alsolanguage=JavaScript,
+	alsodigit={.:;},	
+	tabsize=2,
 	showtabs=false,
-	captionpos=b
+	showspaces=false,
+	showstringspaces=false,
+	extendedchars=true,
+	breaklines=true,
+	% German umlauts
+	literate=%
+	{Ö}{{\"O}}1
+	{Ä}{{\"A}}1
+	{Ü}{{\"U}}1
+	{ß}{{\ss}}1
+	{ü}{{\"u}}1
+	{ä}{{\"a}}1
+	{ö}{{\"o}}1
 }
+%
+\lstdefinestyle{py} {%
+	language=python,
+	literate=%
+	*{0}{{{\color{lightred}0}}}1
+	{1}{{{\color{lightred}1}}}1
+	{2}{{{\color{lightred}2}}}1
+	{3}{{{\color{lightred}3}}}1
+	{4}{{{\color{lightred}4}}}1
+	{5}{{{\color{lightred}5}}}1
+	{6}{{{\color{lightred}6}}}1
+	{7}{{{\color{lightred}7}}}1
+	{8}{{{\color{lightred}8}}}1
+	{9}{{{\color{lightred}9}}}1,
+	basicstyle=\footnotesize\ttfamily, % Standardschrift
+	numbers=left,               % Ort der Zeilennummern
+	%numberstyle=\tiny,          % Stil der Zeilennummern
+	%stepnumber=2,               % Abstand zwischen den Zeilennummern
+	numbersep=5pt,              % Abstand der Nummern zum Text
+	tabsize=4,                  % Groesse von Tabs
+	extendedchars=true,         %
+	breaklines=true,            % Zeilen werden Umgebrochen
+	keywordstyle=\color{blue}\bfseries,
+	frame=b,
+	commentstyle=\color{brown}\itshape,
+	stringstyle=\color{editorOcher}\ttfamily, % Farbe der String
+	showspaces=false,           % Leerzeichen anzeigen ?
+	showtabs=false,             % Tabs anzeigen ?
+	xleftmargin=17pt,
+	framexleftmargin=17pt,
+	framexrightmargin=5pt,
+	framexbottommargin=4pt,
+	%backgroundcolor=\color{lightgray},
+	showstringspaces=false,      % Leerzeichen in Strings anzeigen ?
+}%
 
 \geometry{
 	a4paper,
@@ -199,55 +278,17 @@
 		Par ailleurs nous avons aussi utilisé un serveur d'integration continue (Travis) afin de pouvoir vérifier en temps réel le bon déroulement de notre projet
 		Enfin nous avons mis en place des séries de tests visant à faire en sorte que l'api fournie par le serveur soit utilisable et ne contienne pas de faille.
 			
-	\section{Interfaces}
+	\section{Application Client}
 	
-	La première partie du développement de l'application a consisté en l'élaboration de l'interface que l'utilisateur final utilisera. Cette interface a été conçu pour être simple et permettre une utilisation intuitive de l'application.
+	Lors du développement de notre application, la première étape a été de nous familiarier avec les différentes technologies et "frameworks" necessaire à la réalisation du produit final. Ensuite nous avons décidé de réaliser une maquette de l'interface que l'utilisateur final utilisera. Cette maquette a été conçu pour être simple et permettre une utilisation intuitive de l'application. Enfin il a fallut développer les menus et interfaces de l'application et lier les contrôleurs aux différentes fonctionalités
 	
-	\subsection{Design}
+	\subsection{Frameworks}
 	
-	Il a tout d'abord fallut établir le design de l'application comprenant les différentes interfaces à afficher, l'ordre d'affichage des ces interface ainsi que les animation et écrans de chargement à afficher. Ainsi nous avons commencé le projet par établir un flux d'utilisation
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[scale=0.6]{../user-flow/user-flow-1.png}
-		\caption{User flow - Loading}
-		\label{User flow - Loading}
-	\end{figure}
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[scale=0.6]{../user-flow/user-flow-2.png}
-		\caption{User flow - Sign in}
-		\label{User flow - Sign in}
-	\end{figure}
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[scale=0.55]{../user-flow/user-flow-3.png}
-		\caption{User flow - Main app}
-		\label{User flow - Main app}
-	\end{figure}
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[scale=0.55]{../user-flow/user-flow-4.png}
-		\caption{User flow - New Contact}
-		\label{User flow - New Contact}
-	\end{figure}
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[scale=0.6]{../user-flow/user-flow-5.png}
-		\caption{User flow - Gathering}
-		\label{User flow - Gathering}
-	\end{figure}
-	
-	\subsection{Technologies}
 	\subsubsection{Ionic2}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=0.3]{../images/ionic2-logo.png}
+		\includegraphics[scale=0.45]{../images/ionic2-logo.png}
 		\caption{Ionic2 logo}
 		\label{Ionic2 logo}
 	\end{figure} 
@@ -257,14 +298,14 @@
 	
 	\lstset{language = HTML5}
 	\begin{lstlisting}
-		<ion-component>
+	<ion-component>
 	\end{lstlisting}
 	
 	Les balises permettent de placer les différents éléments de l’interface un peu à la manière dont on structure une page en HTML standard. La personnalisation des éléments se fait grâce à des styles CSS, spécifiés soit dans les attributs des éléments, soit via des feuilles de style externes dans les fichiers SCSS. Les attributs du SCSS diffèrent un peu des attributs CSS standards, ils permettent d'utiliser les SASS (Syntactically Awesome Style Sheets). Les fichier SCSS seront utilisé pour regénérer le CSS necessaire à l'affichage des styles. 
 	A chaque fichier HTML et SCSS vient s’ajouter un fichier de code TypeScript, qui sert de contrôleur pour l’interface. Dans le HTML on définit les différents évènements de l’interface (par exemple un clic sur un bouton, ou un changement d'état d'un élément de type bascule) en déclenchant un appel de méthode au niveau du fichier contrôleur (le ficher TypeScript), qui gère ensuite l’évènement. Il est également possible d’ajouter et modifier des balises HTML directement depuis le contrôleur TypeScript afin de rendre l’interface plus dynamique, en la faisant par exemple réagir aux interactions de l’utilisateur ou aux réponses du serveur. 
 	
 	Voici la structure des sources de l'application mobile :
-		
+	
 	\begin{figure}[H]
 		\centering
 		\dirtree{%
@@ -311,28 +352,6 @@
 	AngularJs est un framework JavaScript conçu pour simplifier le developpement d'interfaces web. Ionic2 nous permet d'utiliser la version 2 de ce framework elle aussi sortie en septembre 2016. 
 	Angular2 nous offre la possibilité de réaliser du "data binding" bidirectionnel. C'est a dire que lorsque les données affichés dans la vue sont modifé celà affecte directement le controlleur qui s'est mis à jour. Ce framework nous donne aussi accès à des directives rendant le code plus extensible et modulable, et nous permet d'utiliser l'injection de dépendance pour l'appel à des services initialisé ailleurs dans le code. 
 	
-	
-	\subsubsection{Leaflet}
-	
-	Leaflet est une librairie open-source JavaScript pour le déeloppement d'application web de cartographie.
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[scale=0.4]{../images/leaflet-logo.png}
-		\caption{Leaflet logo}
-		\label{Leaflet logo}
-	\end{figure} 
-	
-
-	Cette librairie nous permet non seulement d'afficher une carte mais aussi des marqueurs que nous utilisons pour afficher les positions des utilisateurs et lieux que nous souhaitons localiser. De plus celle-ci est extrêmement configurable, on peut en effet choisir d'utiliser nos propres éléments à afficher tel que des marqueurs personnalisé ou encore utiliser divers générateur de carte tel que mapbox, openstreetmap ou encore google map.
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[scale=0.5]{../images/screenshot-carte}
-		\caption{Carte}
-		\label{Carte}
-	\end{figure} 
-	
 	\subsubsection{Cordova}
 	
 	\begin{figure}[H]
@@ -345,12 +364,155 @@
 	Apache Cordova est un framework open-source qui permet de créer des applications pour différentes plateformes (Android, Firefox OS, iOS, Ubuntu, Windows 8...) en HTML, CSS et JavaScript. C'est lui qui sera appelé par Ionic pour "build" et déployer l'application directement sur le materiel.
 	Ce framework permet d'avoir accès aux différentes fonctionnalités et élément du téléphone tel que la boussole, l'accéléromètre, la géolocalisation ou encore l'appareil photo.
 	
+	\subsubsection{Leaflet}
+	
+	Leaflet est une librairie open-source JavaScript pour le déeloppement d'application web de cartographie.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.4]{../images/leaflet-logo.png}
+		\caption{Leaflet logo}
+		\label{Leaflet logo}
+	\end{figure} 
 	
 	
-
+	Cette librairie nous permet non seulement d'afficher une carte mais aussi des marqueurs que nous utilisons pour afficher les positions des utilisateurs et lieux que nous souhaitons localiser. De plus celle-ci est extrêmement configurable, on peut en effet choisir d'utiliser nos propres éléments à afficher tel que des marqueurs personnalisé ou encore utiliser divers générateur de carte tel que mapbox, openstreetmap ou encore google map.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.4]{../images/mapbox-logo.png}
+		\caption{Mapbox logo}
+		\label{Mapbox logo}
+	\end{figure} 
+	
+	\subsection{Design}
+	
+	Il a tout d'abord fallut établir le design de l'application comprenant les différentes interfaces à afficher, l'ordre d'affichage des ces interface ainsi que les animation et écrans de chargement à afficher. Ainsi nous avons commencé le projet par établir un flux d'utilisation
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.6]{../user-flow/user-flow-1.png}
+		\caption{User flow - Loading}
+		\label{User flow - Loading}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.6]{../user-flow/user-flow-2.png}
+		\caption{User flow - Sign in}
+		\label{User flow - Sign in}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.55]{../user-flow/user-flow-3.png}
+		\caption{User flow - Main app}
+		\label{User flow - Main app}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.55]{../user-flow/user-flow-4.png}
+		\caption{User flow - New Contact}
+		\label{User flow - New Contact}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.6]{../user-flow/user-flow-5.png}
+		\caption{User flow - Gathering}
+		\label{User flow - Gathering}
+	\end{figure}
 	
 	
+	\subsection{Developpement de l'interface}
+	\subsubsection{Création des pages}
 	
+	Le développement des différentes pages a été réalisé en parallèle en répartissant les différentes écrans constituant les interfaces finales de notre application.
+	La construction des interfaces des menus constituaient la partie la plus simple du développement car ils ne font appel que a des composants simple définit par Ionic2 et seulement quelques directives Angular2. 
+	Nous nous sommes efforcé de réaliser des pages les plus proches possible du design réalisé précédemment afin de garder une simplicité de l'interface tant au niveau du développement que au niveau de l'utilisation finale. 
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.20]{../screenshot/screenshot-register.jpg}
+		\caption{Capture d'écran - Enregistrement}
+		\label{Capture d'écran - Enregistrement}
+	\end{figure} 	 
+	
+	\newpage
+	
+	Ensuite est venu l'implémentation des différentes fonctions appelé par les éléments graphiques (vérification des champs, communication avec le serveur, changement de page). Pour ce faire nous avons du créer et utiliser différentes librairies et validateurs.
+	
+	\subsubsection{Validateurs}
+	
+	Modularité
+	Il n'existaient pas 
+	Phone - Email - Match
+	
+	Pour éviter d'effectuer des appels serveur inutile nous avons choisi de faire des tests sur la forme des saisies utilisateur directement dans l'application avant de les envoyer au serveur via l'API afin de diminuer le nombre de réponses négatives. Pour effectuer ces tests nous avons donc eu besoin d'une librairie de validateurs pour nous permettre de définir si la saisie possède la bonne forme ou non. 
+	Étant donné que nous n'avons pas trouvé de validateurs correspondant à nos attentes nous avons décidé de les implémenter à la main.
+	
+	\begin{lstlisting}[style=htmlcssjs]
+	/**
+	* Email validator
+	* Check if the control is a valid email
+	* @param emailcontrol
+	* @param msg
+	*/
+	public static email(emailcontrol: string, msg: string) {
+		return (group: FormGroup): ValidatorResult => {
+			if(group.get(emailcontrol).value.length === 0)
+				return null;
+			let errors = {};
+			let regExp = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+			if(!regExp.test(group.get(emailcontrol).value))
+			errors[emailcontrol] = msg;
+			return Object.keys(errors).length === 0 ? null : errors;
+		}
+	}
+	\end{lstlisting}
+	
+	Dans ce validateur pour les e-mail nous utilisons une expression régulière afin de déterminer si l'e-mail entré par l'utilisateur possède une forme correcte. Lorsque le validateur détecte que l'email n'est pas valide il renvoie une erreur à l'utilisateur qui est instantanément averti.
+	
+	Nous utilisons aussi un validateur personalisé pour les numéro de téléphone afin de déterminer si le numéro est valide suivant l'indicatif du pays. 
+	\begin{lstlisting}[style=htmlcssjs]
+	/**
+	* Phone validator
+	* Check if the control the a valid phone
+	* @param phonecontrol
+	* @param countrycontrol
+	* @param msg
+	*/
+	public static phone(phonecontrol: string, countrycontrol: string, msg: string) {
+		return (group: FormGroup): ValidatorResult => {
+			if(group.get(phonecontrol).value.length === 0)
+				return null;
+			let errors = {};
+			try {
+				const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance();
+				const phoneNumber = phoneUtil.parse(group.get(phonecontrol).value, group.get(countrycontrol).value);
+				if(!phoneUtil.isValidNumber(phoneNumber))
+					errors[phonecontrol] = msg;
+				} catch(e) {
+					errors[phonecontrol] = msg;
+			}
+			return Object.keys(errors).length === 0 ? null : errors;
+		}
+	}
+	\end{lstlisting}
+	
+	Cette fois-ci nous n'utilisons pas d'expression régulière mais nous faisons appel à une librairie externe : libphonenumber.
+	Cette librairie permet de passer le numéro de téléphone sous forme canonique avant de vérifier la cohérence de celui-ci ce qui nous permet de garantir une uniformité de la nature des numéros de téléphne d'un utilisateur à un autre.
+	
+	 
+	
+	\subsubsection{Rencontres}
+	
+	TODO : EXPLICATION + CODE
+	
+	\subsubsection{Calculs des parcours}
+	
+	TODO : EXPLICATION DE ALGO
 	
 	
 	\section{Serveur et Communication}	
@@ -382,20 +544,7 @@
 	
 	TODO : EXPLICATION DE L'INTEGRATION DE FCM + CODE
 	
-	\section{Géolocalisation}
-	\subsection{Gestion des coordonnées}
 	
-	TODO : EXPLICATION DE COMMENT ON RECUPERE LES COORDONNES + CODE
-	TODO : EXPLICATION DIALOGUE AVEC LE SERVEUR
-	TODO : EXPLICATION CALCUL
-	
-	\subsection{Gestion de l'orientation}
-	
-	TODO : EXPLICATION + CODE
-	
-	\subsection{Calculs des parcours}
-	
-	TODO : EXPLICATION DE ALGO
 	
 	\section{Sécurité}
 	
