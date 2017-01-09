@@ -1,0 +1,6 @@
+@import "variables";
+
+p.error-row {
+  color: map_get($colors, danger);
+  float: right;
+}

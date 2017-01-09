@@ -49,7 +49,7 @@ export class Splashscreen {
 
       // redefine the console.log behavior for device testing
       // /!\ comments those lines for production /!\
-      let logger = function(nS) {
+      /*let logger = function(nS) {
         return function(text) {
           nS.notify({
             title: 'CONSOLE.LOG',
@@ -57,7 +57,7 @@ export class Splashscreen {
           });
         };
       };
-      console.log = logger(this.notificationService);
+      console.log = logger(this.notificationService);//*/
 
       platform.ready().then(() => {
 
