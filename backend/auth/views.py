@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.views.decorators.debug import sensitive_post_parameters
 
 
@@ -50,4 +50,10 @@ class SessionLoginView(View):
 
             return JsonResponse({})
 
-        return JsonResponse({"global": "Username not recognized or password incorrect."}, status=401)
+        return JsonResponse({"global": "Username not recognized or password incorrect"}, status=401)
+
+
+@ensure_csrf_cookie
+def get_csrf_token():
+    """Get an empty JSON but forces the set of the CSRF token, for views when it might have not been set."""
+    return JsonResponse({})
