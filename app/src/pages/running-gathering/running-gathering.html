@@ -13,18 +13,24 @@
 
   <!-- Actions -->
   <ion-fab right top>
-    <button ion-fab color="light" (click)="showActionsSheet()">
+    <button ion-fab color="light">
       <ion-icon name="menu"></ion-icon>
     </button>
+
+    <ion-fab-list side="left">
+      <button ion-fab color="light" (click)="setAutoCenter()">
+        <ion-icon name="locate"></ion-icon>
+      </button>
+    </ion-fab-list>
   </ion-fab>
 
   <!-- Visible infos -->
   <div class="visible">
-    <p class="information" *ngIf="gatheringService.distance!=null">
-      <ion-badge color="light">{{gatheringService.distance}}m to go</ion-badge>
-    </p>
-    <p class="information" *ngIf="gatheringService.distance==null">
-      <ion-badge color="light">computing distance...</ion-badge>
+    <p class="information">
+      <ion-badge color="light" *ngIf="gatheringService.distance!=null">{{gatheringService.distance}}m to go</ion-badge>
+      <ion-badge color="light" *ngIf="gatheringService.distance==null">computing distance...</ion-badge>
+
+      <ion-badge color="light" *ngIf="autocenter">auto-centering...</ion-badge>
     </p>
 
     <p class="information">

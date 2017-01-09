@@ -21,6 +21,8 @@ export class RunningGathering {
   public destination: any;
   public line: any;
   public head: any;
+  public autocenter: boolean;
+  public setautocenter: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -36,6 +38,8 @@ export class RunningGathering {
     this.destination = null;
     this.line = null;
     this.head = null;
+    this.autocenter = true;
+    this.setautocenter = false;
   }
 
   // TEST
@@ -65,6 +69,14 @@ export class RunningGathering {
     );
     this.leafletHelper.marker(this.destination).addTo(this.map);
 
+    // remove autocenter when moved
+    this.map.on('moveend', (data) => {
+      if(!this.setautocenter)
+          this.autocenter = false;
+      else
+          this.setautocenter = false;
+    });
+
     // update direction 
     this.geolocationService.each.push((position) => {
 
@@ -76,7 +88,8 @@ export class RunningGathering {
       this.line = this.leafletHelper.L().polyline([pos, this.destination], { color: 'red' }).addTo(this.map);
 
       // center on user
-      this.map.flyTo(pos);
+      if(this.autocenter) 
+          this.setAutoCenter();
     });
 
     // update heading
@@ -95,8 +108,13 @@ export class RunningGathering {
     });
   }
 
-  showActionsSheet() {
-
+  setAutoCenter() {
+    this.setautocenter = true;
+    let pos = this.leafletHelper.L().latLng(
+      this.geolocationService.position.coords.latitude, 
+      this.geolocationService.position.coords.longitude);
+    this.map.flyTo(pos);
+    this.autocenter = true;
   }
 
 }
