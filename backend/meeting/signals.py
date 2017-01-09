@@ -26,13 +26,13 @@ def post_save_participant(instance, created, **kwargs):
 
     Creation :
     - Send a push notification to the user to inform him of the new meeting (prevent to inform
-      the organiser of is own meeting).
+      the organiser of is own meeting or hidden users).
     Update :
     - Send a push notification to the other users to inform them of the event (no push message to
       the person at the origin of the action and the participants who declined the meeting).
     """
     if created:
-        if instance.meeting.organiser_id != instance.user_id:
+        if instance.meeting.organiser_id != instance.user_id and instance.user.hidden is False:
             instance.user.send_message(
                 title="New meeting",
                 body="{} added you to a meeting".format(instance.meeting.organiser.username),
