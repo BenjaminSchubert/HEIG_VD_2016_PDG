@@ -6,20 +6,48 @@
 
 <ion-content class="page-running-gathering">
 
-  <!-- TEST -->
-  {{diag(geolocationService.position)}}<br>
-  {{diag(compassService.heading)}}
-
   <!-- Map -->
   <div id="mapid" class="leaflet-map">
     <p class="information" *ngIf="map==null">loading map...</p>
   </div>
 
-  <!-- Menu -->
-  <ion-fab right bottom>
+  <!-- Actions -->
+  <ion-fab right top>
     <button ion-fab color="light" (click)="showActionsSheet()">
       <ion-icon name="menu"></ion-icon>
     </button>
   </ion-fab>
+
+  <!-- Visible infos -->
+  <div class="visible">
+    <p class="information" *ngIf="gatheringService.distance!=null">
+      <ion-badge color="light">{{gatheringService.distance}}m to go</ion-badge>
+    </p>
+    <p class="information" *ngIf="gatheringService.distance==null">
+      <ion-badge color="light">computing distance...</ion-badge>
+    </p>
+
+    <p class="information">
+      <small>Scroll down for more informations</small>
+      <ion-icon name="arrow-down"></ion-icon>
+    </p>
+  </div>
+
+  <!-- Other infos -->
+  <!-- Participants infos --> 
+  <ion-list>
+    <ion-item *ngFor="let participant of gatheringService.meetings.participants">
+      <strong *ngIf="participant.arrived">{{participant.user.username}}</strong>
+      <span *ngIf="!participant.arrived">{{participant.user.username}}</span>
+
+      <ion-icon item-right name="ribbon" color="primary" *ngIf="participant.user.id==gatheringService.meetings.organiser.id"></ion-icon>
+
+      <ion-icon item-right name="checkmark-circle" color="secondary" *ngIf="participant.accepted==true"></ion-icon>
+      <ion-icon item-right name="close-circle" color="danger" *ngIf="participant.accepted!=true"></ion-icon>
+
+      <ion-spinner item-right *ngIf="participant.arrived!=true&&participant.accepted!=false"></ion-spinner>
+      <ion-badge item-right color="secondary" *ngIf="participant.arrived==true">arrived</ion-badge>
+    </ion-item>
+  </ion-list>
 
 </ion-content>

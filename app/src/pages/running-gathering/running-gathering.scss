@@ -4,11 +4,21 @@
   width: 100vw;
 
   div.leaflet-map {
-    height: 100vh;
+    height: 90vh;
     width: 100vw;
+  }
+
+  p {
+    margin: 0 0 0 0;
   }
 
   p.information {
     text-align: center;
+  }
+
+  div.visible {
+    margin-top: 1vw;
+    margin-bottom: 3vw;
+    height: 9vw;
   }
 }

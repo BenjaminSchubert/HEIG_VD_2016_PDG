@@ -72,11 +72,11 @@ export class GatheringService {
   }
 
   start() {
-
+    // TODO
   }
 
   stop() {
-
+   // TODO
   }
 
   accept() {
@@ -178,8 +178,8 @@ export class GatheringService {
               ]));
           }},
           { text: 'See info', handler: () => {
+            this.reset();
             this.fetch(n.additionalData.meeting).then(() => {
-              this.reset();
               this.status = 'request';
               navCtrl.setRoot(PendingGathering);
             });
@@ -243,5 +243,7 @@ export class GatheringService {
         enableBackdropDismiss: false
       }).present();
     });
+
+    // TODO other?
   }
 }
