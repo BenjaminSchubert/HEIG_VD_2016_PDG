@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.response import Response
 
-from auth.permissions import CanEditParticipant, CanViewXorOwnMeeting
+from auth.permissions import CanViewXorOwnMeeting, IsParticipantOwner
 from meeting.models import Meeting, Place, Participant
 from meeting.serializers import MeetingSerializer, WriteMeetingSerializer, PlaceSerializer, ParticipantSerializer, \
     MeetingUpdateSerializer
@@ -28,7 +28,7 @@ class ParticipantDetailsView(UpdateAPIView):
     """
 
     serializer_class = ParticipantSerializer
-    permission_classes = (CanEditParticipant,)
+    permission_classes = (IsParticipantOwner,)
 
     def get_queryset(self):
         """Get all participation for the registered user."""
