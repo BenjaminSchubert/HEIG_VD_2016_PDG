@@ -1,12 +1,15 @@
 """This module defines the routes available in the `meeting` application."""
+from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView, CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from auth.permissions import CanViewXorOwnMeeting, IsParticipantOwner
 from meeting.models import Meeting, Place, Participant
 from meeting.serializers import MeetingSerializer, WriteMeetingSerializer, PlaceSerializer, ParticipantSerializer, \
-    MeetingUpdateSerializer
+    MeetingUpdateSerializer, PositionSerializer
 
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
@@ -271,3 +274,62 @@ class MeetingDetailsView(RetrieveUpdateAPIView):
         """
         self.serializer_class = MeetingUpdateSerializer
         return RetrieveUpdateAPIView.update(self, request, *args, **kwargs)
+
+
+class PositionsView(CreateAPIView):
+    """
+    Allow to post a new position, related to the current logged in user.
+
+    The given position will be send to all the others participants.
+
+    This view requires the user to be authenticated.
+
+    This view supports multiple formats : JSon, XML, etc.
+
+    POST requests:
+
+        The view expects the following parameters (example in JSon):
+
+            {
+                "latitude": 0.61,
+                "longitude": 0.6,
+            }
+
+        - On success will return a 201 CREATED.
+        - On error will send a 400, 401 depending on the error, with a message explaining it.
+    """
+
+    permission_classes = (IsAuthenticated,)
+
+    def create(self, request, *args, **kwargs):
+        """
+        Post a new position.
+
+        It will send the position to the participants of each meetings in progress,
+        where the user is active.
+
+        :param request: the HTTP request done
+        :return a 400 or 201 response depending on whether the data was correct or not.
+        """
+        serializer = PositionSerializer(data=request.data)
+        if serializer.is_valid():
+
+            for meeting in Meeting.objects\
+                    .filter(Q(participant__user_id=self.request.user) & Q(status=Meeting.STATUS_PROGRESS))\
+                    .all():
+
+                participants = get_user_model().objects\
+                    .filter(Q(participant__meeting_id=meeting.id) & Q(participant__accepted=True))
+
+                participant = participants.get(id=self.request.user.id)
+                other_participants = participants.filter(~Q(id=self.request.user.id)).all()
+
+                other_participants.send_message(
+                    title="New position",
+                    body="{} position changed".format(participant.username),
+                    data=dict(type="user-position-update", meeting=meeting.id, participant=participant.id),
+                    deferred=False,
+                )
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
