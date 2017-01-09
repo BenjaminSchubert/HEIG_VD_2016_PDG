@@ -1,211 +1,125 @@
-import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
-import { AuthHttp, AuthConfig, JwtHelper } from 'angular2-jwt';
-import { SecureStorage } from 'ionic-native';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/toPromise';
+import "rxjs/add/operator/map";
+import "rxjs/add/operator/toPromise";
+import "rxjs/add/operator/do";
 
-import { CONFIG } from './config';
+import { Observable } from "rxjs/Observable";
+import { Injectable } from "@angular/core";
+import { Http, Response, RequestOptionsArgs } from "@angular/http";
+import { AuthHttp, AuthConfig, JwtHelper } from "angular2-jwt";
+import { SecureStorage } from "ionic-native";
+import { LOGIN_URL, REFRESH_URL, USERS_URL } from "../app/api.routes";
 
-/**
- * AuthService
- * Authentification service using JWT
- * Patrick Champion - 16.11.2016
- *
- * Thanks:
- * - https://auth0.com/blog/ionic-2-authentication-how-to-secure-your-mobile-app-with-jwt/
- * - https://github.com/auth0/angular2-jwt
- * - http://ionicframework.com/docs/v2/native/secure-storage/
- */
+
 @Injectable()
 export class AuthService {
+    /**
+     * Check if the user has a valid token.
+     */
+    public get authenticated() {
+        return this.token != null && !this.jwtHelper.isTokenExpired(this.token);
+    }
 
-  // constants
-  private TOKEN_NAME: string = 'id_token';
-  private STORE_NAME: string = 'auth-service-store';
-  private BASE_URL: string = CONFIG.API_URL;
-  private LOGIN_URL: string = this.BASE_URL + 'auth/login/';
-  private REFRESH_URL: string = this.BASE_URL + 'auth/refresh/';
-  private REGISTER_URL: string = this.BASE_URL + 'users/';
+    private _token: string;
 
-  // data members
-  private authHttp: AuthHttp;
-  private storage: SecureStorage;
+    private get token() {
+        return this._token;
+    }
 
-  /**
-   * Constructor
-   * @param baseHttp Injection of the Angular2 Http service
-   */
-  constructor(private baseHttp: Http) {
-    // initialize() must be called when the plateform is ready 
-  }
+    private set token(token: string) {
+        this.storage
+            .set(this.TOKEN_NAME, token)
+            .then((_token: string) => this._token = _token);
+    }
 
-  /**
-   * Initialize the service
-   * Must be called one time, when the plateform is ready
-   */
-  initialize() {
-    console.log('[AuthService] initialisation');
+    private readonly TOKEN_NAME: string = "token";
+    private readonly STORE_NAME: string = "auth-service-store";
 
-    // setup a storage for the service
-    this.storage = new SecureStorage();
-    this.storage.create(this.STORE_NAME).then(
-      () => console.log('[AuthService] storage ready'),
-      err => console.log('[AuthService] storage error (' + JSON.stringify(err) + ')')
-    );
+    private secureHttp: AuthHttp;
+    private storage: SecureStorage;
+    private jwtHelper: JwtHelper = new JwtHelper();
 
-    // setup the Http wrapper
-    this.authHttp = new AuthHttp(new AuthConfig({
-      tokenName: this.TOKEN_NAME,
-      tokenGetter: (() => this.tokenString()) 
-    }), this.baseHttp);
-  }
+    /**
+     * @param http angular2 http service
+     */
+    constructor(private http: Http) {
+    }
 
-  /**
-   * Create a new user
-   * @param informations object containing the user'sinformations
-   *                     (username, email, password, phone?, country?)
-   * @return a promise
-   */
-  register(informations) {
+    /**
+     * Initialize the service.
+     *
+     * Must be called one time, when the platform is ready.
+     */
+    public initialize() {
+        this.storage = new SecureStorage();
+        return this.storage.create(this.STORE_NAME)
+            .then(() => this.storage.get(this.TOKEN_NAME))
+            .then((token: string) => this.token = token)
+            .then(() => {
+                this.secureHttp = new AuthHttp(
+                    new AuthConfig({
+                        tokenGetter: (() => this.token),
+                        tokenName: this.TOKEN_NAME,
+                    }),
+                    this.http,
+                );
+            });
+    }
 
-    // send a request to create a new user
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ 'headers': headers });
-    return this.baseHttp.post(
-        this.REGISTER_URL, 
-        JSON.stringify(informations), 
-        options
-      )
-      .map(res => res.json())
-      .toPromise();
-  }
+    /**
+     * Create a new user.
+     *
+     * @param information concerning the user (username, email, password, phone?, country?).
+     * @return an observable of the server's answer.
+     */
+    public register(information) {
+        // FIXME: add info for current user
+        return this.http.post(USERS_URL, information);
+    }
 
-  /**
-   * Ask the server for a token
-   * @param credentials object containing the user's credentials
-   *                    (email, password)
-   * @return a promise
-   */
-  authentificate(credentials) {
+    /**
+     * Ask the server for a token.
+     *
+     * @param credentials with which to login (email, password).
+     */
+    public login(credentials: {email: string, password: string}) {
+        return this.http.post(LOGIN_URL, credentials)
+            .do((res: Response) => this.token = res.json());
+    }
 
-    // send a login request to get a token
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ 'headers': headers });
-    return this.baseHttp.post(
-        this.LOGIN_URL, 
-        JSON.stringify(credentials), 
-        options
-      )
-      .map(res => res.json())
-      .toPromise()
-      .then((data) => {
+    /**
+     * Remove the local token.
+     */
+    public logout() {
+        this.token = null;
+    }
 
-        // we have a token, save it in the storage
-        this.setTokenString(data.token);
-        this.storage.set(this.TOKEN_NAME, data.token)
-          .catch((err) => console.log('[AuthService] cannot save token'));
-      });
-  }
+    /**
+     * Ask the server for a new token.
+     */
+    public refresh() {
+        return this.http.post(REFRESH_URL, {token: this.token})
+            .do((res: Response) => this.token = res.json());
+    }
 
-  /**
-   * Ash the server for a refreshed token
-   * @return a promise
-   */
-  refresh() {
+    /**
+     * Performs a request with `get` http method
+     */
+    public get(url: string, options?: RequestOptionsArgs): Observable<Response> {
+        return this.secureHttp.get(url, options);
+    }
 
-    // look for the storaged token, and refresh it
-    return this.token().then((token) => {
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ 'headers': headers });
-        return this.baseHttp.post(
-          this.REFRESH_URL,
-          JSON.stringify({ 'token': token }),
-          options
-        )
-        .map(res => res.json())
-        .toPromise()
-        .then((data) => {
+    /**
+     * Performs a request with `post` http method.
+     */
+    public post(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
+        return this.secureHttp.post(url, options);
+    }
 
-          // we have a token, save it in the storage
-          this.setTokenString(data.token);
-          this.storage.set(this.TOKEN_NAME, data.token)
-            .catch((err) => console.log('[AuthService] cannot save token'));
-        });
-      });
-  }
+    /**
+     * Performs a request with `patch` http method.
+     */
+    public patch(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
+        return this.secureHttp.patch(url, body, options);
+    }
 
-  /**
-   * Check if the user has a valid token
-   * @return a promise
-   */
-  authentificated() {
-    return this.token().then((token) => {
-        if(new JwtHelper().isTokenExpired(token))
-          throw ""; // to go to the catch
-      });
-  }
-
-  /**
-   * Remove the local token
-   * @return a promise
-   */
-  logout() {
-    this.setTokenString(null);
-    return this.storage.remove(this.TOKEN_NAME);
-  }
-
-  /**
-   * Returns the token
-   * @return a promise
-   */
-  token() {
-    return this.storage.get(this.TOKEN_NAME).then((token) => {
-      this.setTokenString(token);
-      return token;
-    });
-  }
-
-  /**
-   * Get the claims contained in the token
-   * @return a promise
-   */
-  claims() {
-    return this.token().then((token) => { 
-        return new JwtHelper().decodeToken(token); 
-      });
-  }
-
-  /**
-   * Returns a reference to the wrapped Http service
-   * @return A reference to the AuthHttp service
-   */
-  http() {
-    return this.authHttp;
-  }
-
-  /**
-   * Create a RequestOptions from headers
-   * @param headers array of object (name, value)
-   * @return
-   */
-  createOptions(headers) {
-    let h = new Headers();
-    for(let header of headers)
-      h.append(header.name, header.value);
-    return new RequestOptions({ 'headers': h });
-  }
-
-  /**
-   * Get/Set the stringified token
-   * For internal uses only
-   * @return The stringified token
-   */
-  private tokenStringValue: string;
-  private setTokenString(token: string) {
-    this.tokenStringValue = token;
-  }
-  private tokenString() {
-    return this.tokenStringValue;
-  }
 }

@@ -33,7 +33,7 @@ export class ContactsService {
 
   // Fetch the current user contacts list
   private fetchContacts() {
-    return this.authService.http().get(CONFIG.API_URL + 'users/friends/all/')
+    return this.authService.get(CONFIG.API_URL + 'users/friends/all/')
       .map(res => res.json())
       .toPromise()
       .then((data) => {

@@ -61,7 +61,7 @@ export class AddContact {
       let filter = '?username=' + value;
 
       // Ask the API for matching user
-      this.authService.http().get(CONFIG.API_URL + 'users/' + filter)
+      this.authService.get(CONFIG.API_URL + 'users/' + filter)
       .map(res => res.json())
       .subscribe(
         (data) => this.users = data,
@@ -83,10 +83,9 @@ export class AddContact {
           handler: () => {
 
             // Send the friend request
-            this.authService.http().post(
+            this.authService.post(
               CONFIG.API_URL + "/users/friends/",
               JSON.stringify({ 'friend': user.id }),
-              this.authService.createOptions([{name: 'Content-Type', value: 'application/json'}])
             )
             .map(res => res.json())
             .subscribe(

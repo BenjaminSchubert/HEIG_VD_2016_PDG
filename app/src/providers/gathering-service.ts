@@ -53,12 +53,9 @@ export class GatheringService {
     });
 
     // request
-    return this.authService.http().post(
+    return this.authService.post(
       CONFIG.API_URL + 'meetings/',
       payload,
-      this.authService.createOptions([
-        { name: 'Content-Type', value: 'application/json' }
-      ])
     ).map(res => res.json()).toPromise().then((data) => {
 
       // TEST

@@ -55,13 +55,9 @@ export class PushService {
 
     // on notification, dispatch the message
     this.push.on('notification', (data) => {
-      // TEST
-      console.log('[PushService] notification: ' + JSON.stringify(data));
-      this.authService.authentificated().then(() => {
-        //TEST
-        console.log('[PushService] forwarded');
-        this.notificationService.notify(data)
-      });
+      if (this.authService.authenticated) {
+        this.notificationService.notify(data);
+      }
     });
 
     // on error
@@ -81,15 +77,11 @@ export class PushService {
       console.log('[PushService] try registration');
 
       // we need to be auth.
-      this.authService.authentificated().then(() => {
-
+      if (this.authService.authenticated) {
         // registration
-        this.authService.http().post(
+        this.authService.post(
           CONFIG.API_URL + 'fcm/devices/',
           JSON.stringify({registration_id: this.token}),
-          this.authService.createOptions([
-            {'name': 'Content-Type', 'value': 'application/json'}
-          ])
         )
         .toPromise()
         .then(() => {
@@ -102,7 +94,7 @@ export class PushService {
         .catch((err) => {
           console.log('[PushService] post error: ' + JSON.stringify(err));
         });
-      });
+      }
     });
 
     // we need to be authentificated to register,

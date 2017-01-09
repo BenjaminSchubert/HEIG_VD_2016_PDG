@@ -1,3 +1,5 @@
+import "rxjs/add/operator/catch";
+import { Observable } from "rxjs/Observable";
 import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
@@ -63,9 +65,9 @@ export class Register {
 
       // try the registration
       this.authService.register(informations)
-
+      // FIXME : refactor
         // on success, show an alert and go back to SignIn
-        .then(() => {
+        .map(() => {
           this.alertCtrl.create({
             title: 'Registration done!',
             message: 'You can now sign in with your new account.',
@@ -86,7 +88,8 @@ export class Register {
             buttons: ['OK'],
             enableBackdropDismiss: false 
           }).present();
-        });
+          return Observable.throw(err);
+        }).subscribe();
     }
   }
 }

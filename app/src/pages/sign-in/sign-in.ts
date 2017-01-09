@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Response } from "@angular/http";
 import { NavController, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
@@ -55,24 +56,21 @@ export class SignIn {
       };
 
       // try the log in
-      this.authService.authentificate(credentials)
+      this.authService.login(credentials)
+          .subscribe(
+              () => this.navCtrl.setRoot(MainTabs),
+              (err: Response) => {
+                console.log(JSON.stringify(err));
+                this.alertCtrl.create({
+                  title: 'Sign In error',
+                  message: 'Unable to login with provided credentials.\nPlease check your email and password.',
+                  buttons: ['OK'],
+                  enableBackdropDismiss: false
+                }).present();
+              }
+          );
 
-        // on success, go to MainTabs
-        .then(() => {
-          this.navCtrl.setRoot(MainTabs);
-        })
-        
-        // on error, show an alert with the error
-        .catch((err) => {
-          console.log(JSON.stringify(err));
-          this.alertCtrl.create({
-            title: 'Sign In error',
-            message: 'Unable to login with provided credentials.\nPlease check your email and password.', 
-            buttons: ['OK'],
-            enableBackdropDismiss: false
-          }).present();
-        });
-    }
+      }
   }
 
   // Go to the Register page

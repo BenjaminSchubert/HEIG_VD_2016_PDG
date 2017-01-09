@@ -27,10 +27,9 @@ export class Settings {
     this.app.getRootNav().push(EditProfile);
   }
 
-  doLogOut(){
-    this.authService.logout().then(() => {
-      this.navCtrl.setRoot(SignIn);
-    });
+  doLogOut() {
+    this.authService.logout();
+    this.navCtrl.setRoot(SignIn);
   }
 
 }
