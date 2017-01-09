@@ -58,6 +58,7 @@ class SessionLoginView(View):
 @require_http_methods(["POST"])
 @never_cache
 def reset_password(request):
+    """Reset user's password."""
     form = PasswordResetForm(json.loads(request.body.decode("utf-8")))
     if form.is_valid():
         opts = {
