@@ -25,12 +25,6 @@ export class AuthService {
         return this._token;
     }
 
-    private set token(token: string) {
-        this.storage
-            .set(this.TOKEN_NAME, token)
-            .then((_token: string) => this._token = token);
-    }
-
     private readonly TOKEN_NAME: string = "id_token";
     private readonly STORE_NAME: string = "auth-service-store";
 
@@ -53,11 +47,10 @@ export class AuthService {
         this.storage = new SecureStorage();
         return this.storage.create(this.STORE_NAME)
             .then(() => this.storage.get(this.TOKEN_NAME))
-            .then((token: string) => this.token = token)
+            .then((token: string) => this.setToken(token))
             // If token load fails, we are not logged in.
             // tslint:disable-next-line:no-empty
-            .catch(() => {
-            })
+            .catch(() => console.log("[Rady][AuthService] Could not load authentication token."))
             .then(() => {
                 this.secureHttp = new AuthHttp(
                     new AuthConfig(
@@ -93,14 +86,14 @@ export class AuthService {
      */
     public login(credentials: {email: string, password: string}) {
         return this.http.post(LOGIN_URL, credentials)
-            .do((res: Response) => this.token = res.json()["token"]);
+            .do((res: Response) => this.setToken(res.json()["token"]));
     }
 
     /**
      * Remove the local token.
      */
     public logout() {
-        this.token = null;
+        this.setToken(null);
     }
 
     /**
@@ -115,7 +108,7 @@ export class AuthService {
      */
     public refresh() {
         return this.http.post(REFRESH_URL, {token: this.token})
-            .do((res: Response) => this.token = res.json()["token"]);
+            .do((res: Response) => this.setToken(res.json()["token"]));
     }
 
     /**
@@ -130,7 +123,7 @@ export class AuthService {
      */
     // tslint:disable-next-line:no-any
     public post(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
-        return this.secureHttp.post(url, options);
+        return this.secureHttp.post(url, body, options);
     }
 
     /**
@@ -147,5 +140,16 @@ export class AuthService {
     // tslint:disable-next-line:no-any
     public put(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
         return this.secureHttp.put(url, body, options);
+    }
+
+    /**
+     * Set current user's token
+     *
+     * @param token value
+     */
+    private setToken(token: string) {
+        return this.storage
+            .set(this.TOKEN_NAME, token)
+            .then(() => this._token = token);
     }
 }

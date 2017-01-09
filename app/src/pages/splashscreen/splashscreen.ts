@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Response } from "@angular/http";
 import { NavController, Platform, AlertController } from 'ionic-angular';
 import { StatusBar } from 'ionic-native';
 
@@ -64,19 +63,17 @@ export class Splashscreen {
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
         StatusBar.styleDefault();
-          this.authService.initialize();
-          this.pushService.initialize();
-          this.authService.refresh()
-            .subscribe(
-                () => {
-                    console.log('[Splashscreen] token refreshed, go to MainTabs');
-                    this.navCtrl.setRoot(MainTabs);
-                },
-                (err: Response) => {
-                    console.log('[Splashscreen] refresh error: ' + err);
-                    this.navCtrl.setRoot(SignIn);
-                },
-            );
+          this.authService.initialize()
+              .then(() => this.pushService.initialize())
+              .then(() => {
+                  this.authService.refresh().subscribe(
+                      () => this.navCtrl.setRoot(MainTabs),
+                      (err: any) => {
+                          console.log("GOT EEEEEEEEEEEEEEEER" + JSON.stringify(err));
+                          this.navCtrl.setRoot(SignIn);
+                      }
+                  );
+              });
 
         this.geolocationService.initialize();
       });
