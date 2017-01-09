@@ -25,7 +25,7 @@ export class ForgottenPassword {
     this.form = this.formBuilder.group({
       email: ['']
     }, { validator: Validators.compose([
-      RadyModule.Validators.email('email', 'is not valid'),
+      //RadyModule.Validators.email('email', 'is not valid'),
       RadyModule.Validators.required(['email'], 'is required')])
     });
   }

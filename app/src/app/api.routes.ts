@@ -6,3 +6,4 @@ export const LOGIN_URL = AUTH_URL + "login/";
 export const REFRESH_URL = AUTH_URL + "refresh/";
 
 export const USERS_URL = API_V1_URL + "users/";
+export const ACCOUNT_URL = USERS_URL + "me/";

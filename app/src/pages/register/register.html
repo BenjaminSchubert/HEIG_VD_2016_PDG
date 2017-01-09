@@ -32,15 +32,15 @@
                 <!-- phone number -->
 				<ion-item>
 					<ion-label floating>Phone number</ion-label>
-					<ion-input type="tel" formControlName="phone"></ion-input>
+					<ion-input type="tel" formControlName="phone_number"></ion-input>
 				</ion-item>
 				<p><small>optional, required for searching for friends in your contact list</small></p>
-                <p *ngIf="!(form.get('phone').valid || form.get('phone').pristine)" class="error-row">
-                    {{ display_error(form.get("phone").errors) }}
+                <p *ngIf="!(form.get('phone_number').valid || form.get('phone_number').pristine)" class="error-row">
+                    {{ display_error(form.get("phone_number").errors) }}
                 </p>
 
                 <!-- country -->
-				<div *ngIf="form.get('phone').value">
+				<div *ngIf="form.get('phone_number').value">
 					<ion-item>
 						<ion-select placeholder="Country" formControlName="country">
 							<ion-option *ngFor="let code of countryCodes" [value]="code">{{ countries[code] }}</ion-option>

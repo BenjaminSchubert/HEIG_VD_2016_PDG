@@ -35,6 +35,7 @@ import { GeolocationService } from '../providers/geolocation-service';
 import { CompassService } from '../providers/compass-service';
 import { LeafletHelper } from '../providers/leaflet-helper';
 import { ExtendedRequestOptions } from "../lib/request-options";
+import { AccountService } from "../providers/account-service";
 
 // put here the components
 let COMPONENTS_LIST: any = [
@@ -63,7 +64,8 @@ let COMPONENTS_LIST: any = [
 let PROVIDERS_LIST: any = [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     {provide: RequestOptions, useClass: ExtendedRequestOptions},
-  AuthService,
+    AuthService,
+    AccountService,
   PushService,
   NotificationService,
   ContactsService,

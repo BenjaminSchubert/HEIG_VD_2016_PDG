@@ -1,15 +1,12 @@
 import "rxjs/add/operator/catch";
-
 import { Component } from "@angular/core";
-import { Validators, FormBuilder, FormGroup } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 import { Response } from "@angular/http";
 import { NavController, AlertController } from "ionic-angular";
-
-import { countries } from "../../lib/countries";
-import { RadyValidators } from "../../lib/validators";
 import { AuthService } from "../../providers/auth-service";
-import { BaseFormComponent } from "../../lib/form-component";
+import { AccountFormComponent } from "../../lib/form-component";
 import { MainTabs } from "../main-tabs/main-tabs";
+import { RadyValidators } from "../../lib/validators";
 
 
 /**
@@ -20,15 +17,9 @@ import { MainTabs } from "../main-tabs/main-tabs";
 @Component({
     templateUrl: "register.html",
 })
-export class Register extends BaseFormComponent {
-    public countries = countries;
-
-    public get countryCodes() {
-        return Object.keys(this.countries);
-    }
-
-    constructor(public navCtrl: NavController,
-                builder: FormBuilder,
+export class Register extends AccountFormComponent {
+    constructor(builder: FormBuilder,
+                public navCtrl: NavController,
                 private authService: AuthService,
                 private alertCtrl: AlertController) {
         super(builder);
@@ -64,40 +55,15 @@ export class Register extends BaseFormComponent {
     }
 
     protected buildForm() {
-        let form = this.builder.group({
-            country: [null],
-            email: [null, Validators.compose([RadyValidators.email(), Validators.required])],
-            password: [null],
-            passwordConfirmation: [null],
-            phone: [null],
-            username: [null, Validators.required],
-        });
+        let form = super.buildForm();
 
+        form.get("password").setValidators(Validators.required);
         form.get("passwordConfirmation").setValidators(Validators.compose([
             Validators.required,
             RadyValidators.match(form.get("password"), "passwords do not match."),
         ]));
 
-        form.get("phone").setValidators(RadyValidators.phone(form.get("country")));
-
-        this.subscriptions.push(
-            form.get("phone").valueChanges.subscribe((value: string) => {
-                if (!value) {
-                    this.form.get("country").clearValidators();
-                    this.form.get("country").setValue(undefined);
-                } else {
-                    // tslint:disable-next-line:triple-equals
-                    if ((<FormGroup> this.form.get("country")).controls == null) {
-                        this.form.get("country").setValidators(Validators.required);
-                        this.form.get("country").markAsTouched();
-                        this.form.get("country").markAsDirty();
-                        this.form.get("country").updateValueAndValidity();
-                    }
-                }
-            }),
-            form.get("password").valueChanges.subscribe(() => form.get("passwordConfirmation").updateValueAndValidity()),
-        );
-
         return form;
     }
+
 }

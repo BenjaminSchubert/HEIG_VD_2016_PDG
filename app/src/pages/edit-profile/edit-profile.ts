@@ -1,50 +1,44 @@
-import { Component } from '@angular/core';
-import { NavController} from 'ionic-angular';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Component } from "@angular/core";
+import { NavController } from "ionic-angular";
+import { FormBuilder } from "@angular/forms";
+import { Response } from "@angular/http";
+import { MainTabs } from "../main-tabs/main-tabs";
+import { AccountFormComponent } from "../../lib/form-component";
+import { AccountService } from "../../providers/account-service";
+import { IAccount } from "../../lib/stubs/account";
 
-import { MainTabs } from '../main-tabs/main-tabs';
-
-import { RadyModule } from '../../lib/validators';
 
 @Component({
-  templateUrl: 'edit-profile.html'
+    templateUrl: "edit-profile.html",
 })
-export class EditProfile {
+export class EditProfile extends AccountFormComponent {
+    public user: IAccount;
 
-  form;
-  constructor(public navCtrl: NavController, private formBuilder: FormBuilder) {}
+    constructor(builder: FormBuilder, public service: AccountService, public navCtrl: NavController) {
+        super(builder);
+        this.subscriptions.push(this.service.$.subscribe((a: IAccount) => {
+            this.user = a;
+            if (this.user !== null) {
+                this.form.patchValue(this.user);
+            }
+        }));
+    }
 
-  ionViewDidLoad() {
-    //TODO : GET CURRENT USER
+    public ionViewWillEnter() {
+        this.service.fetch().subscribe();
+        super.ionViewWillEnter();
+    }
 
-  	// create the form with validation
-    this.form = this.formBuilder.group({
-      username: [''],
-      email: [''],
-      phone: [''],
-      country: [''],
-      password: [''],
-      passwordConfirmation: ['']
-  	}, { validator: Validators.compose([
-      RadyModule.Validators.email('email', 'is not valid'),
-      RadyModule.Validators.phone('phone', 'country', 'is not valid'),
-      RadyModule.Validators.areEqual(['password', 'passwordConfirmation'], 'passwords are not equal'),
-      RadyModule.Validators.required(['username', 'email', 'password', 'passwordConfirmation'], 'is required')])
-    });
-  }
+    goToContactList() {
+        this.navCtrl.setRoot(MainTabs);
+    }
 
-  goToContactList(){
-    this.navCtrl.setRoot(MainTabs);
-  }
-
-  save(){
-    //TODO : SAVE USER LOCALY
-    //TODO : SAVE USER ON SEVER
-    this.goToContactList();
-  }
-
-  get errors() {
-    return JSON.stringify(this.form.errors);
-  }
+    public submit() {
+        let value = JSON.stringify(this.form.value, (k, v) => v !== null ? v : undefined);
+        this.service.update(<any> value).subscribe(
+            () => this.goToContactList(),
+            (err: Response) => this.handleError(err.json(), this.form),
+        );
+    }
 
 }

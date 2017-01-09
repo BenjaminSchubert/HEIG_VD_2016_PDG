@@ -1,5 +1,7 @@
 import { Subscription } from "rxjs/Subscription";
-import { AbstractControl, FormBuilder } from "@angular/forms";
+import { AbstractControl, FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { RadyValidators } from "./validators";
+import { countries } from "../lib/countries";
 
 
 export abstract class BaseFormComponent {
@@ -61,5 +63,49 @@ export abstract class BaseFormComponent {
     // tslint:disable-next-line:no-any
     protected signalUndefinedError(error: any) {
         console.log("Undefined error message for " + JSON.stringify(error));
+    }
+}
+
+
+export abstract class AccountFormComponent extends BaseFormComponent {
+    public countries = countries;
+
+    public get countryCodes() {
+        return Object.keys(this.countries);
+    }
+
+    protected buildForm() {
+        let form = this.builder.group({
+            country: [null],
+            email: [null, Validators.compose([RadyValidators.email(), Validators.required])],
+            password: [null],
+            passwordConfirmation: [null],
+            phone_number: [null],
+            username: [null, Validators.required],
+        });
+
+        form.get("phone_number").setValidators(RadyValidators.phone(form.get("country")));
+
+        this.subscriptions.push(
+            form.get("phone_number").valueChanges.subscribe((value: string) => {
+                if (!value) {
+                    this.form.get("country").clearValidators();
+                    this.form.get("country").setValue(undefined);
+                } else {
+                    // tslint:disable-next-line:triple-equals
+                    if ((<FormGroup> this.form.get("country")).controls == null) {
+                        this.form.get("country").setValidators(Validators.required);
+                        this.form.get("country").markAsTouched();
+                        this.form.get("country").markAsDirty();
+                        this.form.get("country").updateValueAndValidity();
+                    }
+                }
+            }),
+            form.get("password").valueChanges.subscribe(
+                () => form.get("passwordConfirmation").updateValueAndValidity()
+            ),
+        );
+
+        return form;
     }
 }
