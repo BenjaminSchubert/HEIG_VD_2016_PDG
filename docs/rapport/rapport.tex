@@ -199,7 +199,7 @@
 		Par ailleurs nous avons aussi utilisé un serveur d'integration continue (Travis) afin de pouvoir vérifier en temps réel le bon déroulement de notre projet
 		Enfin nous avons mis en place des séries de tests visant à faire en sorte que l'api fournie par le serveur soit utilisable et ne contienne pas de faille.
 			
-	\section{Conception de l'application}
+	\section{Interfaces}
 	
 	La première partie du développement de l'application a consisté en l'élaboration de l'interface que l'utilisateur final utilisera. Cette interface a été conçu pour être simple et permettre une utilisation intuitive de l'application.
 	
@@ -242,9 +242,29 @@
 		\label{User flow - Gathering}
 	\end{figure}
 	
-	\subsection{Développement avec Ionic}
-	\subsubsection{Structure}
-	Voici la structure des sources de l'application mobile :	
+	\subsection{Technologies}
+	\subsubsection{Ionic2}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.3]{../images/ionic2-logo.png}
+		\caption{Ionic2 logo}
+		\label{Ionic2 logo}
+	\end{figure} 
+	
+	Notre application a été réalisé avec le framework Ionic2. Ce framework, disponible depuis spetembre 2016, se distingue de sa version précédente Ionic en incluant la syntaxe ES6 , une nouvelle structure de fichier et en intégrant une CLI plus perfectionné permettant la génération automatique de pages.
+	L’interface graphique est décrite par un fichier HTML utilisant des composants spécifique a Ionic2 :
+	
+	\lstset{language = HTML5}
+	\begin{lstlisting}
+		<ion-component>
+	\end{lstlisting}
+	
+	Les balises permettent de placer les différents éléments de l’interface un peu à la manière dont on structure une page en HTML standard. La personnalisation des éléments se fait grâce à des styles CSS, spécifiés soit dans les attributs des éléments, soit via des feuilles de style externes dans les fichiers SCSS. Les attributs du SCSS diffèrent un peu des attributs CSS standards, ils permettent d'utiliser les SASS (Syntactically Awesome Style Sheets). Les fichier SCSS seront utilisé pour regénérer le CSS necessaire à l'affichage des styles. 
+	A chaque fichier HTML et SCSS vient s’ajouter un fichier de code TypeScript, qui sert de contrôleur pour l’interface. Dans le HTML on définit les différents évènements de l’interface (par exemple un clic sur un bouton, ou un changement d'état d'un élément de type bascule) en déclenchant un appel de méthode au niveau du fichier contrôleur (le ficher TypeScript), qui gère ensuite l’évènement. Il est également possible d’ajouter et modifier des balises HTML directement depuis le contrôleur TypeScript afin de rendre l’interface plus dynamique, en la faisant par exemple réagir aux interactions de l’utilisateur ou aux réponses du serveur. 
+	
+	Voici la structure des sources de l'application mobile :
+		
 	\begin{figure}[H]
 		\centering
 		\dirtree{%
@@ -277,209 +297,34 @@
 		}
 	\end{figure}
 	
-	Lors de la création d'une nouvelle interface (dans le dossier pages), il faut créer 3 fichiers. Le premier ficher (.html) contient les différents composants de l'interface, comme par exemple les bouton et les champs de texte. Ensuite le deuxième fichier (.scss) définit plus précisément comment les composant doivent d'afficher et enfin le dernier fichier (.ts) détermine toute la logique, fait appels aux validateurs et autres modules permettant les accès serveur etc.
+	On observe que les interfaces sont dans le dossier pages avec leurs ficher HTML, SCSS, et TS correspondant. Dans le dossier app/ on retrouve le lien entre les différentes pages et l'application en elle même. Ionic2 propose une hiérarchie intuitive regroupant les éléments par nature puis par fonctionnalité (librairies, models ...) afin de simplifier le développement.
 	
-	\subsubsection{Exemple d'implémentation}
-	
-	Prenons comme exemple le cas de l'interface d'enregistrement.
-	
-	Dans le fichier sign-in.html
-	
-	\lstset{language = HTML5}
-	
-	\begin{lstlisting}
-	
-	<ion-header class="hidden">
-	<ion-navbar>
-	<ion-title>Sign In</ion-title>
-	</ion-navbar>
-	</ion-header>
-	
-	<!-- Sign-in form with other options under it -->
-	<ion-content>
-	<div class="content">
-	<div class="sign-in-page">
-	<h1>Sign In</h1>
-	
-	<p>{{errors}}</p>
-	
-	<form [formGroup]="form" (ngSubmit)="doSignIn()">
-	<ion-item>
-	<ion-label floating>Email</ion-label>
-	<ion-input type="email" formControlName="email"></ion-input>
-	</ion-item>
-	<ion-item>
-	<ion-label floating>Password</ion-label>
-	<ion-input type="password" formControlName="password"></ion-input>
-	</ion-item>
-	<button ion-button block icon-right round large type="submit" [disabled]="!form.valid">
-	Sign In
-	<ion-icon name="arrow-forward"></ion-icon>
-	</button>
-	</form>
-	
-	<button ion-button small clear block (click)="goToRegister()">I don't have an account</button>
-	<button ion-button small clear block (click)="goToForgottenPassword()">Forgot your password?</button>
-	
-	<img src="assets/img/rady-logo.png">
-	</div>
-	</div>
-	</ion-content>
-	
-	\end{lstlisting}
-	
-	On peut voir au travers de ce code l'utilisation de composants fournis par Ionic tel que les <ion-button>, <ion-label> ...
-	Ces composants prédéfinis par Ionic permettent l'implémentation rapide des différentes page.
-	De plus on observe des appels à des fonctions qui sont définit dans un autre fichier : sign-in.ts
-	
-	\lstset{language = JavaScript}
-	
-	\begin{lstlisting}
-	import { Component } from '@angular/core';
-	import { NavController, AlertController } from 'ionic-angular';
-	import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-	
-	import { RadyModule } from '../../lib/validators';
-	import { AuthService } from '../../providers/auth-service';
-	
-	import { Register } from '../register/register';
-	import { ForgottenPassword } from '../forgotten-password/forgotten-password';
-	import { MainTabs } from '../main-tabs/main-tabs';
-	
-	/**
-	* SignIn
-	* Sign-in form
-	* Patrick Champion - 29.10.2016
-	*/
-	@Component({
-	templateUrl: 'sign-in.html'
-	})
-	export class SignIn {
-	
-	// attributes
-	form: FormGroup;
-	
-	constructor(public navCtrl: NavController,
-	private formBuilder: FormBuilder,
-	private authService: AuthService,
-	private alertCtrl: AlertController) {
-	
-	// create the form with validation
-	this.form = this.formBuilder.group({
-	email: [''], 
-	password: ['']
-	}, { validator: Validators.compose([
-	RadyModule.Validators.email('email', 'is not valid'),
-	RadyModule.Validators.required(['email', 'password'], 'is required')]) 
-	});
-	}
-	
-	ionViewDidLoad() {
-	}
-	
-	get errors() {
-	return JSON.stringify(this.form.errors);
-	}
-	
-	doSignIn() {
-	// check if the form is valid
-	if(this.form.valid) {
-	
-	// create the payload
-	let credentials = {
-	email: this.form.get('email').value,
-	password: this.form.get('password').value
-	};
-	
-	// try the log in
-	this.authService.authentificate(credentials)
-	
-	// on success, go to MainTabs
-	.then(() => {
-	this.navCtrl.setRoot(MainTabs);
-	})
-	
-	// on error, show an alert with the error
-	.catch((err) => {
-	console.log(JSON.stringify(err));
-	this.alertCtrl.create({
-	title: 'Sign In error',
-	message: 'Unable to login with provided credentials.\nPlease check your email and password.', 
-	buttons: ['OK'],
-	enableBackdropDismiss: false
-	}).present();
-	});
-	}
-	}
-	
-	// Go to the Register page
-	goToRegister() {
-	this.navCtrl.push(Register);
-	}
-	
-	// Go to the ForgottenPassword page
-	goToForgottenPassword() {
-	this.navCtrl.push(ForgottenPassword);
-	}
-	}
-	
-	\end{lstlisting}
-	
-	Enfin le fichier sign-in.scss qui permet de changer les styles des éléments graphiques :
-	
-	\lstset{language = HTML5}
-	
-	\begin{lstlisting}
-	div.sign-in-page {
-	margin-top: 10vh;
-	
-	form {
-	margin-top: 5vh;
-	margin-bottom: 5vh;
-	
-	button {
-	margin-top: 5vh;
-	text-transform: uppercase;
-	}
-	}
-	
-	img {
-	margin: 7vh auto auto auto;
-	width: 40vw;
-	display: block;
-	}
-	}
-	\end{lstlisting}
-	
-	Ici on peut voir que nous redéfinissons les marges et le style du texte des boutons afin de mieux correspondre au style voulu
-	
-	\subsubsection{Résultat}
-	
-	Avec le code ci-dessus nous obtenons :
+	\subsubsection{Angular2}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=0.6]{../user-flow/user-flow-5.png}
-		\caption{Écran de d'enregistrement}
-		\label{Écran de d'enregistrement}
-	\end{figure}
+		\includegraphics[scale=0.4]{../images/angular2-logo.png}
+		\caption{Angular2 logo}
+		\label{Angular2 logo}
+	\end{figure} 
 	
-	\subsection{Composants}
-	\subsubsection{Validateurs}
-	\subsubsection{QR Codes}
-	\subsubsection{Affichage}
-	L'affichage de la carte est réalisé grace à la lirairie leaflet.
+	AngularJs est un framework JavaScript conçu pour simplifier le developpement d'interfaces web. Ionic2 nous permet d'utiliser la version 2 de ce framework elle aussi sortie en septembre 2016. 
+	Angular2 nous offre la possibilité de réaliser du "data binding" bidirectionnel. C'est a dire que lorsque les données affichés dans la vue sont modifé celà affecte directement le controlleur qui s'est mis à jour. Ce framework nous donne aussi accès à des directives rendant le code plus extensible et modulable, et nous permet d'utiliser l'injection de dépendance pour l'appel à des services initialisé ailleurs dans le code. 
+	
+	
+	\subsubsection{Leaflet}
+	
+	Leaflet est une librairie open-source JavaScript pour le déeloppement d'application web de cartographie.
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=0.5]{../images/leaflet-logo.png}
+		\includegraphics[scale=0.4]{../images/leaflet-logo.png}
 		\caption{Leaflet logo}
 		\label{Leaflet logo}
 	\end{figure} 
 	
-	
-	
-	Cette librairie nous permet non seulement d'afficher une carte mais aussi des marqueurs que nous utilisons pour afficher les positions des utilisateurs que nous souhaitons localiser. 
+
+	Cette librairie nous permet non seulement d'afficher une carte mais aussi des marqueurs que nous utilisons pour afficher les positions des utilisateurs et lieux que nous souhaitons localiser. De plus celle-ci est extrêmement configurable, on peut en effet choisir d'utiliser nos propres éléments à afficher tel que des marqueurs personnalisé ou encore utiliser divers générateur de carte tel que mapbox, openstreetmap ou encore google map.
 	
 	\begin{figure}[H]
 		\centering
@@ -488,7 +333,25 @@
 		\label{Carte}
 	\end{figure} 
 	
-	TODO : CODE POUR AFFICHER LA CARTE + COMMENTAIRE
+	\subsubsection{Cordova}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.4]{../images/cordova-logo.png}
+		\caption{Leaflet logo}
+		\label{Leaflet logo}
+	\end{figure} 
+	
+	Apache Cordova est un framework open-source qui permet de créer des applications pour différentes plateformes (Android, Firefox OS, iOS, Ubuntu, Windows 8...) en HTML, CSS et JavaScript. C'est lui qui sera appelé par Ionic pour "build" et déployer l'application directement sur le materiel.
+	Ce framework permet d'avoir accès aux différentes fonctionnalités et élément du téléphone tel que la boussole, l'accéléromètre, la géolocalisation ou encore l'appareil photo.
+	
+	
+	
+
+	
+	
+	
+	
 	
 	\section{Serveur et Communication}	
 	\subsection{Fonctionnement General}
