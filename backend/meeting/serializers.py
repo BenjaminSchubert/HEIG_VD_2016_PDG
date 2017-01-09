@@ -9,7 +9,7 @@ from django.db.models import Q
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CurrentUserDefault, HiddenField, DecimalField
 from rest_framework.relations import PrimaryKeyRelatedField
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, Serializer
 
 from meeting.models import Meeting, Place, Participant
 from user.models import Friendship
@@ -259,3 +259,14 @@ class MeetingUpdateSerializer(ModelSerializer):
             raise ValidationError({"status": "You cannot pause a running meeting."})
 
         return attrs
+
+
+class PositionSerializer(Serializer):
+    """
+    Defines a serializer for devices that only allow to write the device registration id.
+
+    Automatically attach the current logged in user to the added device.
+    """
+
+    latitude = AutoShrinkDecimal(decimal_places=6, max_digits=9, max_value=90, min_value=-90)
+    longitude = AutoShrinkDecimal(decimal_places=6, max_digits=9, max_value=180, min_value=-180)
