@@ -31,4 +31,5 @@ migrations/
 .coverage
 htmlcov/
 
+backup/
 app/res

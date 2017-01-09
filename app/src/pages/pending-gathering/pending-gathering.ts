@@ -41,13 +41,6 @@ export class PendingGathering {
     return JSON.stringify(v);
   }
 
-  ionViewWillLoad() {
-
-    // add status to users
-    for(let user of this.gatheringService.gathering.participants)
-      user.status = 'waiting';
-  }
-
   ionViewDidLoad() {
 
     // start gathering
@@ -78,8 +71,8 @@ export class PendingGathering {
 
     // add destination to map
     let destination = this.leafletHelper.L().latLng(
-      this.gatheringService.gathering.destination.latitude,
-      this.gatheringService.gathering.destination.longitude
+      this.gatheringService.meetings.place.latitude,
+      this.gatheringService.meetings.place.longitude
     );
     this.leafletHelper.marker(destination).addTo(this.map);
 
@@ -89,7 +82,7 @@ export class PendingGathering {
       this.geolocationService.position.coords.longitude
     );
     let bounds = this.leafletHelper.L().latLngBounds(position, destination);
-    this.map.fitBounds(bounds, { padding: [30, 30] });
+    this.map.fitBounds(bounds, { padding: [10, 10] });
   }
 
   cancel(askConfirmation = true) {
@@ -128,10 +121,5 @@ export class PendingGathering {
 
   continueAnyway() {
 
-  }
-
-  distance() {
-    this.gatheringService.computeDistance();
-    return Math.round(this.gatheringService.distance);
   }
 }

@@ -15,25 +15,25 @@
           Participants
         </ion-list-header>
         <ion-item>
-          <strong>You ({{gatheringService.gathering.initiator.username}})</strong>
+          <strong>You ({{gatheringService.meetings.organiser.username}})</strong>
         </ion-item>
-        <ion-item *ngFor="let participant of gatheringService.gathering.participants">
-          {{participant.username}}
+        <ion-item *ngFor="let participant of gatheringService.meetings.participants">
+          {{participant.user.username}}
         </ion-item>
       </ion-list>
 
       <!-- Choose gathering mode -->
-      <ion-list radio-group [(ngModel)]="gatheringService.gathering.mode">
+      <ion-list radio-group [(ngModel)]="gatheringService.meetings.type">
         <ion-list-header>
           Gathering mode
         </ion-list-header>
         <ion-item>
           <ion-label>Fixed point</ion-label>
-          <ion-radio value="fixed" checked="true"></ion-radio>
+          <ion-radio value="place" checked="true"></ion-radio>
         </ion-item>
         <ion-item>
           <ion-label>On somebody</ion-label>
-          <ion-radio value="somebody" disabled="true"></ion-radio>
+          <ion-radio value="person" disabled="true"></ion-radio>
         </ion-item>
         <ion-item>
           <ion-label>Shortest</ion-label>
@@ -43,8 +43,8 @@
 
       <!-- Start button -->
       <button ion-button full 
-        (click)="modeChoosen(gatheringService.gathering.mode)" 
-        [disabled]="gatheringService.gathering.mode==null">
+        (click)="modeChoosen(gatheringService.meetings.type)" 
+        [disabled]="gatheringService.meetings.type==null">
           Next
       </button>
     </div>
