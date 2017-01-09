@@ -92,6 +92,13 @@ class ParticipantSerializer(ModelSerializer):
         """
         attrs = super().validate(attrs)
 
+        if self.instance.meeting.status == Meeting.STATUS_ENDED:
+            raise ValidationError("This meeting is finished.")
+        elif self.instance.meeting.status == Meeting.STATUS_CANCELED:
+            raise ValidationError("This meeting is canceled.")
+        elif self.instance.accepted is False:
+            raise ValidationError("You already refused this meeting.")
+
         if "arrived" in attrs:
             if attrs["arrived"] is True and self.instance.accepted is not True:
                 raise ValidationError({"accepted": "You have not accepted this meeting."})
@@ -241,11 +248,7 @@ class MeetingUpdateSerializer(ModelSerializer):
         :exception ValidationError: when any of the attribute is invalid
         :return: sanitized version of the attributes
         """
-        current_user = self.context["request"].user
         attrs = super().validate(attrs)
-
-        if self.instance.organiser != current_user:
-            raise ValidationError("Only the organiser can update the meeting.")
 
         if self.instance.status == Meeting.STATUS_ENDED:
             raise ValidationError("You cannot update an finished meeting.")

@@ -5,7 +5,7 @@ This allows us to have a more fine-grained control over the permissions of our v
 """
 
 from rest_framework.compat import is_authenticated
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAuthenticated
 
 
 class IsAuthenticatedXorPost(BasePermission):
@@ -27,3 +27,20 @@ class IsAuthenticatedXorPost(BasePermission):
             return not (request.user and is_authenticated(request.user))
 
         return request.user and is_authenticated(request.user)
+
+
+class CanEditParticipant(IsAuthenticated):
+
+    def has_object_permission(self, request, view, obj):
+
+        return request.user.id == obj.user_id
+
+
+class CanViewXorOwnMeeting(IsAuthenticated):
+
+    def has_object_permission(self, request, view, obj):
+
+        if request.method == "PUT" or request.method == "PATCH":
+            return request.user.id == obj.organiser_id
+
+        return obj.participant_set.filter(user_id=request.user.id, meeting_id=obj.id).count() == 1
