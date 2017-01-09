@@ -1,5 +1,5 @@
 import { Component, Inject, ElementRef } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController } from 'ionic-angular';
 
 import { GatheringService } from '../../providers/gathering-service';
 import { GeolocationService } from '../../providers/geolocation-service';
@@ -26,6 +26,7 @@ export class RunningGathering {
 
   constructor(
     public navCtrl: NavController,
+    public alertCtrl: AlertController,
     public gatheringService: GatheringService,
     public geolocationService: GeolocationService,
     public compassService: CompassService,
@@ -90,6 +91,9 @@ export class RunningGathering {
       // center on user
       if(this.autocenter) 
           this.setAutoCenter();
+
+      // check proximity
+      this.checkProximity(position);
     });
 
     // update heading
@@ -116,5 +120,25 @@ export class RunningGathering {
     this.map.flyTo(pos);
     this.autocenter = true;
   }
+
+  arrived() {
+    // TODO
+  }
+
+  leave() {
+    if(this.gatheringService.initiator)
+      this.cancel();
+    else {
+      // TODO
+    }
+  }
+
+  cancel() {
+    // TODO
+  }
+
+  checkProximity(position) {
+    // TODO
+  } 
 
 }
