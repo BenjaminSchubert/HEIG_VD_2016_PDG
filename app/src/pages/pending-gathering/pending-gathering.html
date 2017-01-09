@@ -49,11 +49,11 @@
         <!-- informations -->
         <ion-item>
           Mode
-          <ion-badge item-right color="light">{{gatheringService.gathering.mode}}</ion-badge>
+          <ion-badge item-right color="light">{{gatheringService.meetings.type}}</ion-badge>
         </ion-item>
-        <ion-item>
+        <ion-item *ngIf="gatheringService.distance!=null">
           Distance
-          <ion-badge item-right color="light">{{distance()}}m</ion-badge>
+          <ion-badge item-right color="light">{{gatheringService.distance}}m</ion-badge>
         </ion-item>
       </ion-list>
 
@@ -62,15 +62,13 @@
         <ion-list-header>
           Participants
         </ion-list-header>
-        <ion-item>
-          <strong>{{gatheringService.gathering.initiator.username}}</strong>
-          <ion-badge item-right color="light">initiator</ion-badge>
-        </ion-item>
-        <ion-item *ngFor="let participant of gatheringService.gathering.participants">
-          <strong *ngIf="participant.status=='accepted'">{{participant.username}}</strong>
-          <span *ngIf="participant.status!='accepted'">{{participant.username}}</span>
-          <ion-badge item-right color="light" *ngIf="participant.status=='waiting'"><ion-spinner name="dots"></ion-spinner></ion-badge>
-          <ion-badge item-right color="light" *ngIf="participant.status!='waiting'">{{participant.status}}</ion-badge>
+        <ion-item *ngFor="let participant of gatheringService.meetings.participants">
+          <strong *ngIf="participant.accepted">{{participant.user.username}}</strong>
+          <span *ngIf="!participant.accepted">{{participant.user.username}}</span>
+          <ion-badge item-right *ngIf="participant.user.id==gatheringService.meetings.organiser.id">admin</ion-badge>
+          <ion-spinner item-right *ngIf="participant.accepted==null"></ion-spinner>
+          <ion-badge item-right color="light" *ngIf="participant.accepted==true">accepted</ion-badge>
+          <ion-badge item-right color="light" *ngIf="participant.accepted==false">declined</ion-badge>
         </ion-item>
       </ion-list>
     </div>

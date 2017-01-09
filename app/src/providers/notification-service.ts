@@ -20,7 +20,6 @@ export class NotificationService {
    * Constructor
    */
   constructor() {
-    console.log('[NotificationService] initialize')
 
     // empty queue
     this.queue = [];
@@ -33,7 +32,7 @@ export class NotificationService {
 
   /**
    * Add a new notification
-   * @param notification
+   * @param notification { title: string, message: string, type?:string }
    */
   notify(notification) {
 
@@ -46,8 +45,8 @@ export class NotificationService {
   /**
    * Add a new handler
    */
-  addHandler(title, handler) {
-    this.handlers[title] = handler;
+  addHandler(type, handler) {
+    this.handlers[type] = handler;
   }
 
   /**
@@ -67,7 +66,10 @@ export class NotificationService {
 
     // get the notification and the handler
     let notification = this.queue.shift();
-    let handler = this.handlers[notification.title];
+    let handler = null;
+    if(typeof notification.additionalData != 'undefined' 
+      && typeof notification.additionalData.type != 'undefined')
+      handler = this.handlers[notification.additionalData.type];
     if(handler == null)
       handler = this.defaultHandler;
 

@@ -9,8 +9,6 @@ export class RadyUser {
   avatar?: string;
   last_avatar_update?: string;
 
-  status?: string; // for gathering
-
   constructor(username?: string) {
     this.username = username;
   }

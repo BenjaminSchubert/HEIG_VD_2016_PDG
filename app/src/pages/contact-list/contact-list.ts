@@ -5,7 +5,6 @@ import { AddContact } from '../add-contact/add-contact';
 import { CreateGathering } from '../create-gathering/create-gathering';
 
 import { RadyFriend } from '../../models/friend';
-import { RadyGathering } from '../../models/gathering';
 import { ContactsService } from '../../providers/contacts-service';
 import { AuthService } from '../../providers/auth-service';
 import { GatheringService } from '../../providers/gathering-service';
@@ -205,14 +204,15 @@ export class ContactList {
   goToWaitingForParticipant() {
 
     // Reset gathering
-    this.gatheringService.set(
-      new RadyGathering(
-        this.meService.me, 
-        this.items.filter((i) => {
-          return i.checked;
-        }).map((f) => {
-          return f.friend;
-        })));
+    this.gatheringService.status = 'create';
+    this.gatheringService.initiator = true;
+    this.gatheringService.meetings = {};
+    this.gatheringService.meetings.organiser = this.meService.me;
+    this.gatheringService.meetings.participants = this.items.filter((i) => {
+      return i.checked; 
+    }).map((i) => {
+      return { user: i.friend };
+    });
 
     // getRootNav() needed to get out of the Tabs
     this.app.getRootNav().push(CreateGathering);

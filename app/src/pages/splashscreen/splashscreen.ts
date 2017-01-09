@@ -9,12 +9,7 @@ import { AuthService } from '../../providers/auth-service';
 import { PushService } from '../../providers/push-service';
 import { NotificationService } from '../../providers/notification-service';
 import { GeolocationService } from '../../providers/geolocation-service';
-
-// TEST
 import { GatheringService } from '../../providers/gathering-service';
-import { RadyGathering } from '../../models/gathering';
-import { RadyUser } from '../../models/user';
-import { CreateGathering } from '../create-gathering/create-gathering';
 
 /**
  * Splashscreen
@@ -32,10 +27,11 @@ export class Splashscreen {
               public authService: AuthService,
               public pushService: PushService,
               public notificationService: NotificationService,
-              public geolocationService: GeolocationService
+              public geolocationService: GeolocationService,
+              public gatheringService: GatheringService) {
 
-              // TEST
-              , public gatheringService: GatheringService) {
+    // global try-catch
+    try {
 
       // Set the default notification handler
       this.notificationService.setDefaultHandler((n) => {
@@ -46,6 +42,9 @@ export class Splashscreen {
           enableBackdropDismiss: false
         }).present();
       });
+
+      // Specific handlers
+      this.gatheringService.configureNotificationHandlers(this.navCtrl);
 
       // redefine the console.log behavior for device testing
       // /!\ comments those lines for production /!\
@@ -60,11 +59,6 @@ export class Splashscreen {
       console.log = logger(this.notificationService);
 
       platform.ready().then(() => {
-
-        // TEST
-        /*this.geolocationService.initialize();
-        this.gatheringService.set(new RadyGathering(new RadyUser('AAA'), [new RadyUser('BBB'), new RadyUser('CCC')]));
-        this.navCtrl.setRoot(CreateGathering);*/
 
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
@@ -83,6 +77,12 @@ export class Splashscreen {
             console.log('[Splashscreen] refresh error: ' + err);
             this.navCtrl.setRoot(SignIn);
           });
-    });
+      });
+
+    // global try-catch
+    }
+    catch(e) {
+      console.log('[Splashscreen] try-catch: ' + e);
+    }
   }
 }

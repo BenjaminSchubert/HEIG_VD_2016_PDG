@@ -32,10 +32,10 @@ export class CreateGathering {
 
   modeChoosen(modeRef) {
     let mode = JSON.parse(JSON.stringify(modeRef));
-    this.gatheringService.gathering.mode = null;
+    this.gatheringService.meetings.type = null;
     switch (mode) {
-      case 'fixed': this.fixedMode(); break;
-      case 'somebody': this.somebodyMode(); break;
+      case 'place': this.fixedMode(); break;
+      case 'person': this.somebodyMode(); break;
       case 'shortest': this.shortestMode(); break;
       default: console.log('[CreateGathering] unknown mode'); break;
     }
@@ -56,7 +56,7 @@ export class CreateGathering {
   }
 
   private goToPending() {
-    if(this.gatheringService.gathering.mode != null)
+    if(this.gatheringService.meetings.type != null)
       this.navCtrl.setRoot(PendingGathering);
   }
 }
