@@ -1,18 +1,25 @@
-<!--
-  Generated template for the RunningGathering page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
-
+<ion-header class="hidden">
   <ion-navbar>
-    <ion-title>running-gathering</ion-title>
+    <ion-title>Running Gathering</ion-title>
   </ion-navbar>
-
 </ion-header>
 
+<ion-content class="page-running-gathering">
 
-<ion-content padding>
+  <!-- TEST -->
+  {{diag(geolocationService.position)}}<br>
+  {{diag(compassService.heading)}}
+
+  <!-- Map -->
+  <div id="mapid" class="leaflet-map">
+    <p class="information" *ngIf="map==null">loading map...</p>
+  </div>
+
+  <!-- Menu -->
+  <ion-fab right bottom>
+    <button ion-fab color="light" (click)="showActionsSheet()">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+  </ion-fab>
 
 </ion-content>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import L from 'leaflet';
+import 'leaflet-rotatedmarker/leaflet.rotatedMarker.js';
 
 import { GeolocationService } from './geolocation-service';
 
@@ -15,6 +16,7 @@ export class LeafletHelper {
   public LEAFLET_TOKEN: string = 'pk.eyJ1IjoiY2hsYWJsYWsiLCJhIjoiY2l4a2hycG5uMDAxMTJxcDY1M2x2N2s3NiJ9.7cr1RyAverGU3AIeEIUGHA';
 
   public radyIcon: L.Icon;
+  public arrowIcon: L.Icon;
 
   constructor(
     public geolocationService: GeolocationService
@@ -28,6 +30,12 @@ export class LeafletHelper {
       iconAnchor:   [28, 87], // point of the icon which will correspond to marker's location
       shadowAnchor: [6, 47],  // the same for the shadow
       popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+    this.arrowIcon = L.icon({
+      iconUrl: 'assets/img/leaflet-arrow.png',
+
+      iconSize:     [28, 50], // size of the icon
+      iconAnchor:   [14, 50] // point of the icon which will correspond to marker's location
     });
   }
 
@@ -76,5 +84,10 @@ export class LeafletHelper {
 
   marker(pos: L.LatLng): L.Marker {
     return this.L().marker(pos, { icon: this.radyIcon });
+  }
+
+  arrow(pos: L.LatLng, angle: number = 0): L.Marker {
+    let options: any = { icon: this.arrowIcon, rotationAngle: angle };
+    return this.L().marker(pos, options);
   }
 }

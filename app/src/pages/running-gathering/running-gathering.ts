@@ -1,22 +1,102 @@
-import { Component } from '@angular/core';
+import { Component, Inject, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
-/*
-  Generated class for the RunningGathering page.
+import { GatheringService } from '../../providers/gathering-service';
+import { GeolocationService } from '../../providers/geolocation-service';
+import { CompassService } from '../../providers/compass-service';
+import { LeafletHelper } from '../../providers/leaflet-helper';
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+/**
+ * RunningGathering
+ * Patrick Champion - 09.01.2017
+ */
 @Component({
-  selector: 'page-running-gathering',
   templateUrl: 'running-gathering.html'
 })
 export class RunningGathering {
 
-  constructor(public navCtrl: NavController) {}
+  public map: any;
+  public elementRef: ElementRef;
+  public mapid: any;
+  public destination: any;
+  public line: any;
+  public head: any;
+
+  constructor(
+    public navCtrl: NavController,
+    public gatheringService: GatheringService,
+    public geolocationService: GeolocationService,
+    public compassService: CompassService,
+    public leafletHelper: LeafletHelper,
+    @Inject(ElementRef) elementRef: ElementRef
+  ) {
+    this.map = null;
+    this.elementRef = elementRef;
+    this.mapid = null;
+    this.destination = null;
+    this.line = null;
+    this.head = null;
+  }
+
+  // TEST
+  diag(v) {
+    return JSON.stringify(v);
+  }
 
   ionViewDidLoad() {
-    console.log('Hello RunningGathering Page');
+
+    // start gathering
+    // TODO
+
+    // find our position
+    this.geolocationService.on();
+    this.compassService.on();
+
+    // load map
+    this.mapid = this.elementRef.nativeElement.querySelector('#mapid');
+    this.map = this.leafletHelper.L().map(this.mapid, { center: [0, 0], zoom: 1 });
+    this.leafletHelper.tileLayer().addTo(this.map);
+    this.leafletHelper.addGeolocationTo(this.map);
+
+    // add destination to map
+    this.destination = this.leafletHelper.L().latLng(
+      this.gatheringService.meetings.place.latitude,
+      this.gatheringService.meetings.place.longitude
+    );
+    this.leafletHelper.marker(this.destination).addTo(this.map);
+
+    // update direction 
+    this.geolocationService.each.push((position) => {
+
+      let pos = this.leafletHelper.L().latLng(position.coords.latitude, position.coords.longitude);
+
+      // line between position and destination
+      if(this.line != null)
+        this.map.removeLayer(this.line);
+      this.line = this.leafletHelper.L().polyline([pos, this.destination], { color: 'red' }).addTo(this.map);
+
+      // center on user
+      this.map.flyTo(pos);
+    });
+
+    // update heading
+    this.compassService.each.push((heading) => {
+
+      let pos = this.leafletHelper.L().latLng(
+          this.geolocationService.position.coords.latitude, 
+          this.geolocationService.position.coords.longitude);
+
+      // heading of user
+      if(heading.trueHeading != null) {
+        if(this.head != null)
+          this.map.removeLayer(this.head);
+        this.head = this.leafletHelper.arrow(pos, heading.trueHeading).addTo(this.map);
+      }
+    });
+  }
+
+  showActionsSheet() {
+
   }
 
 }

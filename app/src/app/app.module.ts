@@ -31,6 +31,7 @@ import { ContactsService } from '../providers/contacts-service';
 import { MeService } from '../providers/me-service';
 import { GatheringService } from '../providers/gathering-service';
 import { GeolocationService } from '../providers/geolocation-service';
+import { CompassService } from '../providers/compass-service';
 import { LeafletHelper } from '../providers/leaflet-helper';
 
 // put here the components
@@ -65,6 +66,7 @@ let PROVIDERS_LIST: any = [
   MeService,
   GatheringService,
   GeolocationService,
+  CompassService,
   LeafletHelper
 ]
 

@@ -73,6 +73,9 @@ export class NotificationService {
     if(handler == null)
       handler = this.defaultHandler;
 
+    // TEST
+    else console.log('[NotificationService] handle: ' + JSON.stringify(notification));
+
     // handle it
     handler(notification);
 

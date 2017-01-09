@@ -1,3 +1,14 @@
-page-running-gathering {
+.page-running-gathering {
 
+  height: 100vh;
+  width: 100vw;
+
+  div.leaflet-map {
+    height: 100vh;
+    width: 100vw;
+  }
+
+  p.information {
+    text-align: center;
+  }
 }
