@@ -220,10 +220,12 @@ class PublicUserSerializer(ModelSerializer, PhoneNumberSerializerMixin):
         try:
             return User.objects.create_user(**validated_data)
         except IntegrityError as e:
-            error = e.args[0].split(".")[-1]
             if "unique" in e.args[0].lower():
-                if error is None or len(error) == 0:
-                    str(e.args).split("=")[0].split(" ")[-1].replace("(", "").replace(")", "")
+                error = e.args[0].split(".")[-1].strip()
+
+                if not error:  # PSQL Format
+                    error = str(e.args).split("=")[0].split(" ")[-1].replace("(", "").replace(")", "")
+
                 raise ValidationError({error: ["user with this {} already exists".format(error)]})
             raise e
 
