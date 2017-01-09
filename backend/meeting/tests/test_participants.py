@@ -105,3 +105,23 @@ class ParticipantsDetailsEndpointTestCase(APIEndpointTestCase):
             self.put(dict(arrived=False), url=self.url.format(self.participant.id)).status_code,
             status.HTTP_400_BAD_REQUEST
         )
+
+    @authenticated
+    def test_cannot_update_finished_meeting(self):
+        self.meeting.status = Meeting.STATUS_ENDED
+        self.meeting.save(update_fields=("status",))
+
+        self.assertEqual(
+            self.put(dict(), url=self.url.format(self.participant.id)).status_code,
+            status.HTTP_404_NOT_FOUND
+        )
+
+    @authenticated
+    def test_cannot_update_canceled_meeting(self):
+        self.meeting.status = Meeting.STATUS_CANCELED
+        self.meeting.save(update_fields=("status",))
+
+        self.assertEqual(
+            self.put(dict(), url=self.url.format(self.participant.id)).status_code,
+            status.HTTP_404_NOT_FOUND
+        )

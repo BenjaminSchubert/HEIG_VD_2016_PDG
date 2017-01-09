@@ -31,7 +31,12 @@ class ParticipantDetailsView(UpdateAPIView):
 
     def get_queryset(self):
         """Get all participation for the registered user."""
-        return Participant.objects.filter(Q(user=self.request.user) & ~Q(accepted=False))
+        return Participant.objects.filter(
+            Q(user=self.request.user) &
+            ~Q(accepted=False) &
+            ~Q(meeting__status=Meeting.STATUS_ENDED) &
+            ~Q(meeting__status=Meeting.STATUS_CANCELED)
+        )
 
 
 class PlaceListView(ListAPIView):
