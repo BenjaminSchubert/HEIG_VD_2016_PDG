@@ -239,10 +239,10 @@ class UserProfileSerializer(ModelSerializer, PhoneNumberSerializerMixin):
         """This Meta class defines the fields and models for the `UserProfileSerializer`."""
 
         fields = (
-            "username", "email", "avatar", "password", "phone_number", "last_avatar_update", "country", "is_staff",
+            "id", "username", "email", "avatar", "password", "phone_number", "country",
         )
         model = User
-        read_only_fields = ("avatar", "is_staff")
+        read_only_fields = ("id", "avatar")
 
     def update(self, instance, validated_data):
         """

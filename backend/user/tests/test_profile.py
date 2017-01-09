@@ -15,14 +15,9 @@ class UserProfileEndpointTestCase(APIEndpointTestCase):
         response = self.get()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        data = response.json()
-        self.assertIn("last_avatar_update", data.keys())
-
-        data.pop("last_avatar_update")
-
         self.assertDictEqual(
-            data,
-            dict(username=self.user.username, email=self.user.email, avatar=None, is_staff=False)
+            response.json(),
+            dict(id=self.user.id, username=self.user.username, email=self.user.email, avatar=None)
         )
 
     @authenticated
