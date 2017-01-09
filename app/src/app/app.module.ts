@@ -1,5 +1,5 @@
 import { NgModule, ErrorHandler } from '@angular/core';
-import { RequestOptions, ConnectionBackend, Http } from "@angular/http";
+import { RequestOptions } from "@angular/http";
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 
 import { RadyApp } from './app.component';
@@ -62,8 +62,8 @@ let COMPONENTS_LIST: any = [
 
 // put here the providers
 let PROVIDERS_LIST: any = [
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
-    {provide: RequestOptions, useClass: ExtendedRequestOptions},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    { provide: RequestOptions, useClass: ExtendedRequestOptions },
     AuthService,
     AccountService,
   PushService,

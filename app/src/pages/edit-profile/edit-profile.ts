@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { NavController } from "ionic-angular";
+import { AlertController, NavController } from "ionic-angular";
 import { FormBuilder } from "@angular/forms";
 import { Response } from "@angular/http";
 import { MainTabs } from "../main-tabs/main-tabs";
@@ -14,7 +14,10 @@ import { IAccount } from "../../lib/stubs/account";
 export class EditProfile extends AccountFormComponent {
     public user: IAccount;
 
-    constructor(builder: FormBuilder, public service: AccountService, public navCtrl: NavController) {
+    constructor(builder: FormBuilder,
+                private service: AccountService,
+                private navCtrl: NavController,
+                private alertCtrl: AlertController) {
         super(builder);
         this.subscriptions.push(this.service.$.subscribe((a: IAccount) => {
             this.user = a;
@@ -29,15 +32,29 @@ export class EditProfile extends AccountFormComponent {
         super.ionViewWillEnter();
     }
 
-    goToContactList() {
-        this.navCtrl.setRoot(MainTabs);
-    }
-
     public submit() {
         let value = JSON.stringify(this.form.value, (k, v) => v !== null ? v : undefined);
+        // tslint:disable-next-line:no-any
         this.service.update(<any> value).subscribe(
-            () => this.goToContactList(),
-            (err: Response) => this.handleError(err.json(), this.form),
+            () => {
+                this.alertCtrl.create({
+                    buttons: [{
+                        handler: () => this.navCtrl.setRoot(MainTabs),
+                        text: "OK",
+                    }],
+                    enableBackdropDismiss: false,
+                    title: "Profile Updated!",
+                }).present().then();
+            },
+            (err: Response) => {
+                this.handleError(err.json(), this.form);
+                this.alertCtrl.create({
+                    buttons: ["OK"],
+                    enableBackdropDismiss: true,
+                    message: "Please verify your data",
+                    title: "Could not save",
+                }).present().then();
+            },
         );
     }
 

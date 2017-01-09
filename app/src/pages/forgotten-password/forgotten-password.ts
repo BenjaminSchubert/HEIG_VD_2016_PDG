@@ -1,53 +1,49 @@
-import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Component } from "@angular/core";
+import { NavController, AlertController } from "ionic-angular";
+import { Validators, FormBuilder } from "@angular/forms";
+import { RadyValidators } from "../../lib/validators";
+import { BaseFormComponent } from "../../lib/form-component";
+import { AuthService } from "../../providers/auth-service";
 
-import { RadyModule } from '../../lib/validators';
 
-/** 
+/**
  * ForgottenPassword
- * Reset password form
- * Patrick Champion - 02.11.2016
+ *
+ * @author Patrick Champion
  */
 @Component({
-  templateUrl: 'forgotten-password.html'
+    templateUrl: "forgotten-password.html",
 })
-export class ForgottenPassword {
+export class ForgottenPassword extends BaseFormComponent {
+    constructor(builder: FormBuilder,
+                private service: AuthService,
+                private navCtrl: NavController,
+                private alertCtrl: AlertController) {
+        super(builder);
+    }
 
-  // attributes
-  form: FormGroup;
+    public resetPassword() {
+        this.service.resetPassword(this.form.value).subscribe(
+            () => {
+                this.alertCtrl
+                    .create({
+                        buttons: [{
+                            handler: () => this.navCtrl.pop(),
+                            text: "Go back to Sign In",
+                        }],
+                        enableBackdropDismiss: false,
+                        message: "All information for resetting your password have been sent to your email address.",
+                        title: "Email sent!",
+                    })
+                    .present()
+                    .then();
+            },
+        );
+    }
 
-  constructor(public navCtrl: NavController,
-  			  private formBuilder: FormBuilder,
-  			  private alertCtrl: AlertController) {
-
-    // create the form with validation
-    this.form = this.formBuilder.group({
-      email: ['']
-    }, { validator: Validators.compose([
-      //RadyModule.Validators.email('email', 'is not valid'),
-      RadyModule.Validators.required(['email'], 'is required')])
-    });
-  }
-
-  ionViewDidLoad() {
-  }
-
-  get errors() {
-    return JSON.stringify(this.form.errors);
-  }
-
-  doResetPassword() {
-
-  	// show an alert to validate the resetting
-  	this.alertCtrl.create({
-  		title: 'Email sent!',
-  		message: 'All informations for resetting your password have been sent to your email address.',
-  		buttons: [{
-  			text: 'Go back to Sign In',
-  			handler: () => { this.navCtrl.pop(); }
-  		}],
-  		enableBackdropDismiss: false
-  	}).present();
-  }
+    protected buildForm() {
+        return this.builder.group({
+            email: [null, Validators.compose([Validators.required, RadyValidators.email()])],
+        });
+    }
 }

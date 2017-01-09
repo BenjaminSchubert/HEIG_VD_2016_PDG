@@ -50,7 +50,6 @@ export abstract class BaseFormComponent {
 
     // tslint:disable-next-line:no-any
     protected handleError(error: any, ctrl: AbstractControl) {
-        console.log("ERRORS " + JSON.stringify(error));
         for (let entry in error) {
             if (ctrl.get(entry) !== null) {
                 ctrl.get(entry).setErrors({"serverError": error[entry]});

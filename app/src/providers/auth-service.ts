@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 import { Http, Response, RequestOptionsArgs } from "@angular/http";
 import { AuthHttp, AuthConfig, JwtHelper } from "angular2-jwt";
 import { SecureStorage } from "ionic-native";
-import { LOGIN_URL, REFRESH_URL, USERS_URL } from "../app/api.routes";
+import { LOGIN_URL, REFRESH_URL, USERS_URL, PASSWORD_RESET_URL } from "../app/api.routes";
 
 
 @Injectable()
@@ -63,8 +63,8 @@ export class AuthService {
                     new AuthConfig(
                         {
                             globalHeaders: [
-                                { "Accept": "application/json" },
-                                { "Content-Type": "application/json" },
+                                {"Accept": "application/json"},
+                                {"Content-Type": "application/json"},
                             ],
                             tokenGetter: (() => this.token),
                             tokenName: this.TOKEN_NAME,
@@ -101,6 +101,13 @@ export class AuthService {
      */
     public logout() {
         this.token = null;
+    }
+
+    /**
+     * Ask for a reset link for the user's password
+     */
+    public resetPassword(data: {email: string}) {
+        return this.http.post(PASSWORD_RESET_URL, data);
     }
 
     /**
