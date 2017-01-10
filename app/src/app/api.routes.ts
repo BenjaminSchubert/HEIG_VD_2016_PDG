@@ -10,4 +10,5 @@ export const FCM_REGISTRATION_URL = API_V1_URL + "fcm/devices/";
 
 export const USERS_URL = API_V1_URL + "users/";
 export const ACCOUNT_URL = USERS_URL + "me/";
-
+export const FRIENDS_URL = USERS_URL + "friends/";
+export const ALL_FRIENDS_URL = FRIENDS_URL + "all/";

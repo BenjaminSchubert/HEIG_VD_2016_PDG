@@ -1,73 +1,57 @@
 <ion-header class="hidden">
-  <ion-navbar>
-    <ion-title>contact-list</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title>contact-list</ion-title>
+    </ion-navbar>
 </ion-header>
 
-<!--
-friend request received -> initiator=false, is_accepted=false, is_hidden=false
-  => name with open alert with accept/hide/decline button
-
-friends -> is_accepted=true, is_blocked=false, is_hidden=false
-  => name with checkbox
-  => long touch to block
-
-friend request sent -> initiator=true, is_accepted=false
-  => name with open alert with just an informative message
-
-blocked -> is_blocked=true
-  => name with open alert to unblock
-
-not shown in list -> is_hidden=true
--->
-
 <ion-content padding>
+    <ion-searchbar (ionInput)="filterBy($event)"></ion-searchbar>
 
-  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+    <ion-list>
+        <ion-list-header *ngIf="(service.$ | async).length == 0">
+            Start adding friend by clicking the PLUS button
+        </ion-list-header>
 
-  <ion-list>
+        <ion-list-header *ngIf="(friendRequestsReceived$ | async).length != 0">
+            Friend request received
+        </ion-list-header>
+        <button *ngFor="let item of friendRequestsReceived$ | async" ion-item detail-push (click)="handleRequest(item)">
+            <h2>{{ item.friend.username }}</h2>
+            <small>sent you a friend request</small>
+        </button>
 
-    <ion-list-header *ngIf="items == null || items.length == 0">
-      Start adding friend by clicking the PLUS button 
-    </ion-list-header>
+        <ion-list-header *ngIf="(friends$ | async).length != 0">
+            Friends
+        </ion-list-header>
+        <ion-item *ngFor="let item of friends$ | async" (press)="handleFriend(item)">
+            <ion-label>{{item.friend.username}}</ion-label>
+            <ion-checkbox item-right checked="false" (ionChange)="check($event, item)"></ion-checkbox>
+        </ion-item>
 
-    <ion-list-header *ngIf="friendRequestReceived().length>0">
-      Friend request received
-    </ion-list-header>
-    <button *ngFor="let item of friendRequestReceived()" ion-item detail-push (click)="popupRequestReceived(item)">
-      <h2>{{item.friend.username}}</h2>
-      <small>sent you a friend request</small>
-    </button>
-    
-    <ion-list-header *ngIf="friends().length>0">
-      Friends
-    </ion-list-header>
-    <ion-item *ngFor="let item of friends()" (press)="actionsSheetFriends(item)">
-      <ion-label>{{item.friend.username}}</ion-label>
-      <ion-checkbox item-right checked="false" [(ngModel)]="item.checked"></ion-checkbox>
-    </ion-item>
-    
-    <ion-list-header *ngIf="friendRequestSent().length>0">
-      Friend request sent
-    </ion-list-header>
-    <ion-item *ngFor="let item of friendRequestSent()">
-      <h2>{{item.friend.username}}</h2>
-      <small>you've sent a friend request</small>
-    </ion-item>
-    
-    <ion-list-header *ngIf="blockedFriends().length>0">
-      Blocked friends
-    </ion-list-header>
-    <button *ngFor="let item of blockedFriends()" ion-item detail-push (click)="popupBlockedFriends(item)">
-      <h2>{{item.friend.username}}</h2>
-      <small>blocked</small>
-    </button>
+        <ion-list-header *ngIf="(friendRequestsSent$ | async).length != 0">
+            Friend request sent
+        </ion-list-header>
+        <ion-item *ngFor="let item of friendRequestsSent$ | async">
+            <h2>{{ item.friend.username }}</h2>
+            <small>you've sent a friend request</small>
+        </ion-item>
 
-  </ion-list>
+        <ion-list-header *ngIf="(blockedFriends$ | async).length != 0">
+            Blocked friends
+        </ion-list-header>
+        <button *ngFor="let item of blockedFriends$ | async" ion-item detail-push (click)="handleBlockedFriend(item)">
+            <h2>{{ item.friend.username }}</h2>
+            <small>blocked</small>
+        </button>
 
-  <ion-fab right bottom class >
-    <button ion-fab color="light" *ngIf ="isSomeChecked()" (click)="goToWaitingForParticipant()"><img src="assets/img/rady-icon.svg" height="50%"></button>
-    <button ion-fab color="light" (click)="goToAddContact()"><ion-icon name="person-add"></ion-icon></button>
-  </ion-fab>
+    </ion-list>
+
+    <ion-fab right bottom class>
+        <button ion-fab color="light" *ngIf="checkedUsers.length != 0" (click)="createGathering()"><img
+                src="assets/img/rady-icon.svg" height="50%"></button>
+        <button ion-fab color="light" (click)="addContact()">
+            <ion-icon name="person-add"></ion-icon>
+        </button>
+    </ion-fab>
 
 </ion-content>
