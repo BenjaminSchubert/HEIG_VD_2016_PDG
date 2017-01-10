@@ -176,7 +176,7 @@ class WriteMeetingSerializer(MeetingSerializer):
 
         for participant in participants:
             accepted = None
-            if participant.hidden is True:
+            if participant.is_hidden is True:
                 accepted = False
             elif current_user.id == participant.id:
                 accepted = True

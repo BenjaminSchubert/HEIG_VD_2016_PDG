@@ -208,8 +208,8 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
     def test_new_meeting_do_not_send_push_notification_to_hidden(self):
         other_participants = get_user_model().objects.exclude(id=self.user.id)  # no message to organiser
         hidden = other_participants.first()
-        hidden.hidden = True
-        hidden.save(update_fields=("hidden",))
+        hidden.is_hidden = True
+        hidden.save(update_fields=("is_hidden",))
 
         self.post(
             dict(

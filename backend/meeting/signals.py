@@ -31,7 +31,7 @@ def post_save_participant(instance, created, **kwargs):
       the person at the origin of the action and the participants who declined the meeting).
     """
     if created:
-        if instance.meeting.organiser_id != instance.user_id and instance.user.hidden is False:
+        if instance.meeting.organiser_id != instance.user_id and instance.user.is_hidden is False:
             instance.user.send_message(
                 title="New meeting",
                 body="{} added you to a meeting".format(instance.meeting.organiser.username),

@@ -53,6 +53,7 @@ LOCAL_VENV = os.path.join(LOCAL_PATH, "venv")
 
 npm = None
 
+
 class Section:
     def __init__(self, _section, color=blue):
         self.section = _section
