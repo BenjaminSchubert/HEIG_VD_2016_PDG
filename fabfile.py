@@ -78,6 +78,7 @@ def copy(local, remote):
 
     put("{}/*".format(local), TEMPORARY_PATH, mode=644)
     sudo("cp -r {}/* {}".format(TEMPORARY_PATH, remote))
+    sudo("rm -r {}".format(TEMPORARY_PATH))
 
 
 def get_android_home():
@@ -234,6 +235,18 @@ def deploy_backend():
 
 
 @task
+def deploy_app():
+    with section("Deploying app"):
+        sudo("mkdir -p " + TEMPORARY_PATH)
+        put(
+            "{}/platforms/android/build/outputs/apk/android-release-unsigned.apk".format(LOCAL_APP),
+            "{}/".format(TEMPORARY_PATH)
+        )
+        sudo("cp {}/android-release-unsigned.apk {}/downloads/rady.apk".format(TEMPORARY_PATH, REMOTE_FRONTEND))
+        sudo("rm -r {}".format(TEMPORARY_PATH))
+
+
+@task
 def insecure_deploy():
     """
     Deploys the application without running any tests or checking anything
@@ -242,6 +255,7 @@ def insecure_deploy():
         prepare_deployment()
         deploy_backend()
         deploy_frontend()
+        deploy_app()
 
 
 @task
