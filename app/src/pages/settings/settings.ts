@@ -29,8 +29,12 @@ export class Settings {
     }
 
     public logout() {
-        this.authService.logout();
-        this.navCtrl.setRoot(SignIn).then();
+        return this.authService.logout()
+            .then(() => this.app.getRootNav().push(SignIn))
+            .then(() => {
+                const index = this.app.getRootNav().getActive().index;
+                this.app.getRootNav().remove(0, index);
+            });
     }
 
     public sendEmail() {

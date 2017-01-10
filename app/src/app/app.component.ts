@@ -1,5 +1,5 @@
 import { Platform, AlertController, Nav } from "ionic-angular";
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, AfterViewInit } from "@angular/core";
 import { StatusBar } from "ionic-native";
 import { GatheringService } from "../providers/gathering-service";
 import { GeolocationService } from "../providers/geolocation-service";
@@ -11,6 +11,7 @@ import { SignIn } from "../pages/sign-in/sign-in";
 import { PendingGathering } from "../pages/pending-gathering/pending-gathering";
 import { RunningGathering } from "../pages/running-gathering/running-gathering";
 
+
 /**
  * RadyApp
  *
@@ -19,7 +20,7 @@ import { RunningGathering } from "../pages/running-gathering/running-gathering";
 @Component({
     template: `<ion-nav [root]="rootPage"></ion-nav>`,
 })
-export class RadyApp {
+export class RadyApp extends AfterViewInit {
     @ViewChild(Nav) public nav: Nav;
 
     constructor(private platform: Platform,
@@ -29,6 +30,7 @@ export class RadyApp {
                 private notificationService: NotificationService,
                 private geolocationService: GeolocationService,
                 private gatheringService: GatheringService) {
+        super();
 
         // global try-catch
         try {
@@ -42,10 +44,6 @@ export class RadyApp {
                     title: n.title,
                 }).present().then();
             });
-
-            // Specific handlers
-            this.gatheringService.configureNotificationHandlers(this.nav, this.alertCtrl, PendingGathering,
-                RunningGathering, MainTabs);
 
             // redefine the console.log behavior for device testing
             // /!\ comments those lines for production /!\
@@ -68,6 +66,7 @@ export class RadyApp {
                     .then(() => this.authService.refresh().toPromise())
                     .then(() => this.nav.setRoot(MainTabs))
                     .catch((err: any) => {
+                        // FIXME REMOVE
                         console.log("GOT EEEEEEEEEEEEEEEER" + JSON.stringify(err));
 
                         this.nav.setRoot(SignIn);
@@ -90,5 +89,10 @@ export class RadyApp {
             }).present().then();
 
         }
+    }
+
+    public ngAfterViewInit() {
+        this.gatheringService.configureNotificationHandlers(this.nav, this.alertCtrl, PendingGathering,
+            RunningGathering, MainTabs);
     }
 }

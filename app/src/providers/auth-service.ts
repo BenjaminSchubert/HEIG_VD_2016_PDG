@@ -106,7 +106,7 @@ export class AuthService {
      * Remove the local token.
      */
     public logout() {
-        return this.setToken(null);
+        return this.storage.remove(this.TOKEN_NAME);
     }
 
     /**
