@@ -188,8 +188,8 @@ class MeetingListView(ListCreateAPIView):
     """
 
     def get_queryset(self):
-        """No filter."""
-        return Meeting.objects
+        """Get the queryset of all meetings related to the current user."""
+        return Meeting.objects.filter(participant__user=self.request.user)
 
     def list(self, request, *args, **kwargs):
         """
