@@ -44,8 +44,10 @@ class SessionLoginView(View):
         form = AuthenticationForm(request, data=json.loads(request.body.decode("utf8")))
 
         if form.is_valid():
+            if not form.get_user().is_staff:
+                return JsonResponse({"global": "Only administrators are allowed to login here."}, status=403)
             login(request, form.get_user())
 
             return JsonResponse({})
 
-        return JsonResponse({"global": "Username not recognized or password incorrect"}, status=401)
+        return JsonResponse({"global": "Username not recognized or password incorrect."}, status=401)
