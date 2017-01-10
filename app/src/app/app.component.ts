@@ -24,6 +24,8 @@ import { RunningGathering } from "../pages/running-gathering/running-gathering";
 export class RadyApp extends AfterViewInit {
     @ViewChild(Nav) public nav: Nav;
 
+    public rootPage = SignIn;
+
     constructor(private platform: Platform,
                 private alertCtrl: AlertController,
                 private authService: AuthService,
@@ -72,6 +74,7 @@ export class RadyApp extends AfterViewInit {
                             console.log("[Rady][RadyApp] got : " + JSON.stringify(err));
                             this.notifyBadError();
                         }
+                        this.rootPage = SignIn;
                         this.nav.setRoot(SignIn).then();
                     });
 
