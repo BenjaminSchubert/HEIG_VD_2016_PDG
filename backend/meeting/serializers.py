@@ -13,7 +13,7 @@ from rest_framework.serializers import ModelSerializer, Serializer
 
 from meeting.models import Meeting, Place, Participant
 from user.models import Friendship
-from user.serializers import UserProfileSerializer
+from user.serializers import PublicUserSerializer
 
 __author__ = "Benjamin Schubert, <ben.c.schubert@gmail.com>"
 
@@ -63,7 +63,10 @@ class MeetingPlaceSerializer(ModelSerializer):
         :param instance: meeting for which to get the place
         :return: a `Place` instance
         """
-        return Participant.objects.get(user=self.context["request"].user, meeting=instance).place
+        try:
+            return Participant.objects.get(user=self.context["request"].user, meeting=instance).place
+        except Participant.DoesNotExist:
+            return None
 
 
 class ParticipantSerializer(ModelSerializer):
@@ -73,7 +76,7 @@ class ParticipantSerializer(ModelSerializer):
     This will not give information that are redundant with the `MeetingSerializer`.
     """
 
-    user = UserProfileSerializer(read_only=True)
+    user = PublicUserSerializer(read_only=True)
 
     class Meta:
         """Defines the metaclass for the `ParticipantSerializer`."""
@@ -116,7 +119,7 @@ class MeetingSerializer(ModelSerializer):
     the `WriteMeetingSerializer` which is optimized for write operations.
     """
 
-    organiser = UserProfileSerializer(read_only=True)
+    organiser = PublicUserSerializer(read_only=True)
     place = MeetingPlaceSerializer(required=False)
     participants = ParticipantSerializer(many=True, source="participant_set")
 

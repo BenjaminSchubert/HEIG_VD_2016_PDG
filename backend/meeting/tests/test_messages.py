@@ -138,14 +138,14 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
     @authenticated
     def test_progress_meeting_send_push_notification_to_participants(self):
         """
-        No message for organiser and users who declined the meeting.
+        No message for users who declined the meeting.
         """
         meeting = create_meeting(self.user)
         meeting.status = Meeting.STATUS_PROGRESS
         meeting.save(update_fields=("status",))
 
         other_participants = meeting.participants\
-            .filter(~Q(id=meeting.organiser.id) & ~Q(participant__accepted=False))\
+            .filter(~Q(participant__accepted=False))\
             .all()
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
@@ -161,14 +161,14 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
     @authenticated
     def test_ended_meeting_send_push_notification_to_participants(self):
         """
-        No message for organiser and users who declined the meeting.
+        No message for users who declined the meeting.
         """
         meeting = create_meeting(self.user)
         meeting.status = Meeting.STATUS_ENDED
         meeting.save(update_fields=("status",))
 
         other_participants = meeting.participants\
-            .filter(~Q(id=meeting.organiser.id) & ~Q(participant__accepted=False))\
+            .filter(~Q(participant__accepted=False))\
             .all()
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
@@ -184,14 +184,14 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
     @authenticated
     def test_canceled_meeting_send_push_notification_to_participants(self):
         """
-        No message for organiser and users who declined the meeting.
+        No message for users who declined the meeting.
         """
         meeting = create_meeting(self.user)
         meeting.status = Meeting.STATUS_CANCELED
         meeting.save(update_fields=("status",))
 
         other_participants = meeting.participants\
-            .filter(~Q(id=meeting.organiser.id) & ~Q(participant__accepted=False))\
+            .filter(~Q(participant__accepted=False))\
             .all()
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
@@ -260,6 +260,40 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
                 "type": "user-canceled-meeting",
                 "meeting": meeting.id,
                 "participant": self.user.id
+            },
+            sound=ANY,
+            badge=ANY,
+        )
+
+    @authenticated
+    def test_everybody_arrived_send_push_notification_to_participants(self):
+        """
+        No message the users who declined the meeting.
+        """
+        meeting = create_meeting(self.user)
+
+        for participant in meeting.participant_set.filter(accepted=None).all():
+            participant.accepted = True
+            participant.save(update_fields=("accepted",))
+
+        for participant in meeting.participant_set.filter(~Q(id=self.user.id) & Q(accepted=True)).all():
+            participant.arrived = True
+            participant.save(update_fields=("arrived",))
+
+        self.mocked_send_fcm_bulk_message.reset_mock()
+
+        self.put(dict(arrived=True), url=API_V1 + "meetings/{}/participants/".format(meeting.id))
+
+        participants = meeting.participants.filter(~Q(participant__accepted=False)).all()
+
+        self.mocked_send_fcm_bulk_message.assert_called_with(
+            registration_ids=[u.get_device().registration_id for u in participants],
+            message_title=ANY,
+            message_body=ANY,
+            message_icon=ANY,
+            data_message={
+                "type": "finished-meeting",
+                "meeting": meeting.id,
             },
             sound=ANY,
             badge=ANY,
