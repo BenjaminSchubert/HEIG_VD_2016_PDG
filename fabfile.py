@@ -263,10 +263,10 @@ def setup_dev():
     """Setup local dev environment for work"""
     with section("Setting up dev environment"):
         with lcd(LOCAL_APP):
-            run("{} install".format(get_npm()))
+            local("{} install".format(get_npm()))
 
         with lcd(LOCAL_FRONTEND):
-            run("{} install".format(get_npm()))
+            local("{} install".format(get_npm()))
 
         with lcd(LOCAL_BACKEND):
-            run("pip3 install -r ./requirements.pip")
+            local("pip3 install -r ./requirements.pip")
