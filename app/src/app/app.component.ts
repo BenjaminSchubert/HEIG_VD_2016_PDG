@@ -4,6 +4,7 @@ import { StatusBar } from "ionic-native";
 import { GatheringService } from "../providers/gathering-service";
 import { GeolocationService } from "../providers/geolocation-service";
 import { NotificationService } from "../providers/notification-service";
+import { ContactsService } from "../providers/contacts-service";
 import { PushService } from "../providers/push-service";
 import { AuthService } from "../providers/auth-service";
 import { MainTabs } from "../pages/main-tabs/main-tabs";
@@ -29,7 +30,8 @@ export class RadyApp extends AfterViewInit {
                 private pushService: PushService,
                 private notificationService: NotificationService,
                 private geolocationService: GeolocationService,
-                private gatheringService: GatheringService) {
+                private gatheringService: GatheringService,
+                private contactsService: ContactsService) {
         super();
 
         // global try-catch
@@ -94,5 +96,6 @@ export class RadyApp extends AfterViewInit {
     public ngAfterViewInit() {
         this.gatheringService.configureNotificationHandlers(this.nav, this.alertCtrl, PendingGathering,
             RunningGathering, MainTabs);
+        this.contactsService.configureNotificationHandlers(this.notificationService);
     }
 }
