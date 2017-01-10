@@ -133,9 +133,9 @@ export class GatheringService {
   reset(doStop = true) {
     if(doStop && this.status == 'running') {
       if(this.initiator)
-        this.stop();
+        this.stop().then();
       else
-        this.decline();
+        this.decline().then();
     }
     this.status = null;
     this.meetings = null;
