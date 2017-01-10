@@ -1,6 +1,5 @@
 // http://ionicframework.com/docs/v2/theming/
 
-
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These
@@ -17,22 +16,24 @@
 
 // hidden class
 .hidden {
-	display: none;
+  display: none;
 }
 
 // content 
 ion-content {
-	div.content {
+  div.content {
 
-		// margin left and right
-		margin: auto 5vw auto 5vw;
+    // margin left and right
+    margin: auto 5vw auto 5vw;
 
-		// title
-		h1 {
-			font-size: 30pt;
-			font-weight: bold;
-			text-transform: uppercase;
-			text-align: center;
-		}
-	}
+    // title
+    h1 {
+      font-size: 30pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: center;
+    }
+  }
 }
+
+@import "../theme/forms";

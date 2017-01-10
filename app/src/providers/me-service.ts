@@ -37,7 +37,7 @@ export class MeService {
 
   // Fetch the current user 
   private fetchMe() {
-    return this.authService.http().get(CONFIG.API_URL + 'users/me/')
+    return this.authService.get(CONFIG.API_URL + 'users/me/')
       .map(res => res.json())
       .toPromise()
       .then((data) => this.me = data);

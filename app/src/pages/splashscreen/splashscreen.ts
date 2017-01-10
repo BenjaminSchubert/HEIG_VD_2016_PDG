@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, Platform, AlertController } from 'ionic-angular';
+import { Splashscreen as S } from 'ionic-native';
+
 import { StatusBar } from 'ionic-native';
 
 import { SignIn } from '../sign-in/sign-in';
@@ -48,7 +50,7 @@ export class Splashscreen {
 
       // redefine the console.log behavior for device testing
       // /!\ comments those lines for production /!\
-      let logger = function(nS) {
+      /*let logger = function(nS) {
         return function(text) {
           nS.notify({
             title: 'CONSOLE.LOG',
@@ -56,33 +58,28 @@ export class Splashscreen {
           });
         };
       };
-      console.log = logger(this.notificationService);
+      console.log = logger(this.notificationService);//*/
 
       platform.ready().then(() => {
+          S.hide();
 
-        // Okay, so the platform is ready and our plugins are available.
+          // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
         StatusBar.styleDefault();
-        this.authService.initialize();
-        this.pushService.initialize();
+          this.authService.initialize()
+              .then(() => this.pushService.initialize())
+              .then(() => this.authService.refresh().toPromise())
+              .then(() => this.navCtrl.setRoot(MainTabs))
+              .catch((err: any) => {
+                console.log("GOT EEEEEEEEEEEEEEEER" + JSON.stringify(err));
+
+                this.navCtrl.setRoot(SignIn);
+              });
+
         this.geolocationService.initialize();
-
-        // if we are auth => go to MainTabs
-        // otherwise      => go to SignIn
-        this.authService.refresh()
-          .then(() => {
-            console.log('[Splashscreen] token refreshed, go to MainTabs');
-            this.navCtrl.setRoot(MainTabs);
-          }).catch((err) => {
-            console.log('[Splashscreen] refresh error: ' + err);
-            this.navCtrl.setRoot(SignIn);
-          });
       });
-
-    // global try-catch
-    }
-    catch(e) {
-      console.log('[Splashscreen] try-catch: ' + e);
+    } catch (err) {
+        console.log(err);
     }
   }
 }

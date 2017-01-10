@@ -1,50 +1,80 @@
-import { Component } from '@angular/core';
-import { NavController} from 'ionic-angular';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Component } from "@angular/core";
+import { AlertController, NavController } from "ionic-angular";
+import { FormBuilder } from "@angular/forms";
+import { Response } from "@angular/http";
+import { MainTabs } from "../main-tabs/main-tabs";
+import { AccountFormComponent } from "../../lib/form-component";
+import { AccountService } from "../../providers/account-service";
+import { IAccount } from "../../lib/stubs/account";
+import { RadyValidators } from "../../lib/validators";
 
-import { MainTabs } from '../main-tabs/main-tabs';
-
-import { RadyModule } from '../../lib/validators';
 
 @Component({
-  templateUrl: 'edit-profile.html'
+    templateUrl: "edit-profile.html",
 })
-export class EditProfile {
+export class EditProfile extends AccountFormComponent {
+    public user: IAccount;
 
-  form;
-  constructor(public navCtrl: NavController, private formBuilder: FormBuilder) {}
+    constructor(builder: FormBuilder,
+                private service: AccountService,
+                private navCtrl: NavController,
+                private alertCtrl: AlertController) {
+        super(builder);
+        this.subscriptions.push(this.service.$.subscribe((a: IAccount) => {
+            this.user = a;
+            if (this.user !== null) {
+                this.form.patchValue(this.user);
+            }
+        }));
+    }
 
-  ionViewDidLoad() {
-    //TODO : GET CURRENT USER
+    public ionViewWillEnter() {
+        this.service.fetch().subscribe();
+        super.ionViewWillEnter();
+    }
 
-  	// create the form with validation
-    this.form = this.formBuilder.group({
-      username: [''],
-      email: [''],
-      phone: [''],
-      country: [''],
-      password: [''],
-      passwordConfirmation: ['']
-  	}, { validator: Validators.compose([
-      RadyModule.Validators.email('email', 'is not valid'),
-      RadyModule.Validators.phone('phone', 'country', 'is not valid'),
-      RadyModule.Validators.areEqual(['password', 'passwordConfirmation'], 'passwords are not equal'),
-      RadyModule.Validators.required(['username', 'email', 'password', 'passwordConfirmation'], 'is required')])
-    });
-  }
+    public submit() {
+        let value = JSON.stringify(this.form.value, (k, v) => v !== null ? v : undefined);
+        // tslint:disable-next-line:no-any
+        this.service.update(<any> value).subscribe(
+            () => {
+                this.alertCtrl.create({
+                    buttons: [{
+                        handler: () => this.navCtrl.setRoot(MainTabs),
+                        text: "OK",
+                    }],
+                    enableBackdropDismiss: false,
+                    title: "Profile Updated!",
+                }).present().then();
+            },
+            (err: Response) => {
+                this.handleError(err.json(), this.form);
+                this.alertCtrl.create({
+                    buttons: ["OK"],
+                    enableBackdropDismiss: true,
+                    message: "Please verify your data",
+                    title: "Could not save",
+                }).present().then();
+            },
+        );
+    }
 
-  goToContactList(){
-    this.navCtrl.setRoot(MainTabs);
-  }
+    protected buildForm() {
+        let form = super.buildForm();
 
-  save(){
-    //TODO : SAVE USER LOCALY
-    //TODO : SAVE USER ON SEVER
-    this.goToContactList();
-  }
+        form.get("passwordConfirmation").setValidators(
+            RadyValidators.match(form.get("password"), "passwords do not match."),
+        );
 
-  get errors() {
-    return JSON.stringify(this.form.errors);
-  }
+        this.subscriptions.push(
+            form.get("password").valueChanges.subscribe(() => {
+                form.get("passwordConfirmation").markAsPristine();
+                form.get("passwordConfirmation").markAsDirty();
+                form.get("passwordConfirmation").updateValueAndValidity();
+            }),
+        );
+
+        return form;
+    }
 
 }

@@ -1,4 +1,5 @@
 import { NgModule, ErrorHandler } from '@angular/core';
+import { RequestOptions } from "@angular/http";
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 
 import { RadyApp } from './app.component';
@@ -33,6 +34,8 @@ import { GatheringService } from '../providers/gathering-service';
 import { GeolocationService } from '../providers/geolocation-service';
 import { CompassService } from '../providers/compass-service';
 import { LeafletHelper } from '../providers/leaflet-helper';
+import { ExtendedRequestOptions } from "../lib/request-options";
+import { AccountService } from "../providers/account-service";
 
 // put here the components
 let COMPONENTS_LIST: any = [
@@ -50,16 +53,19 @@ let COMPONENTS_LIST: any = [
   AddContactFromList,
   AddContactFromScanner,
   MyQrCode,
-  CreateGathering, 
+  CreateGathering,
   CreateGatheringModalFixed,
   PendingGathering,
   RunningGathering
 ]
 
+
 // put here the providers
 let PROVIDERS_LIST: any = [
-  {provide: ErrorHandler, useClass: IonicErrorHandler},
-  AuthService,
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    { provide: RequestOptions, useClass: ExtendedRequestOptions },
+    AuthService,
+    AccountService,
   PushService,
   NotificationService,
   ContactsService,

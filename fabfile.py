@@ -10,7 +10,7 @@ when deploying it on a remove server.
 
 This script does not support automated configuration of uwsgi and nginx.
 """
-
+import subprocess
 
 import os
 
@@ -42,14 +42,16 @@ REMOTE_VENV = os.path.join(REMOTE_PATH, "venv")
 UWSGI_WATCHER = os.path.join(REMOTE_PATH, "watch")
 
 TEMPORARY_PATH = "/tmp/rady"
-TEMPORARY_BACKEND_PATH = os.path.join(TEMPORARY_PATH, "backend")
-TEMPORARY_FRONTEND_PATH = os.path.join(TEMPORARY_PATH, "frontend")
 
+ANDROID_HOME = "/opt/android-sdk"
 LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
 LOCAL_APP = os.path.join(LOCAL_PATH, "app")
 LOCAL_BACKEND = os.path.join(LOCAL_PATH, "backend")
 LOCAL_FRONTEND = os.path.join(LOCAL_PATH, "frontend")
-LOCAL_VENV = os.path.join(LOCAL_PATH, os.path.expanduser("~/.virtualenvs/rady"))
+LOCAL_VENV = os.path.join(LOCAL_PATH, "venv")
+
+
+npm = None
 
 
 class Section:
@@ -67,38 +69,73 @@ class Section:
 section = Section
 
 
+def copy(local, remote):
+    """Copy local files to the remote destination, using an intermediate directory."""
+    sudo("mkdir -p " + remote)
+    sudo("rm -rf " + os.path.join(remote, "*"))
+    run("mkdir -p " + TEMPORARY_PATH)
+    run("rm -rf " + os.path.join(TEMPORARY_PATH, "*"))
+
+    put("{}/*".format(local), TEMPORARY_PATH, mode=644)
+    sudo("cp -r {}/* {}".format(TEMPORARY_PATH, remote))
+
+
+def get_android_home():
+    """Get the android home directory."""
+    android_home = os.environ.get("ANDROID_HOME", None)
+
+    if android_home is None:
+        android_home = ANDROID_HOME
+
+    if not os.path.exists(android_home):
+        abort("ANDROID_HOME set as {} does not exist, can't continue".format(android_home))
+
+    return android_home
+
+
+def get_npm():
+    """Get npm executable."""
+    global npm
+    if npm is None:
+        try:
+            subprocess.check_call(["which", "yarn"])
+        except subprocess.CalledProcessError:
+            try:
+                subprocess.check_call(["which", "npm"])
+            except subprocess.CalledProcessError:
+                abort("Could not find npm, do you have it installed and in PATH ?")
+            else:
+                npm = "npm"
+        else:
+            npm = "yarn"
+
+    return npm
+
+
 @task
 def lint_app():
-    """
-    Runs configured linters on the application
-    """
+    """Run configured linters on the application."""
     with lcd(LOCAL_APP), section("linting app"):
         return local("npm run -s lint")
 
 
 @task
 def lint_backend():
-    """
-    Runs configured linters on the backend
-    """
+    """Run configured linters on the backend."""
     with lcd(LOCAL_BACKEND), section("linting backend"):
         return local("prospector")
 
 
 @task
 def lint_frontend():
-    """
-    Runs configured linters on the frontend
-    """
+    """Run configured linters on the frontend."""
     with lcd(LOCAL_FRONTEND), section("linting frontend"):
         return local("npm run -s lint")
 
 
 @task
 def lint():
-    """
-    Runs all linters on the whole project
-    """
+    """Run all linters on the whole project."""
     with warn_only(), section("linting project", green):
         tests = lint_app(), lint_frontend(), lint_backend(),
 
@@ -108,9 +145,7 @@ def lint():
 
 @task
 def test_backend():
-    """
-    Run tests on the backend
-    """
+    """Run tests on the backend."""
     with lcd(LOCAL_BACKEND), section("testing backend"):
         with section("making migrations", cyan):
             local("FCM_SERVER_TOKEN='' python3 manage.py makemigrations")
@@ -121,9 +156,7 @@ def test_backend():
 
 @task
 def test():
-    """
-    Runs all tests on the whole project
-    """
+    """Run all tests on the whole project."""
     with warn_only(), section("testing project", green):
         tests = test_backend(),
 
@@ -133,66 +166,71 @@ def test():
 
 @task
 def check():
-    """
-    Checks that the application is in a working state
-    """
+    """Check that the application is in a working state."""
     lint()
     test()
 
 
 @task
-def prepare_deploy():
-    """
-    Prepare files locally to deploy
-    """
-    with lcd(LOCAL_FRONTEND), shell_env(NODE_ENV="production"):
+def prepare_backend():
+    """Prepare the backend to deploy."""
+    with lcd(LOCAL_BACKEND), section("Preparing backend"):
+        local("""find . -type f -iname "*.pyc" -delete""")
+        local("""find . -type d -empty -delete""")
+        local("rm -rf {}/htmlcov".format(LOCAL_BACKEND))
+        local("rm -f {}/.coverage".format(LOCAL_BACKEND))
+
+
+@task
+def prepare_frontend():
+    """Prepare and build the frontend."""
+    with lcd(LOCAL_FRONTEND), shell_env(NODE_ENV="production"), section("Preparing frontend"):
         local("npm run -s clean:dist")
         local("npm run -s build")
 
-    with lcd(LOCAL_BACKEND), section("local cleanup"):
-        local("""find . -type f -iname "*.pyc" -delete""")
-        local("""find . -type d -empty -delete""")
-        local("rm -rf ./backend/htmlcov")
-        local("rm -f ./backend/.coverage")
+
+@task
+def prepare_app():
+    """Prepare and build the application."""
+    with lcd(LOCAL_APP), shell_env(ANDROID_HOME=get_android_home()), section("Preparing application"):
+        local("{} run clean".format(get_npm()))
+        local("{} run build:android".format(get_npm()))
 
 
 @task
-def copy_files():
-    """
-    Copy files to the remote server
-    """
-    with section("copying to server"):
-        for path in [REMOTE_BACKEND, REMOTE_FRONTEND]:
-            sudo("mkdir -p " + path)
-            sudo("rm -rf " + os.path.join(path, "*"))
-
-        for path in [TEMPORARY_BACKEND_PATH, TEMPORARY_FRONTEND_PATH]:
-            run("mkdir -p " + path)
-            run("rm -rf " + os.path.join(path, "*"))
-
-        put("{}/*".format(LOCAL_BACKEND), TEMPORARY_BACKEND_PATH)
-        run("rm -f {}/rady.db".format(TEMPORARY_BACKEND_PATH))
-        sudo("cp -r {}/* {}".format(TEMPORARY_BACKEND_PATH, REMOTE_BACKEND))
-
-        put("{}/dist/*".format(LOCAL_FRONTEND), TEMPORARY_FRONTEND_PATH, mode="0644")
-        sudo("cp -r {}/* {}".format(TEMPORARY_FRONTEND_PATH, REMOTE_FRONTEND))
+def prepare_deployment():
+    """Prepare files locally to deploy."""
+    with section("Preparing for deployment", green):
+        prepare_backend()
+        prepare_frontend()
+        prepare_app()
 
 
 @task
-def setup_env():
-    """
-    Setups the remote environment
-    """
-    with prefix("source {}/bin/activate".format(REMOTE_VENV)), section("setup of environment"):
-        with hide('output'):
-            sudo("pip install -r {}/requirements.pip".format(REMOTE_BACKEND))
+def deploy_frontend():
+    """Deploy the frontend."""
+    with section("Deploying frontend"):
+        copy("{}/dist".format(LOCAL_FRONTEND), REMOTE_FRONTEND)
 
-        with cd(REMOTE_BACKEND):
-            sudo("cp {} ./rady/settings/".format(os.path.join(REMOTE_PATH, "prod.py")))
-            sudo("python3 manage.py migrate --settings rady.settings.prod")
 
-    # reload uwsgi
-    sudo("touch {}".format(UWSGI_WATCHER))
+@task
+def deploy_backend():
+    """Deploy the backend."""
+    with section("Deploying backend"):
+        copy(LOCAL_BACKEND, REMOTE_BACKEND)
+        sudo("rm -f {}/rady.db".format(REMOTE_BACKEND))
+
+        with prefix("source {}/bin/activate".format(REMOTE_VENV)), section("setup of environment"):
+            with hide('output'):
+                sudo("pip install -r {}/requirements.pip".format(REMOTE_BACKEND))
+
+            with cd(REMOTE_BACKEND):
+                sudo("cp {} ./rady/settings/".format(os.path.join(REMOTE_PATH, "prod.py")))
+                sudo("python3 manage.py migrate --settings rady.settings.prod")
+                sudo("python3 manage.py collectstatic --noinput --settings rady.settings.prod")
+
+        # reload uwsgi
+        sudo("touch {}".format(UWSGI_WATCHER))
 
 
 @task
@@ -201,9 +239,9 @@ def insecure_deploy():
     Deploys the application without running any tests or checking anything
     """
     with section("deploy"):
-        prepare_deploy()
-        copy_files()
-        setup_env()
+        prepare_deployment()
+        deploy_backend()
+        deploy_frontend()
 
 
 @task
@@ -219,3 +257,20 @@ def deploy():
         print(red("Check status failed, continuing anyways"))
 
     insecure_deploy()
+
+
+@task
+def setup_dev():
+    """Setup local dev environment for work"""
+    with section("Setting up dev environment"):
+        with lcd(LOCAL_APP):
+            local("{} install".format(get_npm()))
+
+        with lcd(LOCAL_FRONTEND):
+            local("{} install".format(get_npm()))
+
+        if not os.path.exists(LOCAL_VENV):
+            local("virtualenv -p python3.5 {}".format(LOCAL_VENV))
+
+        with prefix("source {}/bin/activate".format(LOCAL_VENV)), lcd(LOCAL_BACKEND):
+            local("pip3 install -r ./requirements.pip")

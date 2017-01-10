@@ -1,3 +1,5 @@
+import "rxjs/add/operator/toPromise";
+
 import { Component } from '@angular/core';
 import { NavController, App, AlertController, ActionSheetController } from 'ionic-angular';
 
@@ -57,12 +59,9 @@ export class ContactList {
         { text: 'Hide', handler: () => {
 
           // hide friend
-          this.authService.http().patch(
+          this.authService.patch(
             CONFIG.API_URL + 'users/friends/' + item.id + '/',
             { is_hidden: true },
-            this.authService.createOptions([
-              { name: 'Content-Type', value: 'application/json' }
-            ])
           )
           .toPromise()
           .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh
@@ -71,12 +70,9 @@ export class ContactList {
         { text: 'OK', handler: () => {
 
           // accept friend request
-          this.authService.http().patch(
+          this.authService.patch(
             CONFIG.API_URL + 'users/friends/' + item.id + '/',
             { is_accepted: true },
-            this.authService.createOptions([
-              { name: 'Content-Type', value: 'application/json' }
-            ])
           )
           .toPromise()
           .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh
@@ -104,12 +100,9 @@ export class ContactList {
         { text: 'Block', handler: () => {
 
            // block friend
-           this.authService.http().patch(
+           this.authService.patch(
             CONFIG.API_URL + 'users/friends/' + item.id + '/',
             { is_blocked: true },
-            this.authService.createOptions([
-              { name: 'Content-Type', value: 'application/json' }
-            ])
           )
           .toPromise()
           .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh
@@ -151,12 +144,9 @@ export class ContactList {
         { text: 'OK', handler: () => {
 
           // unblock friend
-          this.authService.http().patch(
+          this.authService.patch(
             CONFIG.API_URL + 'users/friends/' + item.id + '/',
             { is_blocked: false },
-            this.authService.createOptions([
-              { name: 'Content-Type', value: 'application/json' }
-            ])
           )
           .toPromise()
           .then(() => this.contactsService.fetch().then(() => this.initializeItems())) // refresh

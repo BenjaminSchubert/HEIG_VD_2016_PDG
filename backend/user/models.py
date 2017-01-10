@@ -91,7 +91,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone_number = models.BinaryField(max_length=255, unique=True, null=True)
     avatar = models.ImageField(upload_to="avatars/", null=True)
     last_avatar_update = models.DateTimeField(auto_now_add=True)
-    hidden = models.BooleanField(default=False)
+    is_hidden = models.BooleanField(default=False)
     joined = models.DateTimeField(auto_now_add=True)
 
     friends = models.ManyToManyField("User", through="Friendship")

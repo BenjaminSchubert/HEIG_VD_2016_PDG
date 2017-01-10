@@ -239,7 +239,7 @@ class UserProfileSerializer(ModelSerializer, PhoneNumberSerializerMixin):
         """This Meta class defines the fields and models for the `UserProfileSerializer`."""
 
         fields = (
-            "id", "username", "email", "avatar", "password", "phone_number", "country",
+            "id", "username", "email", "avatar", "password", "phone_number", "country", "is_hidden",
         )
         model = User
         read_only_fields = ("id", "avatar")
