@@ -68,6 +68,9 @@ module.exports = function(projectRoot, appConfig) {
             proxy: {
                 "/api": {
                     target: "http://localhost:8000"
+                },
+                "/static": {
+                    target: "http://localhost:8000"
                 }
             }
         }

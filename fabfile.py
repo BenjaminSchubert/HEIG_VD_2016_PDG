@@ -67,12 +67,12 @@ section = Section
 
 def copy(local, remote):
     """Copy local files to the remote destination, using an intermediate directory."""
-    sudo("mkdir -p" + remote)
+    sudo("mkdir -p " + remote)
     sudo("rm -rf " + os.path.join(remote, "*"))
     run("mkdir -p " + TEMPORARY_PATH)
     run("rm -rf " + os.path.join(TEMPORARY_PATH, "*"))
 
-    put("{}/*".format(local, TEMPORARY_PATH), mode=644)
+    put("{}/*".format(local), TEMPORARY_PATH, mode=644)
     sudo("cp -r {}/* {}".format(TEMPORARY_PATH, remote))
 
 
@@ -141,8 +141,8 @@ def prepare_backend():
     with lcd(LOCAL_BACKEND), section("local cleanup"):
         local("""find . -type f -iname "*.pyc" -delete""")
         local("""find . -type d -empty -delete""")
-        local("rm -rf ./backend/htmlcov")
-        local("rm -f ./backend/.coverage")
+        local("rm -rf {}/htmlcov".format(LOCAL_BACKEND))
+        local("rm -f {}/.coverage".format(LOCAL_BACKEND))
 
 
 @task
@@ -173,7 +173,7 @@ def deploy_backend():
     """Deploy the backend."""
     with section("Deploying backend"):
         copy(LOCAL_BACKEND, REMOTE_BACKEND)
-        run("rm -f {}/rady.db".format(REMOTE_BACKEND))
+        sudo("rm -f {}/rady.db".format(REMOTE_BACKEND))
 
         with prefix("source {}/bin/activate".format(REMOTE_VENV)), section("setup of environment"):
             with hide('output'):
@@ -182,6 +182,7 @@ def deploy_backend():
             with cd(REMOTE_BACKEND):
                 sudo("cp {} ./rady/settings/".format(os.path.join(REMOTE_PATH, "prod.py")))
                 sudo("python3 manage.py migrate --settings rady.settings.prod")
+                sudo("python3 manage.py collectstatic --noinput --settings rady.settings.prod")
 
         # reload uwsgi
         sudo("touch {}".format(UWSGI_WATCHER))
