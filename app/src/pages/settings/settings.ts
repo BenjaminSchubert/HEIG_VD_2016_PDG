@@ -1,3 +1,4 @@
+import "rxjs/add/operator/debounceTime";
 import { Component } from "@angular/core";
 import { App } from "ionic-angular";
 import { EditProfile } from "../edit-profile/edit-profile";
@@ -10,6 +11,8 @@ import { AccountService } from "../../providers/account-service";
     templateUrl: "settings.html",
 })
 export class Settings {
+    private hiding = false;
+
     constructor(private app: App,
                 private authService: AuthService,
                 private service: AccountService) {
@@ -23,8 +26,12 @@ export class Settings {
         this.app.getRootNav().push(EditProfile).then();
     }
 
-    public hide() {
-        this.service.hide().subscribe();
+    public hide(event: any) {
+        if (!this.hiding) {
+            this.hiding = true;
+            // We need to debounce due to https://github.com/driftyco/ionic/issues/7806 and other changes like that
+            this.service.hide().debounceTime(10000).subscribe(() => this.hiding = false);
+        }
     }
 
     public logout() {

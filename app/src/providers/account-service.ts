@@ -14,13 +14,10 @@ export class AccountService extends RestService<IAccount> {
     }
 
     public hide() {
-        return this.update(this._$.getValue()).do(
+        return this.http.patch(ACCOUNT_URL, {is_hidden: !this._$.getValue().is_hidden}).do(
             // tslint:disable-next-line:no-empty
-            () => {
-            },
-            (err: Response) => {
-                this._$.getValue().is_hidden = !this._$.getValue().is_hidden;
-            },
+            (res: Response) => this._$.next(res.json()),
+            (err: Response) => this._$.getValue().is_hidden = !this._$.getValue().is_hidden,
         );
     }
 }
