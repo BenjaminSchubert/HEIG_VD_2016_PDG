@@ -51,7 +51,11 @@ def post_save_participant(instance, created, **kwargs):
                 meeting_users.send_message(
                     title="Meeting update",
                     body="{} accepted the meeting".format(instance.user.username),
-                    data=dict(type="user-accepted-meeting", meeting=instance.meeting.id, participant=instance.id),
+                    data=dict(
+                        type="user-accepted-meeting",
+                        meeting=instance.meeting.id,
+                        participant=instance.user_id,
+                    ),
                     deferred=False,
                 )
 
@@ -73,7 +77,11 @@ def post_save_participant(instance, created, **kwargs):
                     meeting_users.send_message(
                         title="Meeting update",
                         body="{} refused the meeting".format(instance.user.username),
-                        data=dict(type="user-refused-meeting", meeting=instance.meeting.id, participant=instance.id),
+                        data=dict(
+                            type="user-refused-meeting",
+                            meeting=instance.meeting.id,
+                            participant=instance.user_id,
+                        ),
                         deferred=False,
                     )
 
@@ -81,7 +89,11 @@ def post_save_participant(instance, created, **kwargs):
             meeting_users.send_message(
                 title="Meeting update",
                 body="{} has arrived to the meeting".format(instance.user.username),
-                data=dict(type="user-arrived-to-meeting", meeting=instance.meeting.id, participant=instance.id),
+                data=dict(
+                    type="user-arrived-to-meeting",
+                    meeting=instance.meeting.id,
+                    participant=instance.user_id,
+                ),
                 deferred=False,
             )
 

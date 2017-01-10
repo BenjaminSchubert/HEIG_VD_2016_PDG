@@ -76,7 +76,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             message_title=ANY,
             message_body=ANY,
             message_icon=ANY,
-            data_message={"type": "user-accepted-meeting", "meeting": meeting.id, "participant": my_participant.id},
+            data_message={"type": "user-accepted-meeting", "meeting": meeting.id, "participant": self.user.id},
             sound=ANY,
             badge=ANY,
         )
@@ -103,7 +103,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             message_title=ANY,
             message_body=ANY,
             message_icon=ANY,
-            data_message={"type": "user-refused-meeting", "meeting": meeting.id, "participant": my_participant.id},
+            data_message={"type": "user-refused-meeting", "meeting": meeting.id, "participant": self.user.id},
             sound=ANY,
             badge=ANY,
         )
@@ -130,7 +130,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             message_title=ANY,
             message_body=ANY,
             message_icon=ANY,
-            data_message={"type": "user-arrived-to-meeting", "meeting": meeting.id, "participant": my_participant.id},
+            data_message={"type": "user-arrived-to-meeting", "meeting": meeting.id, "participant": self.user.id},
             sound=ANY,
             badge=ANY,
         )
@@ -259,7 +259,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             data_message={
                 "type": "user-canceled-meeting",
                 "meeting": meeting.id,
-                "participant": my_participant.id
+                "participant": self.user.id
             },
             sound=ANY,
             badge=ANY,
