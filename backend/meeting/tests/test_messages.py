@@ -69,7 +69,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             .exclude(Q(id=self.user.id) | Q(participant__accepted=False))\
             .all()
 
-        self.put(dict(accepted=True), url=API_V1 + "meetings/participants/{}/".format(my_participant.id))
+        self.put(dict(accepted=True), url=API_V1 + "meetings/{}/participants/".format(meeting.id))
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
             registration_ids=[u.get_device().registration_id for u in other_participants],
@@ -96,7 +96,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             .exclude(Q(id=self.user.id) | Q(participant__accepted=False))\
             .all()
 
-        self.put(dict(accepted=False), url=API_V1 + "meetings/participants/{}/".format(my_participant.id))
+        self.put(dict(accepted=False), url=API_V1 + "meetings/{}/participants/".format(meeting.id))
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
             registration_ids=[u.get_device().registration_id for u in other_participants],
@@ -123,7 +123,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             .filter(~Q(id=self.user.id) & ~Q(participant__accepted=False))\
             .all()
 
-        self.put(dict(arrived=True), url=API_V1 + "meetings/participants/{}/".format(my_participant.id))
+        self.put(dict(arrived=True), url=API_V1 + "meetings/{}/participants/".format(meeting.id))
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
             registration_ids=[u.get_device().registration_id for u in other_participants],
@@ -249,7 +249,7 @@ class MessagesTestCase(MockFcmMessagesMixin, APIEndpointTestCase):
             .filter(~Q(id=self.user.id) & ~Q(participant__accepted=False))\
             .all()
 
-        self.put(dict(accepted=False), url=API_V1 + "meetings/participants/{}/".format(my_participant.id))
+        self.put(dict(accepted=False), url=API_V1 + "meetings/{}/participants/".format(meeting.id))
 
         self.mocked_send_fcm_bulk_message.assert_called_once_with(
             registration_ids=[u.get_device().registration_id for u in other_participants],
