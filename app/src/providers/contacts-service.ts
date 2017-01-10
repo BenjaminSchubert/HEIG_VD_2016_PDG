@@ -4,6 +4,7 @@ import { RadyFriend } from "../models/friend";
 import { RestService } from "../lib/rest-service";
 import { FRIENDS_URL, ALL_FRIENDS_URL } from "../app/api.routes";
 import { IUser } from "../lib/stubs/user";
+import { NotificationService } from './notification-service';
 
 
 /**
@@ -52,6 +53,20 @@ export class ContactsService extends RestService<IUser> {
     private modify(id: number, info: any) {
         return this.authService.patch(`${FRIENDS_URL}${id}/`, info)
             .do(() => this.fetch().subscribe());
+    }
+
+    configureNotificationHandlers(nS: NotificationService) {
+
+        let f = (n) => {
+            this.fetch().subscribe();
+            nS.notify({
+                title: n.title,
+                message: n.message
+            });
+        }
+
+        nS.addHandler('friend-request', n => f(n));
+        nS.addHandler('friend-request-accepted', n => f(n));
     }
 
 }
