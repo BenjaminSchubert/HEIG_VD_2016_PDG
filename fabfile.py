@@ -10,7 +10,7 @@ when deploying it on a remove server.
 
 This script does not support automated configuration of uwsgi and nginx.
 """
-
+import subprocess
 
 import os
 
@@ -43,12 +43,15 @@ UWSGI_WATCHER = os.path.join(REMOTE_PATH, "watch")
 
 TEMPORARY_PATH = "/tmp/rady"
 
+ANDROID_HOME = "/opt/android-sdk"
 LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
 LOCAL_APP = os.path.join(LOCAL_PATH, "app")
 LOCAL_BACKEND = os.path.join(LOCAL_PATH, "backend")
 LOCAL_FRONTEND = os.path.join(LOCAL_PATH, "frontend")
 LOCAL_VENV = os.path.join(LOCAL_PATH, os.path.expanduser("~/.virtualenvs/rady"))
 
+
+npm = None
 
 class Section:
     def __init__(self, _section, color=blue):
@@ -74,6 +77,38 @@ def copy(local, remote):
 
     put("{}/*".format(local), TEMPORARY_PATH, mode=644)
     sudo("cp -r {}/* {}".format(TEMPORARY_PATH, remote))
+
+
+def get_android_home():
+    """Get the android home directory."""
+    android_home = os.environ.get("ANDROID_HOME", None)
+
+    if android_home is None:
+        android_home = ANDROID_HOME
+
+    if not os.path.exists(android_home):
+        abort("ANDROID_HOME set as {} does not exist, can't continue".format(android_home))
+
+    return android_home
+
+
+def get_npm():
+    """Get npm executable."""
+    global npm
+    if npm is None:
+        try:
+            subprocess.check_call(["which", "yarn"])
+        except subprocess.CalledProcessError:
+            try:
+                subprocess.check_call(["which", "npm"])
+            except subprocess.CalledProcessError:
+                abort("Could not find npm, do you have it installed and in PATH ?")
+            else:
+                npm = "npm"
+        else:
+            npm = "yarn"
+
+    return npm
 
 
 @task
@@ -138,7 +173,7 @@ def check():
 @task
 def prepare_backend():
     """Prepare the backend to deploy."""
-    with lcd(LOCAL_BACKEND), section("local cleanup"):
+    with lcd(LOCAL_BACKEND), section("Preparing backend"):
         local("""find . -type f -iname "*.pyc" -delete""")
         local("""find . -type d -empty -delete""")
         local("rm -rf {}/htmlcov".format(LOCAL_BACKEND))
@@ -148,17 +183,26 @@ def prepare_backend():
 @task
 def prepare_frontend():
     """Prepare and build the frontend."""
-    with lcd(LOCAL_FRONTEND), shell_env(NODE_ENV="production"):
+    with lcd(LOCAL_FRONTEND), shell_env(NODE_ENV="production"), section("Preparing frontend"):
         local("npm run -s clean:dist")
         local("npm run -s build")
 
 
 @task
-def prepare_deployement():
+def prepare_app():
+    """Prepare and build the application."""
+    with lcd(LOCAL_APP), shell_env(ANDROID_HOME=get_android_home()), section("Preparing application"):
+        local("{} run clean".format(get_npm()))
+        local("{} run build:android".format(get_npm()))
+
+
+@task
+def prepare_deployment():
     """Prepare files locally to deploy."""
     with section("Preparing for deployment", green):
         prepare_backend()
         prepare_frontend()
+        prepare_app()
 
 
 @task
@@ -194,7 +238,7 @@ def insecure_deploy():
     Deploys the application without running any tests or checking anything
     """
     with section("deploy"):
-        prepare_deployement()
+        prepare_deployment()
         deploy_backend()
         deploy_frontend()
 
@@ -214,6 +258,15 @@ def deploy():
     insecure_deploy()
 
 
-# cordova prepare
-# ANDROID_HOME=/opt/android-sdk ionic resources
-#
+@task
+def setup_dev():
+    """Setup local dev environment for work"""
+    with section("Setting up dev environment"):
+        with lcd(LOCAL_APP):
+            run("{} install".format(get_npm()))
+
+        with lcd(LOCAL_FRONTEND):
+            run("{} install".format(get_npm()))
+
+        with lcd(LOCAL_BACKEND):
+            run("pip3 install -r ./requirements.pip")
