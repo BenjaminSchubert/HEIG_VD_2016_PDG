@@ -72,16 +72,25 @@ export class GatheringService {
   }
 
   start() {
-    // TODO
+    // nothing atm
   }
 
-  stop() {
-   // TODO
+  stop(status = 'ended') {
+    return this.authService.http().patch(
+      CONFIG.API_URL + 'meetings/' + this.meetings.id + '/',
+      { status: status },
+      this.authService.createOptions([
+        { name: 'Content-Type', value: 'application/json' }
+      ])).map(res => res.json()).toPromise().then(() => {
+        this.meetings.status = status;
+      }).catch((err) => {
+        console.log('[GatheringService] stop error: ' + JSON.stringify(err));
+      });
   }
 
   accept() {
     return this.authService.http().patch(
-      CONFIG.API_URL + 'meetings/participants/' + this.meetings.id + '/',
+      CONFIG.API_URL + 'meetings/' + this.meetings.id + '/participants/',
       { accepted: true },
       this.authService.createOptions([
         { name: 'Content-Type', value: 'application/json' }
@@ -96,7 +105,7 @@ export class GatheringService {
 
   decline() {
     return this.authService.http().patch(
-      CONFIG.API_URL + 'meetings/participants/' + this.meetings.id + '/',
+      CONFIG.API_URL + 'meetings/' + this.meetings.id + '/participants/',
       { accepted: false },
       this.authService.createOptions([
         { name: 'Content-Type', value: 'application/json' }
@@ -111,7 +120,7 @@ export class GatheringService {
 
   arrived() {
     return this.authService.http().patch(
-      CONFIG.API_URL + 'meetings/participants/' + this.meetings.id + '/',
+      CONFIG.API_URL + 'meetings/' + this.meetings.id + '/participants/',
       { arrived: true },
       this.authService.createOptions([
         { name: 'Content-Type', value: 'application/json' }
@@ -135,9 +144,13 @@ export class GatheringService {
       });
   }
 
-  reset() {
-    if(this.status == 'running')
-      this.stop();
+  reset(doStop = true) {
+    if(doStop && this.status == 'running') {
+      if(this.initiator)
+        this.stop();
+      else
+        this.decline();
+    }
     this.status = null;
     this.meetings = null;
     this.distance = null;
@@ -205,7 +218,9 @@ export class GatheringService {
 
     // user canceled meetings (running)
     this.notificationService.addHandler('user-canceled-meeting', (n) => {
-      // TODO
+      this.meetings.participants.find((p) => {
+        return p.user.id == n.additionalData.participant;
+      }).accepted = false;
     });
 
     // user arrived to meetings
@@ -227,7 +242,7 @@ export class GatheringService {
     // finished meetings
     this.notificationService.addHandler('finished-meeting', (n) => {
       this.meetings.status = 'finished';
-      this.stop();
+      this.reset();
     });
 
     // canceled meetings

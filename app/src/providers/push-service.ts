@@ -55,9 +55,13 @@ export class PushService {
 
     // on notification, dispatch the message
     this.push.on('notification', (data) => {
-      this.authService.authentificated().then(() => 
+      // TEST
+      console.log('[PushService] notification: ' + JSON.stringify(data));
+      this.authService.authentificated().then(() => {
+        //TEST
+        console.log('[PushService] forwarded');
         this.notificationService.notify(data)
-      );
+      });
     });
 
     // on error

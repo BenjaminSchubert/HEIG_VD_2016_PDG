@@ -3,8 +3,11 @@ import { NavController, AlertController } from 'ionic-angular';
 
 import { GatheringService } from '../../providers/gathering-service';
 import { GeolocationService } from '../../providers/geolocation-service';
+import { NotificationService } from '../../providers/notification-service';
 import { CompassService } from '../../providers/compass-service';
 import { LeafletHelper } from '../../providers/leaflet-helper';
+
+import { MainTabs } from '../main-tabs/main-tabs';
 
 /**
  * RunningGathering
@@ -23,12 +26,14 @@ export class RunningGathering {
   public head: any;
   public autocenter: boolean;
   public setautocenter: boolean;
+  public checkProximityAlertDone: boolean;
 
   constructor(
     public navCtrl: NavController,
     public alertCtrl: AlertController,
     public gatheringService: GatheringService,
     public geolocationService: GeolocationService,
+    public notificationService: NotificationService,
     public compassService: CompassService,
     public leafletHelper: LeafletHelper,
     @Inject(ElementRef) elementRef: ElementRef
@@ -41,6 +46,7 @@ export class RunningGathering {
     this.head = null;
     this.autocenter = true;
     this.setautocenter = false;
+    this.checkProximityAlertDone = false;
   }
 
   // TEST
@@ -51,7 +57,7 @@ export class RunningGathering {
   ionViewDidLoad() {
 
     // start gathering
-    // TODO
+    this.gatheringService.start();
 
     // find our position
     this.geolocationService.on();
@@ -121,24 +127,65 @@ export class RunningGathering {
     this.autocenter = true;
   }
 
-  arrived() {
-    // TODO
+  arrived() {      
+    this.alertCtrl.create({
+      title: 'Arrived',
+      message: 'Are you sure?',
+      buttons: [
+        { text: 'No' },
+        { text: 'Yes', handler: () => {
+          this.gatheringService.arrived();
+        }}
+      ]
+    }).present();
   }
 
   leave() {
     if(this.gatheringService.initiator)
       this.cancel();
     else {
-      // TODO
+      this.alertCtrl.create({
+        title: 'Leave gathering',
+        message: 'Are you sure?',
+        buttons: [
+          { text: 'No' },
+          { text: 'Yes', handler: () => {
+            this.gatheringService.decline().then(() => {
+              this.gatheringService.reset(false);
+              this.navCtrl.setRoot(MainTabs);
+            });
+          }}
+        ]
+      }).present();
     }
   }
 
   cancel() {
-    // TODO
+    this.alertCtrl.create({
+      title: 'Cancel gathering',
+      message: 'Are you sure?',
+      buttons: [
+        { text: 'No' },
+        { text: 'Yes', handler: () => {
+          this.gatheringService.stop('canceled').then(() => {
+            this.gatheringService.reset(false);
+            this.navCtrl.setRoot(MainTabs);
+          });
+        }}
+      ]
+    }).present();
   }
 
   checkProximity(position) {
-    // TODO
+    if(!this.checkProximityAlertDone &&this.gatheringService.distance != null) {
+      if(this.gatheringService.distance <= 10) {
+        this.notificationService.notify({
+          title: 'Almost there!',
+          message: 'You are at less than ' + this.gatheringService.distance + 'm of the destination,\ndon\'t forget to tell others by using the green checkmark',
+        });
+        this.checkProximityAlertDone = true;
+      }
+    }
   } 
 
 }
