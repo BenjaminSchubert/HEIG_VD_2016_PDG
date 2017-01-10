@@ -160,7 +160,10 @@ export class GatheringService {
       this.distance = null;
   }
 
-  configureNotificationHandlers(navCtrl: NavController, alertCtrl: AlertController) {
+  configureNotificationHandlers(
+      navCtrl: NavController, alertCtrl: AlertController, pendingGathering: typeof PendingGathering,
+      runningGathering: typeof RunningGathering, mainTabs: typeof MainTabs,
+  ) {
 
     // add handlers for push notifications
     // -----------------------------------
@@ -181,7 +184,7 @@ export class GatheringService {
             this.reset();
             this.fetch(n.additionalData.meeting).then(() => {
               this.status = 'request';
-              navCtrl.setRoot(PendingGathering);
+              navCtrl.setRoot(pendingGathering);
             });
           }}
         ],
@@ -222,7 +225,7 @@ export class GatheringService {
       this.meetings.status = 'progress';
       if(this.status == 'pending') {
         this.status = 'running';
-        navCtrl.setRoot(RunningGathering);
+        navCtrl.setRoot(runningGathering);
       }
     });
 
@@ -239,7 +242,7 @@ export class GatheringService {
         buttons: [
           { text: 'OK', handler: () => {
             this.reset();
-            navCtrl.setRoot(MainTabs);
+            navCtrl.setRoot(mainTabs);
           }}
         ],
         enableBackdropDismiss: false
