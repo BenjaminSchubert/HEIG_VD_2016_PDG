@@ -63,7 +63,10 @@ class MeetingPlaceSerializer(ModelSerializer):
         :param instance: meeting for which to get the place
         :return: a `Place` instance
         """
-        return Participant.objects.get(user=self.context["request"].user, meeting=instance).place
+        try:
+            return Participant.objects.get(user=self.context["request"].user, meeting=instance).place
+        except Participant.DoesNotExist:
+            return None
 
 
 class ParticipantSerializer(ModelSerializer):
