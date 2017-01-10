@@ -47,15 +47,15 @@ export class RadyApp extends AfterViewInit {
 
             // redefine the console.log behavior for device testing
             // /!\ comments those lines for production /!\
-            let logger = function(nS) {
-                return function(text) {
+            let logger = function (nS) {
+                return function (text) {
                     nS.notify({
                         title: "CONSOLE.LOG",
                         message: text
                     });
                 };
             };
-            console.log = logger(this.notificationService);
+            console.log = logger(this.notificationService);//*/
 
             platform.ready().then(() => {
                 // Okay, so the platform is ready and our plugins are available.
@@ -66,33 +66,36 @@ export class RadyApp extends AfterViewInit {
                     .then(() => this.authService.refresh().toPromise())
                     .then(() => this.nav.setRoot(MainTabs))
                     .catch((err: any) => {
-                        // FIXME REMOVE
-                        console.log("GOT EEEEEEEEEEEEEEEER" + JSON.stringify(err));
-
-                        this.nav.setRoot(SignIn);
+                        if (err.token !== true) {
+                            console.log("[Rady][RadyApp] got : " + JSON.stringify(err));
+                            this.notifyBadError();
+                        }
+                        this.nav.setRoot(SignIn).then();
                     });
 
                 this.geolocationService.initialize();
             });
         } catch (err) {
             console.log("[Rady][RadyApp] got : " + JSON.stringify(err));
-
-            this.alertCtrl.create({
-                buttons: [{
-                    handler: () => this.platform.exitApp(),
-                    text: "OK",
-                }],
-                enableBackdropDismiss: false,
-                // tslint:disable-next-line:max-line-length
-                message: "Something bad happened launching the application. We are sorry. If this error persists, please contact the developers",
-                title: "Oh Snap !",
-            }).present().then();
-
+            this.notifyBadError();
         }
     }
 
     public ngAfterViewInit() {
         this.gatheringService.configureNotificationHandlers(this.nav, this.alertCtrl, PendingGathering,
             RunningGathering, MainTabs);
+    }
+
+    private notifyBadError() {
+        this.alertCtrl.create({
+            buttons: [{
+                handler: () => this.platform.exitApp(),
+                text: "OK",
+            }],
+            enableBackdropDismiss: false,
+            // tslint:disable-next-line:max-line-length
+            message: "Something bad happened launching the application. We are sorry. If this error persists, please contact the developers",
+            title: "Oh Snap !",
+        }).present().then();
     }
 }

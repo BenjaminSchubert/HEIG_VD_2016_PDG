@@ -118,7 +118,6 @@ export class ContactList {
             // FIXME : clean type
             return <any> {user: u.friend};
         });
-        console.log("SENDING           " + JSON.stringify(this.gatheringService.meetings.participants));
 
         this.app.getRootNav().push(CreateGathering).then();
     }

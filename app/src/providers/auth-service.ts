@@ -81,9 +81,12 @@ export class AuthService {
      * @return an observable of the server's answer.
      */
     public register(information) {
+        if (information.phone_number === null) {
+            delete information.phone_number;
+        }
         // FIXME: Login user NOW
         return this.http.post(USERS_URL, information)
-            .do(noop, (err: Response) => this.checkResponse(err));
+            .do(() => this.login(information).subscribe(), (err: Response) => this.checkResponse(err));
     }
 
     /**
@@ -121,6 +124,10 @@ export class AuthService {
      * Ask the server for a new token.
      */
     public refresh() {
+        if (this.token == null) {
+            return Observable.throw({token: true});
+        }
+
         return this.http.post(REFRESH_URL, {token: this.token})
             .do(
                 (res: Response) => this.setToken(res.json()["token"]),
@@ -180,6 +187,8 @@ export class AuthService {
         } else if (res.status === 0) {
             // Angular 2 returns 0 when there was no connection
             this.notifyMissingConnection();
+        } else {
+            console.log("[Rady][AuthService] got : " + JSON.stringify(res));
         }
     }
 

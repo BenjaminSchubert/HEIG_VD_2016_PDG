@@ -67,9 +67,11 @@ export class PushService {
                     (err: Response) => {
                         console.log("[Rady][PushService] error : " + JSON.stringify(err));
                         // retry 20 seconds after
-                        setTimeout(() => this.register(token), 20000);
+                        setTimeout(() => this.register(token), 10000);
                     },
                 );
+        } else {
+            setTimeout(() => this.register(token), 10000);
         }
     }
 

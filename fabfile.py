@@ -237,11 +237,12 @@ def deploy_backend():
 @task
 def deploy_app():
     with section("Deploying app"):
-        sudo("mkdir -p " + TEMPORARY_PATH)
+        run("mkdir -p " + TEMPORARY_PATH)
         put(
             "{}/platforms/android/build/outputs/apk/android-release-unsigned.apk".format(LOCAL_APP),
             "{}/".format(TEMPORARY_PATH)
         )
+        sudo("mkdir -p {}/downloads".format(REMOTE_FRONTEND))
         sudo("cp {}/android-release-unsigned.apk {}/downloads/rady.apk".format(TEMPORARY_PATH, REMOTE_FRONTEND))
         sudo("rm -r {}".format(TEMPORARY_PATH))
 
