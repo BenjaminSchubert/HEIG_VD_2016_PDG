@@ -187,11 +187,19 @@ class MeetingListView(ListCreateAPIView):
     Please note that all dates must be given in UTC ISO full format.
     """
 
-    serializer_class = WriteMeetingSerializer
-
     def get_queryset(self):
         """No filter."""
         return Meeting.objects
+
+    def list(self, request, *args, **kwargs):
+        """
+        List of meetings where the user is participant.
+
+        :param request: the HTTP request done
+        :return a 400 or 201 response depending on whether the data was correct or not.
+        """
+        self.serializer_class = MeetingSerializer
+        return ListCreateAPIView.list(self, request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         """
@@ -200,6 +208,7 @@ class MeetingListView(ListCreateAPIView):
         :param request: the HTTP request done
         :return a 400 or 201 response depending on whether the data was correct or not.
         """
+        self.serializer_class = WriteMeetingSerializer
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
