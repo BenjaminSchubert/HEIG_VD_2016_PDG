@@ -1,18 +1,71 @@
-<!--
-  Generated template for the RunningGathering page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
-
+<ion-header class="hidden">
   <ion-navbar>
-    <ion-title>running-gathering</ion-title>
+    <ion-title>Running Gathering</ion-title>
   </ion-navbar>
-
 </ion-header>
 
+<ion-content class="page-running-gathering">
 
-<ion-content padding>
+  <!-- Map -->
+  <div id="mapid" class="leaflet-map">
+    <p class="information" *ngIf="map==null">loading map...</p>
+  </div>
+
+  <!-- Actions -->
+  <ion-fab right top>
+    <button ion-fab color="primary">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <!-- Map actions -->
+    <ion-fab-list side="left">
+      <button ion-fab color="light" (click)="setAutoCenter()">
+        <ion-icon name="locate"></ion-icon>
+      </button>
+    </ion-fab-list>
+
+    <!-- Gathering actions -->
+    <ion-fab-list side="bottom">
+      <button ion-fab color="secondary" (click)="arrived()">
+        <ion-icon name="checkmark"></ion-icon>
+      </button>
+      <button ion-fab color="danger" (click)="leave()">
+        <ion-icon name="close" *ngIf="gatheringService.initiator"></ion-icon>
+        <ion-icon name="log-out" *ngIf="!gatheringService.initiator"></ion-icon>
+      </button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <!-- Visible infos -->
+  <div class="visible">
+    <p class="information">
+      <ion-badge color="light" *ngIf="gatheringService.distance!=null">{{gatheringService.distance}}m to go</ion-badge>
+      <ion-badge color="light" *ngIf="gatheringService.distance==null">computing distance</ion-badge>
+
+      <ion-badge color="light" *ngIf="autocenter">auto-centering</ion-badge>
+    </p>
+
+    <p class="information">
+      <small>Scroll down for more informations</small>
+      <ion-icon name="arrow-down"></ion-icon>
+    </p>
+  </div>
+
+  <!-- Other infos -->
+  <!-- Participants infos --> 
+  <ion-list>
+    <ion-item *ngFor="let participant of gatheringService.meetings.participants">
+      <strong *ngIf="participant.arrived">{{participant.user.username}}</strong>
+      <span *ngIf="!participant.arrived">{{participant.user.username}}</span>
+
+      <ion-icon item-right name="ribbon" color="primary" *ngIf="participant.user.id==gatheringService.meetings.organiser.id"></ion-icon>
+
+      <ion-icon item-right name="checkmark-circle" color="secondary" *ngIf="participant.accepted==true"></ion-icon>
+      <ion-icon item-right name="close-circle" color="danger" *ngIf="participant.accepted!=true"></ion-icon>
+
+      <ion-spinner item-right *ngIf="participant.arrived!=true&&participant.accepted!=false"></ion-spinner>
+      <ion-badge item-right color="secondary" *ngIf="participant.arrived==true">arrived</ion-badge>
+    </ion-item>
+  </ion-list>
 
 </ion-content>

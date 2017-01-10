@@ -7,6 +7,7 @@ import { NotificationService } from '../../providers/notification-service';
 import { LeafletHelper } from '../../providers/leaflet-helper';
 
 import { MainTabs } from '../main-tabs/main-tabs';
+import { RunningGathering } from '../running-gathering/running-gathering';
 
 /**
  * PendingGathering
@@ -43,12 +44,13 @@ export class PendingGathering {
 
   ionViewDidLoad() {
 
-    // start gathering
+    // create gathering
     if(this.gatheringService.initiator) {
       let loading = this.loadingCtrl.create({ content: 'Please wait...' });
       loading.present();
       this.gatheringService.create().then(() => {
         loading.dismiss();
+        this.gatheringService.status = 'pending';
       }).catch((err) => {
         loading.dismiss();
         console.log('[PendingGathering] start error: ' + JSON.stringify(err));
@@ -87,11 +89,10 @@ export class PendingGathering {
 
   cancel(askConfirmation = true) {
 
-    function callback(gS, nC) {
+    function callback(gatS, geoS, nC) {
 
-      // TODO
-
-      gS.off();
+      gatS.reset();
+      geoS.off();
       nC.setRoot(MainTabs);
     }
 
@@ -102,24 +103,39 @@ export class PendingGathering {
         buttons: [
           { text: 'No' },
           { text: 'Yes', handler: () => {
-            callback(this.geolocationService, this.navCtrl);
+            callback(this.gatheringService, this.geolocationService, this.navCtrl);
           }}
         ]
       }).present();
     }
     else
-      callback(this.geolocationService, this.navCtrl);
+      callback(this.gatheringService, this.geolocationService, this.navCtrl);
   }
 
   accept() {
-
+    this.gatheringService.accept().then(() => {
+      this.gatheringService.status = 'pending';
+    });
   }
 
   decline() {
-    this.cancel();
+    this.alertCtrl.create({
+      title: 'Decline gathering',
+      message: 'Are you sure?',
+      buttons: [
+        { text: 'No' },
+        { text: 'Yes', handler: () => {
+          this.gatheringService.decline().then(() => {
+            this.cancel(false);
+          });
+        }}
+      ]
+    }).present();
   }
 
   continueAnyway() {
+    this.navCtrl.setRoot(RunningGathering);
 
+    // TODO check if it's ok, for exemple in 'person' type, the person must have accepted
   }
 }

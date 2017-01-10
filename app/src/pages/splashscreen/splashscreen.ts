@@ -44,7 +44,7 @@ export class Splashscreen {
       });
 
       // Specific handlers
-      this.gatheringService.configureNotificationHandlers(this.navCtrl);
+      this.gatheringService.configureNotificationHandlers(this.navCtrl, this.alertCtrl);
 
       // redefine the console.log behavior for device testing
       // /!\ comments those lines for production /!\

@@ -67,8 +67,8 @@
           <span *ngIf="!participant.accepted">{{participant.user.username}}</span>
           <ion-badge item-right *ngIf="participant.user.id==gatheringService.meetings.organiser.id">admin</ion-badge>
           <ion-spinner item-right *ngIf="participant.accepted==null"></ion-spinner>
-          <ion-badge item-right color="light" *ngIf="participant.accepted==true">accepted</ion-badge>
-          <ion-badge item-right color="light" *ngIf="participant.accepted==false">declined</ion-badge>
+          <ion-badge item-right color="secondary" *ngIf="participant.accepted==true">accepted</ion-badge>
+          <ion-badge item-right color="danger" *ngIf="participant.accepted==false">declined/unreachable</ion-badge>
         </ion-item>
       </ion-list>
     </div>
