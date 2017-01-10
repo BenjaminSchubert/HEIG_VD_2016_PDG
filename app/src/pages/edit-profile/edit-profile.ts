@@ -6,6 +6,7 @@ import { MainTabs } from "../main-tabs/main-tabs";
 import { AccountFormComponent } from "../../lib/form-component";
 import { AccountService } from "../../providers/account-service";
 import { IAccount } from "../../lib/stubs/account";
+import { RadyValidators } from "../../lib/validators";
 
 
 @Component({
@@ -56,6 +57,24 @@ export class EditProfile extends AccountFormComponent {
                 }).present().then();
             },
         );
+    }
+
+    protected buildForm() {
+        let form = super.buildForm();
+
+        form.get("passwordConfirmation").setValidators(
+            RadyValidators.match(form.get("password"), "passwords do not match."),
+        );
+
+        this.subscriptions.push(
+            form.get("password").valueChanges.subscribe(() => {
+                form.get("passwordConfirmation").markAsPristine();
+                form.get("passwordConfirmation").markAsDirty();
+                form.get("passwordConfirmation").updateValueAndValidity();
+            }),
+        );
+
+        return form;
     }
 
 }

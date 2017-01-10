@@ -1,35 +1,37 @@
-import { Component } from '@angular/core';
-import { NavController, App } from 'ionic-angular';
+import { Component } from "@angular/core";
+import { NavController, App } from "ionic-angular";
+import { EditProfile } from "../edit-profile/edit-profile";
+import { SignIn } from "../sign-in/sign-in";
+import { AuthService } from "../../providers/auth-service";
+import { AccountService } from "../../providers/account-service";
 
-import { EditProfile } from '../edit-profile/edit-profile';
-import { SignIn } from '../sign-in/sign-in';
-
-import { AuthService } from '../../providers/auth-service';
-import { MeService } from '../../providers/me-service';
 
 @Component({
-  templateUrl: 'settings.html'
+    templateUrl: "settings.html",
 })
 export class Settings {
 
-  constructor(public navCtrl: NavController,
-              public app: App,
-              public authService: AuthService,
-              public meService: MeService) {
-    // nothing
-  }
+    constructor(private navCtrl: NavController,
+                private app: App,
+                private authService: AuthService,
+                private service: AccountService) {
+    }
 
-  ionViewDidLoad() {
-    this.meService.fetch();
-  }
+    public ionViewWillEnter() {
+        this.service.fetch().subscribe();
+    }
 
-  goToEditProfile(){
-    this.app.getRootNav().push(EditProfile);
-  }
+    public editProfile() {
+        this.app.getRootNav().push(EditProfile).then();
+    }
 
-  doLogOut() {
-    this.authService.logout();
-    this.navCtrl.setRoot(SignIn);
-  }
+    public logout() {
+        this.authService.logout();
+        this.navCtrl.setRoot(SignIn).then();
+    }
+
+    public sendEmail() {
+        window.open("mailto:rady@benschubert.me", "_system");
+    }
 
 }
