@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, Platform, AlertController } from 'ionic-angular';
+import { Splashscreen as S } from 'ionic-native';
+
 import { StatusBar } from 'ionic-native';
 
 import { SignIn } from '../sign-in/sign-in';
@@ -59,8 +61,9 @@ export class Splashscreen {
       console.log = logger(this.notificationService);//*/
 
       platform.ready().then(() => {
+          S.hide();
 
-        // Okay, so the platform is ready and our plugins are available.
+          // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
         StatusBar.styleDefault();
           this.authService.initialize()

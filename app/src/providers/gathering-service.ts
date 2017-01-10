@@ -73,12 +73,10 @@ export class GatheringService {
   }
 
   stop(status = 'ended') {
-    return this.authService.http().patch(
+    return this.authService.patch(
       CONFIG.API_URL + 'meetings/' + this.meetings.id + '/',
       { status: status },
-      this.authService.createOptions([
-        { name: 'Content-Type', value: 'application/json' }
-      ])).map(res => res.json()).toPromise().then(() => {
+      ).map(res => res.json()).toPromise().then(() => {
         this.meetings.status = status;
       }).catch((err) => {
         console.log('[GatheringService] stop error: ' + JSON.stringify(err));
@@ -86,12 +84,10 @@ export class GatheringService {
   }
 
   accept() {
-    return this.authService.http().patch(
+    return this.authService.patch(
       CONFIG.API_URL + 'meetings/' + this.meetings.id + '/participants/',
       { accepted: true },
-      this.authService.createOptions([
-        { name: 'Content-Type', value: 'application/json' }
-      ])).map(res => res.json()).toPromise().then(() => {
+      ).map(res => res.json()).toPromise().then(() => {
         this.meetings.participants.find((p) => {
           return p.user.id == this.meService.me.id;
         }).accepted = true;
@@ -101,12 +97,10 @@ export class GatheringService {
   }
 
   decline() {
-    return this.authService.http().patch(
+    return this.authService.patch(
       CONFIG.API_URL + 'meetings/' + this.meetings.id + '/participants/',
       { accepted: false },
-      this.authService.createOptions([
-        { name: 'Content-Type', value: 'application/json' }
-      ])).map(res => res.json()).toPromise().then(() => {
+      ).map(res => res.json()).toPromise().then(() => {
         this.meetings.participants.find((p) => {
           return p.user.id == this.meService.me.id;
         }).accepted = false;
@@ -116,12 +110,10 @@ export class GatheringService {
   }
 
   arrived() {
-    return this.authService.http().patch(
+    return this.authService.patch(
       CONFIG.API_URL + 'meetings/' + this.meetings.id + '/participants/',
       { arrived: true },
-      this.authService.createOptions([
-        { name: 'Content-Type', value: 'application/json' }
-      ])).map(res => res.json()).toPromise().then(() => {
+      ).map(res => res.json()).toPromise().then(() => {
         this.meetings.participants.find((p) => {
           return p.user.id == this.meService.me.id;
         }).arrived = true;
@@ -131,7 +123,7 @@ export class GatheringService {
   }
 
   fetch(id) {
-    return this.authService.http().get(CONFIG.API_URL + 'meetings/' + id + '/')
+    return this.authService.get(CONFIG.API_URL + 'meetings/' + id + '/')
       .map(res => res.json())
       .toPromise()
       .then((data) => {
@@ -180,12 +172,10 @@ export class GatheringService {
         message: 'Accept?',
         buttons: [
           { text: 'Decline', handler: () => {
-            this.authService.http().patch(
+            this.authService.patch(
               CONFIG.API_URL + 'meetings/participants/' + n.additionalData.meeting + '/',
               { accepted: false },
-              this.authService.createOptions([
-                { name: 'Content-Type', value: 'application/json' }
-              ]));
+              );
           }},
           { text: 'See info', handler: () => {
             this.reset();

@@ -15,6 +15,5 @@ export class RadyApp {
   rootPage = Splashscreen;
 
   constructor() {
-    S.hide();
   }
 }
