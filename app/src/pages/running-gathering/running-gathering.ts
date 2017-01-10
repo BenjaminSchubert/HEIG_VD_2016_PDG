@@ -27,6 +27,7 @@ export class RunningGathering {
   public autocenter: boolean;
   public setautocenter: boolean;
   public checkProximityAlertDone: boolean;
+  public arrivedCheck: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -47,6 +48,7 @@ export class RunningGathering {
     this.autocenter = true;
     this.setautocenter = false;
     this.checkProximityAlertDone = false;
+    this.arrivedCheck = false;
   }
 
   // TEST
@@ -134,13 +136,20 @@ export class RunningGathering {
       buttons: [
         { text: 'No' },
         { text: 'Yes', handler: () => {
-          this.gatheringService.arrived();
+          this.gatheringService.arrived().then(() => {
+            this.arrivedCheck = true;
+          });
         }}
       ]
     }).present();
   }
 
   leave() {
+    if(this.arrivedCheck) {
+      this.navCtrl.setRoot(MainTabs);
+      this.gatheringService.reset(false);
+      return;
+    }
     if(this.gatheringService.initiator)
       this.cancel();
     else {
@@ -151,8 +160,8 @@ export class RunningGathering {
           { text: 'No' },
           { text: 'Yes', handler: () => {
             this.gatheringService.decline().then(() => {
-              this.gatheringService.reset(false);
               this.navCtrl.setRoot(MainTabs);
+              this.gatheringService.reset(false);
             });
           }}
         ]
@@ -168,8 +177,8 @@ export class RunningGathering {
         { text: 'No' },
         { text: 'Yes', handler: () => {
           this.gatheringService.stop('canceled').then(() => {
-            this.gatheringService.reset(false);
             this.navCtrl.setRoot(MainTabs);
+            this.gatheringService.reset(false);
           });
         }}
       ]
@@ -177,7 +186,7 @@ export class RunningGathering {
   }
 
   checkProximity(position) {
-    if(!this.checkProximityAlertDone &&this.gatheringService.distance != null) {
+    if(!this.checkProximityAlertDone && this.gatheringService.distance != null) {
       if(this.gatheringService.distance <= 10) {
         this.notificationService.notify({
           title: 'Almost there!',

@@ -47,15 +47,15 @@ export class RadyApp extends AfterViewInit {
 
             // redefine the console.log behavior for device testing
             // /!\ comments those lines for production /!\
-            /*let logger = function(nS) {
-             return function(text) {
-             nS.notify({
-             title: "CONSOLE.LOG",
-             message: text
-             });
-             };
-             };
-             console.log = logger(this.notificationService);//*/
+            let logger = function(nS) {
+                return function(text) {
+                    nS.notify({
+                        title: "CONSOLE.LOG",
+                        message: text
+                    });
+                };
+            };
+            console.log = logger(this.notificationService);
 
             platform.ready().then(() => {
                 // Okay, so the platform is ready and our plugins are available.

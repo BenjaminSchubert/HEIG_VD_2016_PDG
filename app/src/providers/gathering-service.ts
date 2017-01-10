@@ -58,9 +58,6 @@ export class GatheringService {
       payload,
     ).map(res => res.json()).toPromise().then((data) => {
 
-      // TEST
-      console.log('[GatheringService] creation succeed: ' + JSON.stringify(data));
-
       // update gathering
       this.meetings = data;
     }).catch((err) => {
@@ -144,6 +141,7 @@ export class GatheringService {
     this.meetings = null;
     this.distance = null;
     this.initiator = null;
+    this.geolocationService.off();
   }
 
   updateDistanceTo(position) {
@@ -176,9 +174,11 @@ export class GatheringService {
         buttons: [
           { text: 'Decline', handler: () => {
             this.authService.patch(
-              CONFIG.API_URL + 'meetings/participants/' + n.additionalData.meeting + '/',
+              CONFIG.API_URL + 'meetings/' + n.additionalData.meeting + '/participants/',
               { accepted: false },
-              );
+            ).toPromise().catch((err) => {
+              console.log('[GatheringService] quick decline error: ' + JSON.stringify(err));
+            });
           }},
           { text: 'See info', handler: () => {
             this.reset();
@@ -231,8 +231,16 @@ export class GatheringService {
 
     // finished meetings
     this.notificationService.addHandler('finished-meeting', (n) => {
-      this.meetings.status = 'finished';
-      this.reset();
+      alertCtrl.create({
+        title: 'Gathering finished',
+        buttons: [
+          { text: 'OK', handler: () => {
+            navCtrl.setRoot(mainTabs);
+            this.reset();
+          }}
+        ],
+        enableBackdropDismiss: false
+      }).present();
     });
 
     // canceled meetings
@@ -241,8 +249,8 @@ export class GatheringService {
         title: 'Gathering canceled',
         buttons: [
           { text: 'OK', handler: () => {
-            this.reset();
             navCtrl.setRoot(mainTabs);
+            this.reset();
           }}
         ],
         enableBackdropDismiss: false
