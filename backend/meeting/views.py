@@ -2,7 +2,8 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView, CreateAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView, UpdateAPIView, \
+    CreateAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -33,9 +34,19 @@ class ParticipantDetailsView(UpdateAPIView):
     serializer_class = ParticipantSerializer
     permission_classes = (IsParticipantOwner,)
 
-    def get_queryset(self):
-        """Get all participation for the registered user."""
-        return Participant.objects
+    def get_object(self):
+        """
+        Custom get_object.
+
+        Lookup of the Participant object related to the current logged in user
+        and the meeting id provided.
+
+        :return: the desired Participant object
+        """
+        queryset = Participant.objects.filter(user_id=self.request.user.id, meeting_id=self.kwargs["pk"])
+        obj = get_object_or_404(queryset)
+        self.check_object_permissions(self.request, obj)
+        return obj
 
 
 class PlaceListView(ListAPIView):
