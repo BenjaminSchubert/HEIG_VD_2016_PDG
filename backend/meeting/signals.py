@@ -69,7 +69,7 @@ def post_save_participant(instance, created, **kwargs):
                         data=dict(
                             type="user-canceled-meeting",
                             meeting=instance.meeting.id,
-                            participant=instance.id
+                            participant=instance.user_id
                         ),
                         deferred=False,
                     )
