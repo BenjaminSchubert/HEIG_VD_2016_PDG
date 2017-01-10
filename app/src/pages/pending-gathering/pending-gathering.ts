@@ -89,11 +89,10 @@ export class PendingGathering {
 
   cancel(askConfirmation = true) {
 
-    function callback(gatS, geoS, nC) {
+    function callback(gatS, nC) {
 
-      gatS.reset();
-      geoS.off();
       nC.setRoot(MainTabs);
+      gatS.reset();
     }
 
     if(askConfirmation) {
@@ -103,13 +102,13 @@ export class PendingGathering {
         buttons: [
           { text: 'No' },
           { text: 'Yes', handler: () => {
-            callback(this.gatheringService, this.geolocationService, this.navCtrl);
+            callback(this.gatheringService, this.navCtrl);
           }}
         ]
       }).present();
     }
     else
-      callback(this.gatheringService, this.geolocationService, this.navCtrl);
+      callback(this.gatheringService, this.navCtrl);
   }
 
   accept() {

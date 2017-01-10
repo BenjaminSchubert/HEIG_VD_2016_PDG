@@ -1,62 +1,68 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { AlertController, App } from 'ionic-angular';
 
-import { RadyHistory } from '../../models/history';
-import { RadyUser } from '../../models/user';
-import { RadyLocation } from '../../models/location';
+import { RadyMeetings } from '../../models/meetings';
 
+import { PendingGathering } from '../pending-gathering/pending-gathering';
+
+import { GatheringService } from '../../providers/gathering-service';
+import { AuthService } from '../../providers/auth-service';
+import { CONFIG } from '../../providers/config';
+
+/** 
+ * History
+ * History of meetings
+ */
 @Component({
-  selector: 'page-history',
   templateUrl: 'history.html'
 })
 export class History {
 
-  historyList : RadyHistory[];
+  public list : RadyMeetings[];
 
-  // Load the historyList for the current user
-  initializeItems() {
-    this.historyList = [
-      new RadyHistory(
-        [
-          new RadyUser('Sauron'),
-          new RadyUser('Frodon'),
-          new RadyUser('Gandalf')
-        ]
-        , new RadyLocation(12,29)
-        , "20/02/1992"
-      ),
-      new RadyHistory(
-        [
-          new RadyUser('Pipin'),
-          new RadyUser('Merry'),
-          new RadyUser('Frodon')
-        ]
-        , new RadyLocation(10.23,82.83)
-        , "31/01/1999"
-      ),
-      new RadyHistory(
-        [
-          new RadyUser('Gandalf'),
-          new RadyUser('Sauron')
-        ]
-        , new RadyLocation(123,29.13)
-        , "10/06/2016"
-      )
-    ]
+  constructor(
+    public app: App,
+    public alertCtrl: AlertController,
+    public authService: AuthService,
+    public gatheringService: GatheringService
+  ) {
+    this.list = null;  
   }
-
-  constructor(public navCtrl: NavController) {
-    // Load history
-    this.initializeItems();
-
-  }
-
 
   ionViewDidLoad() {
+    this.fetch();
   }
 
-  goToGathering(history : RadyHistory){
-    
+  startGathering(meetings: RadyMeetings) {
+    this.alertCtrl.create({
+      title: 'Start gathering',
+      message: 'Are you sure?',
+      buttons: [
+        { text: 'Cancel' },
+        { text: 'Accept', handler: () => {
+          this.gatheringService.initiator = true;
+          this.gatheringService.status = 'pending';
+          this.gatheringService.meetings = meetings;
+          this.app.getRootNav().setRoot(PendingGathering);
+        }}
+      ]
+    }).present();
   }
 
+  fetch() {
+    this.authService.get(CONFIG.API_URL + 'meetings/')
+      .map(res => res.json())
+      .map((res) => {
+        return res.sort((a, b) => {
+          return b.id - a.id;
+        }).slice(0, 10);
+      })
+      .toPromise()
+      .then((data) => {
+        this.list = data;
+      })
+      .catch((err) => {
+        console.log('[History] fetch error: ' + JSON.stringify(err));
+      });
+  }
 }

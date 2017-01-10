@@ -4,23 +4,31 @@
   </ion-navbar>
 </ion-header>
 
-
 <ion-content padding>
 
-  <ion-list>
-    <ion-card *ngFor="let item of historyList">
-      <ion-card-content >
-        <button ion-item (click)="goToGathering(item)" >
+  <p *ngIf="list==null">no meeting made yet</p>
+  <ion-list *ngIf="list!=null">
+    <ion-card *ngFor="let meetings of list">
+      <ion-card-content>
+        <button ion-item (click)="startGathering(meetings)" >
           <ion-label>
-            <span *ngFor="let user of item.users"> {{user.username }} </span> <br><br>
-            <p> Date : {{item.date}} </p>
-            <p> At location : {{item.location.posx}},  {{item.location.posy}} </p>
+            <strong *ngFor="let participant of meetings.participants"> 
+              {{participant.user.username}} 
+            </strong> 
+            <br>
+            <br>
+            <p><strong>Mode:</strong> {{meetings.type}}</p>
+            <p *ngIf="meetings.type=='place'"><strong>At:</strong> {{meetings.place.latitude}}, {{meetings.place.longitude}}</p>
           </ion-label>
         </button>
       </ion-card-content>
-
     </ion-card>
   </ion-list>
 
+  <ion-fab right bottom>
+    <button ion-fab color="light" (click)="fetch()">
+      <ion-icon name="refresh"></ion-icon>
+    </button>
+  </ion-fab>
 
 </ion-content>
