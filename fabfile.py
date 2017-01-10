@@ -48,7 +48,7 @@ LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
 LOCAL_APP = os.path.join(LOCAL_PATH, "app")
 LOCAL_BACKEND = os.path.join(LOCAL_PATH, "backend")
 LOCAL_FRONTEND = os.path.join(LOCAL_PATH, "frontend")
-LOCAL_VENV = os.path.join(LOCAL_PATH, os.path.expanduser("~/.virtualenvs/rady"))
+LOCAL_VENV = os.path.join(LOCAL_PATH, "venv")
 
 
 npm = None
@@ -268,5 +268,8 @@ def setup_dev():
         with lcd(LOCAL_FRONTEND):
             local("{} install".format(get_npm()))
 
-        with lcd(LOCAL_BACKEND):
+        if not os.path.exists(LOCAL_VENV):
+            local("virtualenv -p python3.5 {}".format(LOCAL_VENV))
+
+        with prefix("source {}/bin/activate".format(LOCAL_VENV)), lcd(LOCAL_BACKEND):
             local("pip3 install -r ./requirements.pip")
