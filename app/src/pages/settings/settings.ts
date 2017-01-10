@@ -10,7 +10,6 @@ import { AccountService } from "../../providers/account-service";
     templateUrl: "settings.html",
 })
 export class Settings {
-
     constructor(private navCtrl: NavController,
                 private app: App,
                 private authService: AuthService,
@@ -23,6 +22,10 @@ export class Settings {
 
     public editProfile() {
         this.app.getRootNav().push(EditProfile).then();
+    }
+
+    public hide() {
+        this.service.hide().subscribe();
     }
 
     public logout() {

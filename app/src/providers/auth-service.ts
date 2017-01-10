@@ -4,9 +4,14 @@ import "rxjs/add/operator/do";
 import { Observable } from "rxjs/Observable";
 import { Injectable } from "@angular/core";
 import { Http, Response, RequestOptionsArgs } from "@angular/http";
+import { AlertController } from "ionic-angular";
 import { AuthHttp, AuthConfig, JwtHelper } from "angular2-jwt";
 import { SecureStorage } from "ionic-native";
 import { LOGIN_URL, REFRESH_URL, USERS_URL, PASSWORD_RESET_URL } from "../app/api.routes";
+
+
+function noop() {
+}
 
 
 @Injectable()
@@ -34,8 +39,9 @@ export class AuthService {
 
     /**
      * @param http angular2 http service
+     * @param alertCtrl to show popup to the user
      */
-    constructor(private http: Http) {
+    constructor(private http: Http, private alertCtrl: AlertController) {
     }
 
     /**
@@ -75,8 +81,9 @@ export class AuthService {
      * @return an observable of the server's answer.
      */
     public register(information) {
-        // FIXME: add info for current user
-        return this.http.post(USERS_URL, information);
+        // FIXME: Login user NOW
+        return this.http.post(USERS_URL, information)
+            .do(noop, (err: Response) => this.checkResponse(err));
     }
 
     /**
@@ -86,21 +93,28 @@ export class AuthService {
      */
     public login(credentials: {email: string, password: string}) {
         return this.http.post(LOGIN_URL, credentials)
-            .do((res: Response) => this.setToken(res.json()["token"]));
+            .do(
+                (res: Response) => {
+                    console.log("[Rady][AuthService] user logged in");
+                    this.setToken(res.json()["token"]).then();
+                },
+                (err: Response) => this.checkResponse(err),
+            );
     }
 
     /**
      * Remove the local token.
      */
     public logout() {
-        this.setToken(null);
+        return this.setToken(null);
     }
 
     /**
      * Ask for a reset link for the user's password
      */
     public resetPassword(data: {email: string}) {
-        return this.http.post(PASSWORD_RESET_URL, data);
+        return this.http.post(PASSWORD_RESET_URL, data)
+            .do(noop, (err: Response) => this.checkResponse(err));
     }
 
     /**
@@ -108,14 +122,18 @@ export class AuthService {
      */
     public refresh() {
         return this.http.post(REFRESH_URL, {token: this.token})
-            .do((res: Response) => this.setToken(res.json()["token"]));
+            .do(
+                (res: Response) => this.setToken(res.json()["token"]),
+                (err: Response) => this.checkResponse(err),
+            );
     }
 
     /**
      * Performs a request with `get` http method
      */
     public get(url: string, options?: RequestOptionsArgs): Observable<Response> {
-        return this.secureHttp.get(url, options);
+        return this.secureHttp.get(url, options)
+            .do(noop, (err: Response) => this.checkResponse(err));
     }
 
     /**
@@ -123,7 +141,8 @@ export class AuthService {
      */
     // tslint:disable-next-line:no-any
     public post(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
-        return this.secureHttp.post(url, body, options);
+        return this.secureHttp.post(url, body, options)
+            .do(noop, (err: Response) => this.checkResponse(err));
     }
 
     /**
@@ -131,7 +150,8 @@ export class AuthService {
      */
     // tslint:disable-next-line:no-any
     public patch(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
-        return this.secureHttp.patch(url, body, options);
+        return this.secureHttp.patch(url, body, options)
+            .do(noop, (err: Response) => this.checkResponse(err));
     }
 
     /**
@@ -139,7 +159,8 @@ export class AuthService {
      */
     // tslint:disable-next-line:no-any
     public put(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
-        return this.secureHttp.put(url, body, options);
+        return this.secureHttp.put(url, body, options)
+            .do(noop, (err: Response) => this.checkResponse(err));
     }
 
     /**
@@ -151,5 +172,31 @@ export class AuthService {
         return this.storage
             .set(this.TOKEN_NAME, token)
             .then(() => this._token = token);
+    }
+
+    private checkResponse(res: Response) {
+        if (res.status >= 500) {
+            this.notifyServerError();
+        } else if (res.status === 0) {
+            // Angular 2 returns 0 when there was no connection
+            this.notifyMissingConnection();
+        }
+    }
+
+    private notifyMissingConnection() {
+        this.notify("Can't contact server", "You don't seem to have network access, please enable it");
+    }
+
+    private notifyServerError() {
+        this.notify("Unexpected error", "The server failed, please contact the support if this continues");
+    }
+
+    private notify(title: string, message: string) {
+        this.alertCtrl.create({
+            buttons: ["OK"],
+            enableBackdropDismiss: false,
+            message: message,
+            title: title,
+        }).present().then();
     }
 }

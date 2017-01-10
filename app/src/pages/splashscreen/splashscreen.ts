@@ -65,14 +65,12 @@ export class Splashscreen {
         StatusBar.styleDefault();
           this.authService.initialize()
               .then(() => this.pushService.initialize())
-              .then(() => {
-                  this.authService.refresh().subscribe(
-                      () => this.navCtrl.setRoot(MainTabs),
-                      (err: any) => {
-                          console.log("GOT EEEEEEEEEEEEEEEER" + JSON.stringify(err));
-                          this.navCtrl.setRoot(SignIn);
-                      }
-                  );
+              .then(() => this.authService.refresh().toPromise())
+              .then(() => this.navCtrl.setRoot(MainTabs))
+              .catch((err: any) => {
+                console.log("GOT EEEEEEEEEEEEEEEER" + JSON.stringify(err));
+
+                this.navCtrl.setRoot(SignIn);
               });
 
         this.geolocationService.initialize();

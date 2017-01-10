@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { NavController, AlertController } from "ionic-angular";
 import { Validators, FormBuilder } from "@angular/forms";
+import { Response } from "@angular/http";
 import { BaseFormComponent } from "../../lib/form-component";
 import { RadyValidators } from "../../lib/validators";
 import { AuthService } from "../../providers/auth-service";
@@ -35,12 +36,16 @@ export class SignIn extends BaseFormComponent {
     public login() {
         this.authService.login(this.form.value).subscribe(
             () => this.navCtrl.setRoot(MainTabs),
-            () => this.alertCtrl.create({
-                buttons: ["OK"],
-                enableBackdropDismiss: false,
-                message: "Unable to login with provided credentials.\nPlease try again.",
-                title: "Sign In error",
-            }).present(),
+            (err: Response) => {
+                if (err.status === 400) {
+                    this.alertCtrl.create({
+                        buttons: ["OK"],
+                        enableBackdropDismiss: false,
+                        message: "Unable to login with provided credentials.\nPlease try again.",
+                        title: "Sign In error",
+                    }).present().then();
+                }
+            },
         );
     }
 

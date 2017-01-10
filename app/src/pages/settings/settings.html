@@ -6,7 +6,7 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding class="page-settings">
     <ion-card>
         <ion-card-header>
             Configuration
@@ -15,7 +15,7 @@
         <ion-list>
             <ion-item>
                 <ion-label> Hidden</ion-label>
-                <ion-toggle checked="false" [(ngModel)]="hide()"></ion-toggle>
+                <ion-toggle [checked]="(service.$ | async)?.is_hidden" (ionChange)="hide()"></ion-toggle>
             </ion-item>
 
             <button ion-item (click)="editProfile()">

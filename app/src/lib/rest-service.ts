@@ -6,7 +6,7 @@ import { AuthService } from "../providers/auth-service";
 
 export class RestService<T> {
     public $: Observable<T>;
-    private _$: BehaviorSubject<T>;
+    protected _$: BehaviorSubject<T>;
 
     constructor(protected http: AuthService, protected readonly url) {
         this._$ = new BehaviorSubject(null);
