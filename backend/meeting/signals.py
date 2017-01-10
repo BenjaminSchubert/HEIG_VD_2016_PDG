@@ -29,6 +29,7 @@ def post_save_participant(instance, created, **kwargs):
     Update :
     - Send a push notification to the other users to inform them of the event (no push message to
       the person at the origin of the action and the participants who declined the meeting).
+    - Check if every participant is arrived and if so, the meeting is finished and inform the participants.
     """
     if created:
         if instance.meeting.organiser_id != instance.user_id and instance.user.is_hidden is False:
@@ -86,6 +87,7 @@ def post_save_participant(instance, created, **kwargs):
                     )
 
         elif instance.has_changed("arrived") and instance.arrived is True:
+
             meeting_users.send_message(
                 title="Meeting update",
                 body="{} has arrived to the meeting".format(instance.user.username),
@@ -96,6 +98,12 @@ def post_save_participant(instance, created, **kwargs):
                 ),
                 deferred=False,
             )
+
+            if Participant.objects\
+                    .filter(Q(meeting_id=instance.meeting_id) & ~Q(accepted=False) & Q(arrived=False))\
+                    .count() == 0:
+                instance.meeting.status = Meeting.STATUS_ENDED
+                instance.meeting.save(update_fields=("status",))
 
     instance.reset_tracker()
 
@@ -117,16 +125,16 @@ def post_save_meeting(instance, created, **kwargs):
 
     Update :
     - If the status is now 'progress' or 'ended'
-        - Send a push message to inform the participants (except organiser and refused user).
+        - Send a push message to inform the participants (except users who declined).
     - If the status is now 'ended'
-        - Send a push message to inform the participants (except organiser and refused user).
+        - Send a push message to inform the participants (except users who declined).
         - Remove eventually pending push messages related to the meeting.
     """
     if created is False:
 
         if instance.has_changed("status"):
             meeting_users = instance.participants\
-                .filter(~Q(id=instance.organiser.id) & ~Q(participant__accepted=False))\
+                .filter(~Q(participant__accepted=False))\
                 .all()
 
             if instance.status == Meeting.STATUS_PROGRESS:
