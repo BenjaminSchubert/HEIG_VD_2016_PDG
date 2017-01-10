@@ -119,7 +119,7 @@
 	identifierstyle=\color{black},
 	keywordstyle=\color{blue}\bfseries,
 	ndkeywordstyle=\color{black}\bfseries,
-	stringstyle=\color{red}\ttfamily,
+	stringstyle=\color{brown}\ttfamily,
 	commentstyle=\color{gray}\ttfamily,
 	% Code
 	language=HTML5,
@@ -165,8 +165,8 @@
 	breaklines=true,            % Zeilen werden Umgebrochen
 	keywordstyle=\color{blue}\bfseries,
 	frame=b,
-	commentstyle=\color{brown}\itshape,
-	stringstyle=\color{editorOcher}\ttfamily, % Farbe der String
+	commentstyle=\color{gray}\itshape,
+	stringstyle=\color{brown}\ttfamily, % Farbe der String
 	showspaces=false,           % Leerzeichen anzeigen ?
 	showtabs=false,             % Tabs anzeigen ?
 	xleftmargin=17pt,
@@ -234,6 +234,7 @@
 	\section{Introduction}
 	Dans le cadre du cours PDG en troisième année du cursus de Bachelor de la HEIG-VD, il a été demandé de réaliser un projet de semestre sur une période de 10 semaines. Après l'acceptation du cahier des charges à la semaine 4, le projet a pu débuter. Celui-ci porte sur la réalisation d'une application mobile permettant permettant de se retrouver facilement entre amis notamment lors d'évènements. L’application se présenterait sous la forme d’une liste d’amis, laquelle permettrait de créer des groupes et de lancer une géolocalisation. L’utilisateur aurait alors le choix entre une carte en vue du dessus ou une boussole indiquant la direction à
 	prendre.
+	TODO : DECRIRE HIERARCHIE DU RAPPORT
 	
 		\subsection{Objectif}
 		Les objectifs principaux de notre application peuvent être décomposés en trois grandes parties. Premièrement, la gestion des utilisateur, qui comprends la création de compte, la gestion de ce dit compte, ainsi que la recherche et l'ajout d'amis. Ensuite, l'intégration de la géolocalisation dans notre application doit permettre, par des appels API, aux utilisateurs de se retrouver. Cela constitue la partie centrale de l'application. Enfin étant donné des informations sensibles transiteront sur le réseau par le biais de notre application.\\
@@ -433,10 +434,19 @@
 	Nous nous sommes efforcé de réaliser des pages les plus proches possible du design réalisé précédemment afin de garder une simplicité de l'interface tant au niveau du développement que au niveau de l'utilisation finale. 
 	
 	\begin{figure}[H]
-		\centering
-		\includegraphics[scale=0.20]{../screenshot/screenshot-register.jpg}
-		\caption{Capture d'écran - Enregistrement}
-		\label{Capture d'écran - Enregistrement}
+		\begin{minipage}[c]{.46\linewidth}
+			\centering
+			\includegraphics[scale=0.20]{../screenshot/screenshot-register.jpg}
+			\caption{Capture d'écran - Enregistrement}
+			\label{Capture d'écran - Enregistrement}
+		\end{minipage} \hfill
+		\begin{minipage}[c]{.46\linewidth}
+			\centering
+			\includegraphics[scale=0.20]{../screenshot/screenshot-register.jpg}
+			\caption{Capture d'écran - Test}
+			\label{Capture d'écran - Test}
+		\end{minipage}
+		
 	\end{figure} 	 
 	
 	\newpage
@@ -444,10 +454,6 @@
 	Ensuite est venu l'implémentation des différentes fonctions appelé par les éléments graphiques (vérification des champs, communication avec le serveur, changement de page). Pour ce faire nous avons du créer et utiliser différentes librairies et validateurs.
 	
 	\subsubsection{Validateurs}
-	
-	Modularité
-	Il n'existaient pas 
-	Phone - Email - Match
 	
 	Pour éviter d'effectuer des appels serveur inutile nous avons choisi de faire des tests sur la forme des saisies utilisateur directement dans l'application avant de les envoyer au serveur via l'API afin de diminuer le nombre de réponses négatives. Pour effectuer ces tests nous avons donc eu besoin d'une librairie de validateurs pour nous permettre de définir si la saisie possède la bonne forme ou non. 
 	Étant donné que nous n'avons pas trouvé de validateurs correspondant à nos attentes nous avons décidé de les implémenter à la main.
@@ -473,7 +479,6 @@
 	\end{lstlisting}
 	
 	Dans ce validateur pour les e-mail nous utilisons une expression régulière afin de déterminer si l'e-mail entré par l'utilisateur possède une forme correcte. Lorsque le validateur détecte que l'email n'est pas valide il renvoie une erreur à l'utilisateur qui est instantanément averti.
-	
 	Nous utilisons aussi un validateur personalisé pour les numéro de téléphone afin de déterminer si le numéro est valide suivant l'indicatif du pays. 
 	\begin{lstlisting}[style=htmlcssjs]
 	/**
@@ -513,33 +518,111 @@
 	\subsubsection{Geolocalisation et boussole}
 	
 	TODO : FONCTIONNEMENT GEOLOC + BOUSSOLE
+	TODO : SUCE PAS TROP LA BATTERIE CAR TOUTE LES 3 SECONDES
 	
 	
 	\section{Serveur et Communication}	
 	\subsection{Fonctionnement General}
 	
+	Afin d'établir le lien entre la partie serveur et la partie cliente nous avons définit un protocole de communication qui s'occupe de gérer tous les échanges. Celui-ci définit les différents échanges effectué par les applications clientes et le serveur (autant les demandes de ressources que les transmissions des réponse), mais assure également le service de notification de FireBase Cloud Messaging. 
+	
+	\medbreak
+	
+	Dans ce protocole nous avons définit que les clients ne communiqueraient jamais directement entre eux ni directement avec la base de donnée ou le service de notification. Toutes leurs requêtes doivent passer par le serveur avec lequel ils communiquent via une API REST. Celui-ci s'occupe de traiter avec la base de donnée et FireBase Cloud Messaging de manière complètement transparente pour l'utilisateur.
+	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=0.50]{../schema/schema-sequence-communication.png}
+		\includegraphics[scale=0.5]{../schema/schema-sequence-communication.png}
 		\caption{Diagramme de séquence communication}
 		\label{Diagramme de séquence communication}
 	\end{figure}
-	TODO : EXPLIQUER COMMENT ON COMMUNIQUE -> API -> PUSH
-	TODO : SCHEMA DE COMMUNICATION ENTRE LES APPAREIL 
 	
-	\subsection{Base de donnée}
-	\subsubsection{Tables}
+	\newpage
 	
-	TODO : SCHEMA DES TABLES
-	TODO : Explication de la création des tables 
+	\subsection{Base de donnée}	
+	Au lancement du serveur, celui-ci fait appel aux services de Django pour créer et déployer la base de donnée. Un script permet de lancer le serveur et donne des instruction au framework depuis la ligne de commande afin de trouver les différents modèles necessaire à l'instanciation des tables.
+	Django nous permet également de nous rendre complètement indépendant du moteur de base de donnée que nous souhaitons utiliser.
+	Grace à l'utilisation de Fabric \cite{fabric} le déploiement est entierement automatisé.
+	 notre base de donnée est indépendant de
+	\subsubsection{Modeles}
 	
-	\subsubsection{Connection avec Django}
+	Les entités représentées par les modèles définissent la structure de notre base de données, mais sont aussi le coeur de notre application. 
+	En effet, celles-ci constituent les éléments sérialisables échangé à travers le réseau. 
+	Ces différents modèles sont définis à la fois en python du coté du serveur ainsi que dans le code TypeScript de l'application Ionic2. Cela permet à notre application de communiquer via un "dialecte" commun avec le serveur malgré une différence de langage de programmation.
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.45]{../schema/modele-domaine.png}
+		\caption{Modele de domaine}
+		\label{Modele de domaine}
+	\end{figure}
 	
+	\subsubsection{Création avec Django}	
+	
+	Tout d'abord il faut charger les service de Django puis lui demander d'effectuer la création des tables depuis les modèles. Cela s'opère via une ligne de commande lu et transmis à Django dans le fichier : manage.py
+	
+	\begin{lstlisting}[style=py]
+	if __name__ == "__main__":
+		os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rady.settings.debug")
+		try:
+			from django.core.management import execute_from_command_line
+		except ImportError:
+		# The above import may fail for some other reason. Ensure that the
+		# issue is really that Django is missing to avoid masking other
+		# exceptions on Python 2.
+		try:
+			import django # noqa
+		except ImportError:
+		raise ImportError(
+			"Couldn't import Django. Are you sure it's installed and "
+			"available on your PYTHONPATH environment variable? Did you "
+			"forget to activate a virtual environment?"
+		)
+		raise
+	execute_from_command_line(sys.argv)	
+	\end{lstlisting}
+	
+	Les paramètres entrés en ligne de commande indiquent à Django les opération à effectuer, c'est à dire la création des différentes tables depuis les modèles pré-existant.
+	
+	
+	
+	
+	 
 	TODO : EXPLICATION DU FONCTIONNEMENT DE DJANGO AVEC POSTGRESQL
 	
-	\subsection{Api}
 	
-	TODO : LISTING DES DIFFERENTES API A DISPOSITION
+	
+	indépendant du moteur de bbd / django
+	
+	
+	\subsection{API}
+	
+	L'API mise à disposition des usagers est une API REST. Cela signifie que le service fourni possède une interface uniforme, c'est à dire que chaque ressource est identifié unitairement, que la manipulation de ces ressources se fait via des représentations et que les messages auto-descriptifs expliquent leurs nature. De plus cette API met à disposition un implémentation des méthodes du CRUD pour les différents endpoints : 
+	\begin{itemize}
+		\item[$\bullet$] /users/
+		\item[$\bullet$] /users/me/
+		\item[$\bullet$] /users/me/avatar/
+		\item[$\bullet$] /users/friends/
+		\item[$\bullet$] /users/friends/all/
+		\item[$\bullet$] /users/friends/blocked/
+		\item[$\bullet$] /users/friends/hidden/
+		\item[$\bullet$] /users/friends/pending/
+		\item[$\bullet$] /users/friends/<pk>/
+		\item[$\bullet$] /meetings/
+		\item[$\bullet$] /meetings/<pk>/
+		\item[$\bullet$] /meetings/places/
+		\item[$\bullet$] /meetings/places/<pk>/
+		\item[$\bullet$] /meetings/<pk>/participants/
+		\item[$\bullet$] /meetings/positions/
+		\item[$\bullet$] /auth/login/
+		\item[$\bullet$] /auth/refresh/
+		\item[$\bullet$] /fcm/devices/
+		\item[$\bullet$] /statistics/
+		\item[$\bullet$] /admin/users/
+		\item[$\bullet$] /admin/users/<pk>/
+	\end{itemize}
+		
+	Nous pouvons observer que ces différents endpoints correspondent directement a des modèles (user, meetings, etc.) ou a des attributs des modèles (avatar, hidden, etc.) qui sont renvoyé ou reçu par l'API. 
 	
 	\subsection{Notifications}
 	\subsubsection{Fonctionement}
@@ -654,13 +737,13 @@
 		Open source platform for web, mobile, and desktop developpement. ,\\ \url{https://www.meteor.com/}
 		
 		\bibitem{ionic} 
-		Web app developpement framework for mobile ,\\ \url{http://ionic.io/}
+		Web app developpement framework for mobile,\\ \url{http://ionic.io/}
 		
 		\bibitem{django}
 		High-level Python Web framework, \\ \url{https://www.djangoproject.com/}
 		
-		\bibitem{plantuml}
-		PlantUML, Open-source tool that uses simple textual descriptions to draw UML diagrams,\\ \url{http://plantuml.com/}\\ \url{http://www.planttext.com/planttext}
+		\bibitem{fabric}
+		Python library for streamlining the use of SSH for application deployment.\\ \url{http://www.fabfile.org/}
 		
 		\bibitem{Graph data wikipedia.org}
 		Graphs data structures,\\ \url{https://en.wikipedia.org/wiki/Adjacency_matrix#Data_structures}
