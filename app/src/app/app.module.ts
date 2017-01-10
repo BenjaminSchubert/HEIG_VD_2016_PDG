@@ -40,7 +40,6 @@ import { AccountService } from "../providers/account-service";
 // put here the components
 let COMPONENTS_LIST: any = [
   RadyApp,
-  Splashscreen,
   SignIn,
   Register,
   ForgottenPassword,
@@ -70,10 +69,10 @@ let PROVIDERS_LIST: any = [
   NotificationService,
   ContactsService,
   MeService,
-  GatheringService,
   GeolocationService,
   CompassService,
-  LeafletHelper
+  LeafletHelper,
+    GatheringService,
 ]
 
 @NgModule({
