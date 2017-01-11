@@ -41,13 +41,11 @@ def send_fcm_bulk_message(registration_ids,
     api_key = settings.FCM_SETTINGS.get("FCM_SERVER_KEY")
     push_service = FCMNotification(api_key=api_key)
 
-    return push_service.notify_multiple_devices(
-        registration_ids=registration_ids,
-        message_title=title,
-        message_body=body,
-        message_icon=icon,
-        data_message=data,
-        sound=sound,
-        badge=badge,
-        **kwargs
-    )
+    return push_service.notify_multiple_devices(registration_ids=registration_ids,
+                                                message_title=title,
+                                                message_body=body,
+                                                message_icon=icon,
+                                                data_message=data,
+                                                sound=sound,
+                                                badge=badge,
+                                                **kwargs)
