@@ -229,40 +229,39 @@
 	\newpage
 	
 	\section*{Remerciements}
-	Nous tenons tout d'abord à remercier M. Prof. René Rentsch pour son suivi et ses conseils durant toute la période du travail. Nous voulons également M. Prof. Olivier Liechti pour son aide dans le choix des technologies.
+	Nous tenons tout d'abord à remercier M. Prof. René Rentsch pour son suivi et ses conseils durant toute la période du travail. Nous voulons également à remercier M. Prof. Olivier Liechti pour son aide dans le choix des technologies.
 	
 	\section{Introduction}
-	Dans le cadre du cours PDG en troisième année du cursus de Bachelor de la HEIG-VD, il a été demandé de réaliser un projet de semestre sur une période de 10 semaines. Après l'acceptation du cahier des charges à la semaine 4, le projet a pu débuter. Celui-ci porte sur la réalisation d'une application mobile permettant permettant de se retrouver facilement entre amis notamment lors d'évènements. L’application se présenterait sous la forme d’une liste d’amis, laquelle permettrait de créer des groupes et de lancer une géolocalisation. L’utilisateur aurait alors le choix entre une carte en vue du dessus ou une boussole indiquant la direction à
-	prendre.
+	Dans le cadre du cours PDG en troisième année du cursus de Bachelor de la HEIG-VD, il a été demandé de réaliser un projet de semestre sur une période de 10 semaines. Après l'acceptation du cahier des charges à la semaine 4, le projet a pu débuter. Celui-ci porte sur la réalisation d'une application mobile permettant de se retrouver facilement entre amis notamment lors d'évènements. L’application se présenterait sous la forme d’une liste d’amis, laquelle permettrait de créer des groupes et de lancer une rencontre. L’utilisateur aurait alors le choix entre une carte en vue du dessus ou une boussole indiquant la direction à prendre.
 	TODO : DECRIRE HIERARCHIE DU RAPPORT
 	
 		\subsection{Objectif}
-		Les objectifs principaux de notre application peuvent être décomposés en trois grandes parties. Premièrement, la gestion des utilisateur, qui comprends la création de compte, la gestion de ce dit compte, ainsi que la recherche et l'ajout d'amis. Ensuite, l'intégration de la géolocalisation dans notre application doit permettre, par des appels API, aux utilisateurs de se retrouver. Cela constitue la partie centrale de l'application. Enfin étant donné des informations sensibles transiteront sur le réseau par le biais de notre application.\\
+		Les objectifs principaux de notre application peuvent être décomposés en trois grandes parties. Premièrement, la gestion des utilisateur, qui comprends la création de compte, la gestion du-dit compte, ainsi que la recherche et l'ajout d'amis. Ensuite, l'intégration de la géolocalisation dans notre application doit permettre, par des appels à une API, aux utilisateurs de se retrouver. Cela constitue la partie centrale de l'application. Enfin, étant donné que des informations sensibles transiteront sur le réseau par le biais de notre application, une attention particulière sera mise vis-à-vis de la sécurité.\\
 		Toutes les spécifications précises sont disponibles dans le cahier des charges fourni en annexe.
 		
 		\subsection{Architecture}
-		L’application est composée d’une partie cliente (l'application mobile a proprement parlé), d’un serveur (hébergé sur une machine distante) communiquant avec une base de donnée et faisant appel au service FireBase Cloud Messaging (voir \textbf{figure \ref{Architecture simplifié}}). Le serveur sera à même de gérer la connexion et l’interaction avec plusieurs clients simultanément de manière transparente pour les utilisateurs. 
+		L’application est composée d’une partie cliente (l'application mobile a proprement parlé), d’un serveur (hébergé sur une machine distante) communiquant avec une base de donnée et faisant appel au service FireBase Cloud Messaging (voir \textbf{figure \ref{Architecture simplifié}}). Le serveur sera à même de gérer la connexion et l’interaction avec plusieurs clients simultanément de manière transparente pour les utilisateurs. \\
 		Les données de l’application seront stockées dans une base de données dont l’accès direct se fera uniquement par le serveur. Les clients devront passer par l'API mise à disposition par le serveur pour tout accès aux données, pour des raisons évidentes de sécurité.
 		Enfin le serveur fera appel au service FireBase Cloud Messaging (FCM) pour envoyer les notifications de push aux utilisateurs de l'application. 
 		
 		\begin{figure}[H]
 			\centering
 			\includegraphics[scale=0.20]{../schema/schema-simplifie.jpg}
-			\caption{Architecture simplifié}
+			\caption{Architecture simplifiée}
 			\label{Architecture simplifié}
 		\end{figure}
 		
-		La conception générale de l'application a été divisé dans ces mêmes différentes parties afin de réduire les dépendances au niveau du développement (temps d'attente sur le travail des autres) ainsi que le nombre de conflit sur le gestionnaire de version.
+		La conception générale de l'application a été divisée dans ces mêmes différentes parties afin de réduire les dépendances au niveau du développement (temps d'attente sur le travail des autres) ainsi que le nombre de conflit sur le gestionnaire de version (git).
 		
 		\subsection{Choix des technologies}
 		Le choix des technologie a été un point clé lors de l'élaboration du cahier des charges et les premières étapes du développement à proprement parlé du projet.
-		Nous avons essayer de choisir les technologies de manières à ce qu'elles soient maintenable, performantes.
+		Nous avons essayé de choisir les technologies de manière à ce qu'elles soient maintenables et performantes.
 		\begin{itemize}
-			\item \textbf{Interface :} Pour l'interface nous pensions tout d'abord à utiliser \textbf{MeteorJS} \cite{meteor}, étant donné qu'il s'agit d'un framework pemettant un developpement "cross-plateform" performant. Cependant notre choix s'est finalement porté sur un autre framework "cross-plateform" \textbf{Ionic2} \cite{ionic} étant donné que \textbf{MeteorJS} est un framework dit "fullstack". Cela signifie qu'on aurait du développer avec ce framework de bout en bout, ce qui aurait pu compromettre le développement en cas de difficulté sur une des parties.
-			\item \textbf{Serveur :} Concernant le serveur nous avons choisit d'utiliser \textbf{Django} \cite{django}  pour ses performances, sa sécurité, sa scalabilité et sa maintenabilité.
-			\item \textbf{Base de donnée :} Le choix de la base de donnée s'est porté sur \textbf{PostgreSQL} car ce système de gestion de base de données (SGBD) est stable, fonctionne sur de nombreux OS et peut stocker des types de données dit "modernes". De plus ce SGDB fait parti des plus conforme aux norme ANSI SQL.
-			\item \textbf{Serialisation :} Pour la sérialisation des données et leur transfert nous avons opté pour \textbf{JSON} car en comparaison avec \textbf{XML}, le \textbf{JSON} est plus léger, plus simple et peut directement être utilisé par le TypeScript et stocké tel quel dans le SGBD.
-			\item \textbf{Notifications :} Le systeme de notification permettant au serveur de maintenir les utilisateurs à jour concernant les interactions inter-utilisateur se fera via \textbf{Firebase Cloud Messsaging}. FCM  repose sur le Google Cloud Messaging et nous offre un service de transmission de message fiable, une plus grande simplicité de developpement ainsi qu'une prise en charge multi-plateforme 
+			\item \textbf{Interface :} Pour l'interface nous pensions tout d'abord à utiliser \textbf{MeteorJS} \cite{meteor}, étant donné qu'il s'agit d'un framework pemettant un developpement "cross-plateform" performant. Cependant notre choix s'est finalement porté sur un autre framework "cross-plateform" \textbf{Ionic2} \cite{ionic}, étant donné que \textbf{MeteorJS} est un framework dit "fullstack". Cela signifie qu'on aurait du développer avec ce framework de bout en bout, ce qui aurait pu compromettre le développement en cas de difficulté sur une des parties.
+			\item \textbf{Serveur :} Concernant le serveur nous avons choisi d'utiliser \textbf{Django} \cite{django}  pour ses performances, sa sécurité, sa scalabilité et sa maintenabilité.
+			\item \textbf{Base de données :} Le choix de la base de données s'est porté sur \textbf{PostgreSQL} car ce système de gestion de base de données (SGBD) est stable, fonctionne sur de nombreux OS et peut stocker des types de données dit "modernes". De plus ce SGDB fait parti des plus conforme aux norme ANSI SQL.
+			\item \textbf{Serialisation :} Pour la sérialisation des données et leur transfert nous avons opté pour \textbf{JSON}, car en comparaison avec \textbf{XML}, le \textbf{JSON} est plus léger, plus simple et peut directement être utilisé par le TypeScript (Ionic2), ainsi qu'être stocké tel quel dans le SGBD.
+			\item \textbf{Notifications :} Le systeme de notification permettant au serveur de maintenir les utilisateurs à jour concernant les interactions inter-utilisateur se fera via \textbf{Firebase Cloud Messsaging}. FCM  (anciennement Google Cloud Messaging) nous offre un service de transmission de message fiable, une plus grande simplicité de développement ainsi qu'une prise en charge multi-plateforme.
 		\end{itemize}
 		
 		\begin{figure}[H]
@@ -274,14 +273,14 @@
 		
 	
 	\section{Cadre de développement} 
-		Le client de l'application a été développé en TypeScript(2.0.9) et angular(2.2.1), avec node.js(6.9.1) et le gestionnaire de paquet npm(3.10.9). Le serveur quand à lui a été développé avec python(3.5.2). 
-		Nous avons également utilisé un service web d'hébergement et de gestion de développement de logiciels : GitHub avec le logiciel de gestion de version Git afin de gérer la mise en commun du code et l'intégration des différentes fonctionnalités au projet.
-		Par ailleurs nous avons aussi utilisé un serveur d'integration continue (Travis) afin de pouvoir vérifier en temps réel le bon déroulement de notre projet
-		Enfin nous avons mis en place des séries de tests visant à faire en sorte que l'api fournie par le serveur soit utilisable et ne contienne pas de faille.
+		Le client de l'application a été développé en TypeScript(2.0.9) et angular2(2.2.1), avec node.js(6.9.1) et le gestionnaire de paquet npm(3.10.9). Le serveur quand à lui a été développé avec python(3.5.2). 
+		Nous avons également utilisé un service web d'hébergement et de gestion de développement de logiciels : GitHub, avec le logiciel de gestion de version Git, afin de gérer la mise en commun du code et l'intégration des différentes fonctionnalités au projet.
+		Par ailleurs nous avons aussi utilisé un serveur d'intégration continue (Travis) afin de pouvoir vérifier en temps réel le bon déroulement de notre projet.
+		Enfin nous avons mis en place des séries de tests visant à faire en sorte que l'API fournie par le serveur soit utilisable et ne contienne pas de faille.
 			
 	\section{Application Client}
 	
-	Lors du développement de notre application, la première étape a été de nous familiarier avec les différentes technologies et "frameworks" necessaire à la réalisation du produit final. Ensuite nous avons décidé de réaliser une maquette de l'interface que l'utilisateur final utilisera. Cette maquette a été conçu pour être simple et permettre une utilisation intuitive de l'application. Enfin il a fallut développer les menus et interfaces de l'application et lier les contrôleurs aux différentes fonctionalités
+	Lors du développement de notre application, la première étape a été de nous familiariser avec les différentes technologies et "frameworks" nécessaire à la réalisation du produit final. Ensuite nous avons décidé de réaliser une maquette de l'interface que l'utilisateur final utilisera. Cette maquette a été conçue pour être simple et permettre une utilisation intuitive de l'application. Enfin il a fallut développer les menus et interfaces de l'application et lier les contrôleurs aux différentes fonctionnalités.
 	
 	\subsection{Frameworks}
 	
@@ -294,15 +293,15 @@
 		\label{Ionic2 logo}
 	\end{figure} 
 	
-	Notre application a été réalisé avec le framework Ionic2. Ce framework, disponible depuis spetembre 2016, se distingue de sa version précédente Ionic en incluant la syntaxe ES6 , une nouvelle structure de fichier et en intégrant une CLI plus perfectionné permettant la génération automatique de pages.
-	L’interface graphique est décrite par un fichier HTML utilisant des composants spécifique a Ionic2 :
+	Notre application a été réalisée avec le framework Ionic2. Ce framework, disponible depuis septembre 2016, se distingue de sa version précédente Ionic en incluant la syntaxe ES6, une nouvelle structure de fichier et en intégrant une CLI plus perfectionnée permettant la génération automatique de pages.
+	L’interface graphique est décrite par un fichier HTML utilisant des composants spécifiques à Ionic2 :
 	
 	\lstset{language = HTML5}
 	\begin{lstlisting}
 	<ion-component>
 	\end{lstlisting}
 	
-	Les balises permettent de placer les différents éléments de l’interface un peu à la manière dont on structure une page en HTML standard. La personnalisation des éléments se fait grâce à des styles CSS, spécifiés soit dans les attributs des éléments, soit via des feuilles de style externes dans les fichiers SCSS. Les attributs du SCSS diffèrent un peu des attributs CSS standards, ils permettent d'utiliser les SASS (Syntactically Awesome Style Sheets). Les fichier SCSS seront utilisé pour regénérer le CSS necessaire à l'affichage des styles. 
+	Les balises permettent de placer les différents éléments de l’interface un peu à la manière dont on structure une page en HTML standard. La personnalisation des éléments se fait grâce à des styles CSS, spécifiés soit dans les attributs des éléments, soit via des feuilles de style externes dans les fichiers SCSS. Les attributs du SCSS diffèrent un peu des attributs CSS standards, ils permettent d'utiliser les SASS (Syntactically Awesome Style Sheets). Les fichier SCSS seront utilisés pour régénérer le CSS nécessaire à l'affichage des styles. 
 	A chaque fichier HTML et SCSS vient s’ajouter un fichier de code TypeScript, qui sert de contrôleur pour l’interface. Dans le HTML on définit les différents évènements de l’interface (par exemple un clic sur un bouton, ou un changement d'état d'un élément de type bascule) en déclenchant un appel de méthode au niveau du fichier contrôleur (le ficher TypeScript), qui gère ensuite l’évènement. Il est également possible d’ajouter et modifier des balises HTML directement depuis le contrôleur TypeScript afin de rendre l’interface plus dynamique, en la faisant par exemple réagir aux interactions de l’utilisateur ou aux réponses du serveur. 
 	
 	Voici la structure des sources de l'application mobile :
@@ -311,35 +310,35 @@
 		\centering
 		\dirtree{%
 			.1 src/\DTcomment{répertoire contenant les sources de l'application}.
-			.2 app/\DTcomment{répertoire contenant les liens des différents composant de l'application}.
-			.3 app.component.ts\DTcomment{fichier définissant la page d'accueil de l'application}.
-			.3 app.html\DTcomment{permet de lancer la page d'accueil de l'application}.
-			.3 app.modules.ts\DTcomment{permet de charger les différents modules et interfaces de l'application}.
+			.2 app/\DTcomment{répertoire contenant les liens des différents composants}.
+			.3 app.component.ts\DTcomment{fichier définissant la page d'accueil}.
+			.3 app.html\DTcomment{permet de lancer la page d'accueil}.
+			.3 app.modules.ts\DTcomment{permet de charger les différents modules et interfaces}.
 			.3 app.scss\DTcomment{styles portant sur toute l'application}.
 			.3 main.ts\DTcomment{fichier permettant le lancement de l'application}.
-			.2 assets/\DTcomment{répertoire contenant les éléments utiles à l'application}.
-			.2 lib/\DTcomment{répertoire contenant les librairies utilisés par l'applcation}.
-			.2 models/\DTcomment{répertoire contenant les modèles(classes) utilisés par l'application}.
-			.2 pages/\DTcomment{répertoire contenant les différentes interfaces de l'application}.
+			.2 assets/\DTcomment{répertoire contenant les éléments utiles}.
+			.2 lib/\DTcomment{répertoire contenant les librairies utilisées}.
+			.2 models/\DTcomment{répertoire contenant les modèles(classes) utilisés}.
+			.2 pages/\DTcomment{répertoire contenant les différentes interfaces}.
 			.3 add-contact/\DTcomment{répertoire contenant les éléments pour l'interface d'ajout de contact}.
-			.4 add-contact.html/\DTcomment{code html définissant les composant de l'interface}.
-			.4 add-contact.scss/\DTcomment{styles s'appliquant aux composant html}.
-			.4 add-contact.ts/\DTcomment{logique appelé par les composants html}.
-			.3 contact-list/\DTcomment{répertoire contenant les éléments pour l'interface de gestion de contact}.
-			.4 contact-list.html/\DTcomment{code html définissant les composant de l'interface}.
-			.4 contact-list.scss/\DTcomment{styles s'appliquant aux composant html}.
-			.4 contact-list.ts/\DTcomment{logique appelé par les composants html}.
+			.4 add-contact.html/\DTcomment{code HTML définissant les composants de l'interface}.
+			.4 add-contact.scss/\DTcomment{styles s'appliquant aux composants HTML}.
+			.4 add-contact.ts/\DTcomment{logique appelés par les composants HTML}.
+			.3 contact-list/\DTcomment{répertoire contenant les éléments pour l'interface de gestion de contacts}.
+			.4 contact-list.html/\DTcomment{code HTML définissant les composants de l'interface}.
+			.4 contact-list.scss/\DTcomment{styles s'appliquant aux composants HTML}.
+			.4 contact-list.ts/\DTcomment{logique appelée par les composants html}.
 			.3 <...>\DTcomment{autres fichiers d'implémentation}.
-			.2 providers/\DTcomment{répertoire contenant les services utilisés par l'applcation}.
+			.2 providers/\DTcomment{répertoire contenant les services utilisés par l'application}.
 			.2 theme/\DTcomment{répertoire contenant les fichiers .scss appliqués sur toute l'application}.
 			.2 declarations.d.ts\DTcomment{fichier de déclaration pour le compilateur TypeScript}.
-			.2 index.html\DTcomment{premiere page chargé par ionic permettant le chargement du reste de l'application}.
+			.2 index.html\DTcomment{première page chargée par ionic permettant le chargement du reste de l'application}.
 			.2 manifest.json\DTcomment{données pour l'affichage de l'application}.
-			.2 service-workers.js\DTcomment{fichier contenant un script qui tournera en tache de fond}.	
+			.2 service-workers.js\DTcomment{fichier contenant un script qui tournera en tâche de fond}.	
 		}
 	\end{figure}
 	
-	On observe que les interfaces sont dans le dossier pages avec leurs ficher HTML, SCSS, et TS correspondant. Dans le dossier app/ on retrouve le lien entre les différentes pages et l'application en elle même. Ionic2 propose une hiérarchie intuitive regroupant les éléments par nature puis par fonctionnalité (librairies, models ...) afin de simplifier le développement.
+	On observe que les interfaces sont dans le dossier pages avec leurs fichiers HTML, SCSS, et TS correspondants. Dans le dossier app/ on retrouve le lien entre les différentes pages et l'application en elle-même. Ionic2 propose une hiérarchie intuitive regroupant les éléments par nature puis par fonctionnalité (librairies, models ...) afin de simplifier le développement.
 	
 	\subsubsection{Angular2}
 	
@@ -350,8 +349,8 @@
 		\label{Angular2 logo}
 	\end{figure} 
 	
-	AngularJs est un framework JavaScript conçu pour simplifier le developpement d'interfaces web. Ionic2 nous permet d'utiliser la version 2 de ce framework elle aussi sortie en septembre 2016. 
-	Angular2 nous offre la possibilité de réaliser du "data binding" bidirectionnel. C'est a dire que lorsque les données affichés dans la vue sont modifé celà affecte directement le controlleur qui s'est mis à jour. Ce framework nous donne aussi accès à des directives rendant le code plus extensible et modulable, et nous permet d'utiliser l'injection de dépendance pour l'appel à des services initialisé ailleurs dans le code. 
+	Angular2 est un framework JavaScript conçu pour simplifier le développement d'interfaces web. Ionic2 nous permet d'utiliser la version 2 de ce framework elle aussi sortie en septembre 2016. 
+	Angular2 nous offre la possibilité de réaliser du "data binding" bidirectionnel. C'est-à-dire que lorsque les données affichées dans la vue sont modifiées cela affecte directement le contrôleur qui s'est mis à jour. Ce framework nous donne aussi accès à des directives rendant le code plus extensible et modulable, et nous permet d'utiliser l'injection de dépendance pour l'appel à des services initialisés ailleurs dans le code. 
 	
 	\subsubsection{Cordova}
 	
@@ -362,12 +361,12 @@
 		\label{Leaflet logo}
 	\end{figure} 
 	
-	Apache Cordova est un framework open-source qui permet de créer des applications pour différentes plateformes (Android, Firefox OS, iOS, Ubuntu, Windows 8...) en HTML, CSS et JavaScript. C'est lui qui sera appelé par Ionic pour "build" et déployer l'application directement sur le materiel.
-	Ce framework permet d'avoir accès aux différentes fonctionnalités et élément du téléphone tel que la boussole, l'accéléromètre, la géolocalisation ou encore l'appareil photo.
+	Apache Cordova est un framework open-source qui permet de créer des applications pour différentes plateformes (Android, Firefox OS, iOS, Ubuntu, Windows 8...) en HTML, CSS et JavaScript. C'est lui qui sera appelé par Ionic pour "build" et déployer l'application directement sur le matériel.
+	Ce framework permet d'avoir accès aux différentes fonctionnalités et éléments du téléphone tel que la boussole, l'accéléromètre, la géolocalisation ou encore l'appareil photo.
 	
 	\subsubsection{Leaflet}
 	
-	Leaflet est une librairie open-source JavaScript pour le déeloppement d'application web de cartographie.
+	Leaflet est une librairie open-source JavaScript pour le développement d'application web de cartographie.
 	
 	\begin{figure}[H]
 		\centering
@@ -377,7 +376,7 @@
 	\end{figure} 
 	
 	
-	Cette librairie nous permet non seulement d'afficher une carte mais aussi des marqueurs que nous utilisons pour afficher les positions des utilisateurs et lieux que nous souhaitons localiser. De plus celle-ci est extrêmement configurable, on peut en effet choisir d'utiliser nos propres éléments à afficher tel que des marqueurs personnalisé ou encore utiliser divers générateur de carte tel que mapbox, openstreetmap ou encore google map.
+	Cette librairie nous permet non seulement d'afficher une carte, mais aussi des marqueurs que nous utilisons pour afficher les positions des utilisateurs, ainsi que les lieux que nous souhaitons localiser. De plus celle-ci est extrêmement configurable, on peut en effet choisir d'utiliser nos propres éléments à afficher tel que des marqueurs personnalisés ou encore utiliser divers générateurs de carte tel que mapbox, openstreetmap ou encore google map.
 	
 	\begin{figure}[H]
 		\centering
@@ -388,7 +387,7 @@
 	
 	\subsection{Design}
 	
-	Il a tout d'abord fallut établir le design de l'application comprenant les différentes interfaces à afficher, l'ordre d'affichage des ces interface ainsi que les animation et écrans de chargement à afficher. Ainsi nous avons commencé le projet par établir un flux d'utilisation
+	Il a tout d'abord fallu établir le design de l'application comprenant les différentes interfaces à afficher, l'ordre d'affichage des ces interfaces ainsi que les animations et écrans de chargement à afficher. Ainsi nous avons commencé le projet en établissant un flux d'utilisation:
 	
 	\begin{figure}[H]
 		\centering
@@ -426,12 +425,12 @@
 	\end{figure}
 	
 	
-	\subsection{Developpement de l'interface}
+	\subsection{Développement de l'interface}
 	\subsubsection{Création des pages}
 	
-	Le développement des différentes pages a été réalisé en parallèle en répartissant les différentes écrans constituant les interfaces finales de notre application.
-	La construction des interfaces des menus constituaient la partie la plus simple du développement car ils ne font appel que a des composants simple définit par Ionic2 et seulement quelques directives Angular2. 
-	Nous nous sommes efforcé de réaliser des pages les plus proches possible du design réalisé précédemment afin de garder une simplicité de l'interface tant au niveau du développement que au niveau de l'utilisation finale. 
+	Le développement des différentes pages a été réalisé en parallèle en répartissant les différents écrans constituant les interfaces finales de notre application.
+	La construction des interfaces des menus constituaient la partie la plus simple du développement car ils ne font appel que à des composants simples définis par Ionic2 et seulement quelques directives Angular2. 
+	Nous nous sommes efforcés de réaliser des pages les plus proches possible du design réalisé précédemment afin de garder une simplicité de l'interface tant au niveau du développement que au niveau de l'utilisation finale. 
 	
 	\begin{figure}[H]
 		\begin{minipage}[c]{.46\linewidth}
@@ -451,7 +450,7 @@
 	
 	\newpage
 	
-	Ensuite est venu l'implémentation des différentes fonctions appelé par les éléments graphiques (vérification des champs, communication avec le serveur, changement de page). Pour ce faire nous avons du créer et utiliser différentes librairies et validateurs.
+	Ensuite est venu l'implémentation des différentes fonctions appelées par les éléments graphiques (vérification des champs, communication avec le serveur, changement de page). Pour ce faire nous avons du créer et utiliser différentes librairies et validateurs.
 	
 	\subsubsection{Validateurs}
 	
@@ -478,8 +477,8 @@
 	}
 	\end{lstlisting}
 	
-	Dans ce validateur pour les e-mail nous utilisons une expression régulière afin de déterminer si l'e-mail entré par l'utilisateur possède une forme correcte. Lorsque le validateur détecte que l'email n'est pas valide il renvoie une erreur à l'utilisateur qui est instantanément averti.
-	Nous utilisons aussi un validateur personalisé pour les numéro de téléphone afin de déterminer si le numéro est valide suivant l'indicatif du pays. 
+	Dans ce validateur pour les e-mail nous utilisons une expression régulière, afin de déterminer si l'e-mail entré par l'utilisateur possède une forme correcte. Lorsque le validateur détecte que l'email n'est pas valide, il renvoie une erreur à l'utilisateur qui est instantanément averti.
+	Nous utilisons aussi un validateur personnalisé pour les numéros de téléphone afin de déterminer si le numéro est valide suivant l'indicatif du pays. 
 	\begin{lstlisting}[style=htmlcssjs]
 	/**
 	* Phone validator
@@ -507,7 +506,7 @@
 	\end{lstlisting}
 	
 	Cette fois-ci nous n'utilisons pas d'expression régulière mais nous faisons appel à une librairie externe : libphonenumber.
-	Cette librairie permet de passer le numéro de téléphone sous forme canonique avant de vérifier la cohérence de celui-ci ce qui nous permet de garantir une uniformité de la nature des numéros de téléphne d'un utilisateur à un autre.
+	Cette librairie permet de passer le numéro de téléphone sous forme canonique, avant de vérifier la cohérence de celui-ci ce qui nous permet de garantir une uniformité de la nature des numéros de téléphone d'un utilisateur à un autre.
 	
 	 
 	
@@ -515,20 +514,20 @@
 	
 	TODO : EXPLICATION + CODE
 	
-	\subsubsection{Geolocalisation et boussole}
+	\subsubsection{Géolocalisation et boussole}
 	
 	TODO : FONCTIONNEMENT GEOLOC + BOUSSOLE
 	TODO : SUCE PAS TROP LA BATTERIE CAR TOUTE LES 3 SECONDES
 	
 	
 	\section{Serveur et Communication}	
-	\subsection{Fonctionnement General}
+	\subsection{Fonctionnement Général}
 	
-	Afin d'établir le lien entre la partie serveur et la partie cliente nous avons définit un protocole de communication qui s'occupe de gérer tous les échanges. Celui-ci définit les différents échanges effectué par les applications clientes et le serveur (autant les demandes de ressources que les transmissions des réponse), mais assure également le service de notification de FireBase Cloud Messaging. 
+	Afin d'établir le lien entre la partie serveur et la partie cliente, nous avons défini un protocole de communication qui s'occupe de gérer tous les échanges. Celui-ci définit les différents échanges effectués par les applications clientes et le serveur (autant les demandes de ressources que les transmissions de réponse), mais assure également le service de notification de FireBase Cloud Messaging. 
 	
 	\medbreak
 	
-	Dans ce protocole nous avons définit que les clients ne communiqueraient jamais directement entre eux ni directement avec la base de donnée ou le service de notification. Toutes leurs requêtes doivent passer par le serveur avec lequel ils communiquent via une API REST. Celui-ci s'occupe de traiter avec la base de donnée et FireBase Cloud Messaging de manière complètement transparente pour l'utilisateur.
+	Dans ce protocole nous avons définit que les clients ne communiqueraient jamais directement entre eux ni directement avec la base de donnée ou le service de notification. Toutes leurs requêtes doivent passer par le serveur avec lequel ils communiquent via une API REST. Celui-ci s'occupe de traiter avec la base de données et FireBase Cloud Messaging de manière complètement transparente pour l'utilisateur.
 	
 	\begin{figure}[H]
 		\centering
@@ -540,14 +539,13 @@
 	\newpage
 	
 	\subsection{Base de donnée}	
-	Au lancement du serveur, celui-ci fait appel aux services de Django pour créer et déployer la base de donnée. Un script permet de lancer le serveur et donne des instruction au framework depuis la ligne de commande afin de trouver les différents modèles necessaire à l'instanciation des tables.
-	Django nous permet également de nous rendre complètement indépendant du moteur de base de donnée que nous souhaitons utiliser.
-	Grace à l'utilisation de Fabric \cite{fabric} le déploiement est entierement automatisé.
-	 notre base de donnée est indépendant de
-	\subsubsection{Modeles}
+	Au lancement du serveur, celui-ci fait appel aux services de Django pour créer et déployer la base de données. Un script permet de lancer le serveur et donne des instructions au framework depuis la ligne de commande afin de trouver les différents modèles nécessaires à l'instanciation des tables.
+	Django nous permet également de nous rendre complètement indépendant du moteur de base de données que nous souhaitons utiliser.
+	Grâce à l'utilisation de Fabric \cite{fabric}, le déploiement est entièrement automatisé.
+	\subsubsection{Modèles}
 	
 	Les entités représentées par les modèles définissent la structure de notre base de données, mais sont aussi le coeur de notre application. 
-	En effet, celles-ci constituent les éléments sérialisables échangé à travers le réseau. 
+	En effet, celles-ci constituent les éléments sérialisables échangés à travers le réseau. 
 	Ces différents modèles sont définis à la fois en python du coté du serveur ainsi que dans le code TypeScript de l'application Ionic2. Cela permet à notre application de communiquer via un "dialecte" commun avec le serveur malgré une différence de langage de programmation.
 
 	\begin{figure}[H]
@@ -559,7 +557,7 @@
 	
 	\subsubsection{Création avec Django}	
 	
-	Tout d'abord il faut charger les service de Django puis lui demander d'effectuer la création des tables depuis les modèles. Cela s'opère via une ligne de commande lu et transmis à Django dans le fichier : manage.py
+	Tout d'abord il faut charger les service de Django puis lui demander d'effectuer la création des tables depuis les modèles. Cela s'opère via une ligne de commande lue et transmise à Django dans le fichier : manage.py
 	
 	\begin{lstlisting}[style=py]
 	if __name__ == "__main__":
@@ -582,7 +580,7 @@
 	execute_from_command_line(sys.argv)	
 	\end{lstlisting}
 	
-	Les paramètres entrés en ligne de commande indiquent à Django les opération à effectuer, c'est à dire la création des différentes tables depuis les modèles pré-existant.
+	Les paramètres entrés en ligne de commande indiquent à Django les opérations à effectuer, c'est à dire la création des différentes tables depuis les modèles pré-existants.
 	
 	
 	
@@ -597,7 +595,7 @@
 	
 	\subsection{API}
 	
-	L'API mise à disposition des usagers est une API REST. Cela signifie que le service fourni possède une interface uniforme, c'est à dire que chaque ressource est identifié unitairement, que la manipulation de ces ressources se fait via des représentations et que les messages auto-descriptifs expliquent leurs nature. De plus cette API met à disposition un implémentation des méthodes du CRUD pour les différents endpoints : 
+	L'API mise à disposition des usagers est une API REST. Cela signifie que le service fourni possède une interface uniforme, c'est à dire que chaque ressource est identifiée unitairement, que la manipulation de ces ressources se fait via des représentations et que les messages auto-descriptifs expliquent leur nature. De plus cette API met à disposition un implémentation des méthodes du CRUD pour les différents endpoints : 
 	\begin{itemize}
 		\item[$\bullet$] /users/
 		\item[$\bullet$] /users/me/
@@ -622,7 +620,7 @@
 		\item[$\bullet$] /admin/users/<pk>/
 	\end{itemize}
 		
-	Nous pouvons observer que ces différents endpoints correspondent directement a des modèles (user, meetings, etc.) ou a des attributs des modèles (avatar, hidden, etc.) qui sont renvoyé ou reçu par l'API. 
+	Nous pouvons observer que ces différents endpoints correspondent directement à des modèles (user, meetings, etc.) ou à des attributs des modèles (avatar, hidden, etc.) qui sont renvoyés ou reçus par l'API. 
 	
 	\subsection{Notifications}
 	\subsubsection{Fonctionnement}
@@ -744,26 +742,6 @@
 		
 		\bibitem{fabric}
 		Python library for streamlining the use of SSH for application deployment.\\ \url{http://www.fabfile.org/}
-		
-		\bibitem{Graph data wikipedia.org}
-		Graphs data structures,\\ \url{https://en.wikipedia.org/wiki/Adjacency_matrix#Data_structures}
-		
-		\bibitem{boost.spirit}
-		Boost.Spirit (v2.5.2), is an object-oriented, recursive-descent parser and output generation library for C++,\\ \url{http://www.boost.org/doc/libs/1_60_0/libs/spirit/doc/html/index.html}
-		
-		\bibitem{tries}
-		Robert Sedgewick, Kevin Wayne.\\
-		\emph{Algorithms, fourth edition}\\
-		\url{http://algs4.cs.princeton.edu/lectures/52Tries.pdf}
-		
-		\bibitem{sedgewick}
-		Robert Sedgewick.\\
-		\emph{Course on ternary search tries}
-		\url{https://www.youtube.com/watch?v=CIGyewO7868}
-		
-		\bibitem{drmemory}
-		DrMemory,\\
-		\url{http://drmemory.org/}
 	\end{thebibliography}
 			
 	\newpage
