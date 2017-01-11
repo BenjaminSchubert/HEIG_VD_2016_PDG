@@ -16,9 +16,11 @@ class TestMeetingPerUsers(APIEndpointTestCase):
         self.user.save()
 
     def _create_meeting(self, meeting_time, user_ids):
-        meeting = Meeting(meeting_time=meeting_time, organiser_id=1)
+        meeting = Meeting(organiser_id=1)
         meeting.save()
-
+        meeting.start_time = meeting_time
+        meeting.save()
+        
         for _id in user_ids:
             Participant(meeting=meeting, user_id=_id).save()
 
