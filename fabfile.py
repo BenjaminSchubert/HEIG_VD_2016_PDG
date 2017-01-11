@@ -50,6 +50,15 @@ LOCAL_BACKEND = os.path.join(LOCAL_PATH, "backend")
 LOCAL_FRONTEND = os.path.join(LOCAL_PATH, "frontend")
 LOCAL_VENV = os.path.join(LOCAL_PATH, "venv")
 
+SIGNING_KEY = "{}/.keys/rady-release-key.keystore".format(LOCAL_APP)
+
+
+BASE_APK_NAME = "android-release-unsigned.apk"
+BUILT_APK_NAME = "rady.apk"
+APK_BUILD_PATH = os.path.join(LOCAL_APP, "platforms/android/build/outputs/apk/")
+
+PATH_TO_BASE_APK = os.path.join(APK_BUILD_PATH, BASE_APK_NAME)
+PATH_TO_BUILT_APK = os.path.join(APK_BUILD_PATH, BUILT_APK_NAME)
 
 npm = None
 
@@ -197,6 +206,15 @@ def prepare_app():
         local("{} run clean".format(get_npm()))
         local("{} run build:android".format(get_npm()))
 
+        local("jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore {} {} alias_name".format(
+            SIGNING_KEY, PATH_TO_BASE_APK
+        ))
+
+        max_version = sorted(os.listdir(os.path.join(get_android_home(), "build-tools")))[-1]
+        zipalign = os.path.join(ANDROID_HOME, "build-tools", max_version, "zipalign")
+
+        local("{} -v 4 {} {}".format(zipalign, PATH_TO_BASE_APK, PATH_TO_BUILT_APK))
+
 
 @task
 def prepare_deployment():
@@ -238,10 +256,7 @@ def deploy_backend():
 def deploy_app():
     with section("Deploying app"):
         run("mkdir -p " + TEMPORARY_PATH)
-        put(
-            "{}/platforms/android/build/outputs/apk/android-release-unsigned.apk".format(LOCAL_APP),
-            "{}/".format(TEMPORARY_PATH)
-        )
+        put(PATH_TO_BUILT_APK, "{}/".format(TEMPORARY_PATH))
         sudo("mkdir -p {}/downloads".format(REMOTE_FRONTEND))
         sudo("cp {}/android-release-unsigned.apk {}/downloads/rady.apk".format(TEMPORARY_PATH, REMOTE_FRONTEND))
         sudo("rm -r {}".format(TEMPORARY_PATH))
@@ -261,9 +276,7 @@ def insecure_deploy():
 
 @task
 def deploy():
-    """
-    Deploys the complete application
-    """
+    """Deploy the complete application."""
     try:
         check()
     except SystemExit:
@@ -276,7 +289,7 @@ def deploy():
 
 @task
 def setup_dev():
-    """Setup local dev environment for work"""
+    """Setup local dev environment for work."""
     with section("Setting up dev environment"):
         with lcd(LOCAL_APP):
             local("{} install".format(get_npm()))
@@ -289,3 +302,12 @@ def setup_dev():
 
         with prefix("source {}/bin/activate".format(LOCAL_VENV)), lcd(LOCAL_BACKEND):
             local("pip3 install -r ./requirements.pip")
+
+
+@task
+def create_keys():
+    """Create signing keys for the android application."""
+    local("mkdir -p {}".format(os.path.dirname(SIGNING_KEY)))
+    local("keytool -genkey -v -keystore {} -alias alias_name -keyalg RSA -keysize 2048 -validity 10000".format(
+        SIGNING_KEY
+    ))
