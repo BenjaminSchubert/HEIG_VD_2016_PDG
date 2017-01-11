@@ -957,23 +957,23 @@
 			\item La système de gestion des avatars
 		\end{itemize}
 		
-		Concernant la stabilité du programme, la majorité des bugs/crashs découverts pendant le projet a été corrigée. Cependant certains cas posent en ce moment toujours problème:
+		Concernant la stabilité du programme, la majorité des bugs/crashs découverts pendant le projet ont été corrigés. Cependant certains cas posent en ce moment toujours problème:
 		\begin{enumerate}
 			\item Les notifications lorsque l'application est en background sont effectivement reçue. Ensuite, en foreground, nous n'arrivons pas à être redirigé à l'endroit désiré de l'application.
 			\item Le SecureService est à null lors du premier lancement de l'application. Il faut donc la redémarrer une deuxième fois pour continuer.
 			\item Le retour à MainTabs ne fonctionne pas si l'on vient d'une page qui a été chargée depuis un handler d'une notification.
 		\end{enumerate}
-		Le premier problème est du à Cordova. Nous avons tenté de le résoudre  sans succès.
-		Le deuxième bug est lui aussi dû à Cordova, une exception java est lancée lorsqu'un service est à null au premier lancement de l'application.
-		Enfin le dernier problème n'est actuellement sans solution non plus. Après maintes recherches, nous n'avons pas trouvé de réponse à ce soucis.
+		Le premier problème est du à Cordova. Nous avons tenté de le résoudre, sans succès.
+		Le deuxième bug est lui aussi du à Cordova, une exception java est lancée lorsqu'un service est à null, uniquement au premier lancement de l'application.
+		Enfin le dernier problème n'est actuellement sans solution non plus. Après maintes recherches, nous n'avons pas trouvé de réponse à ce soucis. Notons encore qu'il est actuellement impossible de compiler l'application en \textit{release} car soit Ionic, soit Cordova, n'inclus pas tous les fichiers nécessaires.
 		
 		
-		Après ces 10 semaines intenses de projet, nous sommes relativement satisfait des résultats obtenus et de notre apprentissage. Cependant, nous avons appris de nos erreurs. Travailler avec des technologies qui ne sont pas encore arrivées à maturité, c'est s'exposer à de nombreux bugs encore non résolus par la communauté, ainsi qu'à une surcharge de travail non seulement en terme d'effort et d'apprentissage mais également en terme de recherche sur ces technologies. Néanmoins nous sommes fiers d'avoir pû obtenir des résultats et une application fonctionnelle. Voici une liste non-exhaustive des améliorations possibles auxquelles nous avons pensées:
+		Après ces 10 semaines intenses de projet, nous sommes relativement satisfaits des résultats obtenus et de notre apprentissage. Cependant, nous avons appris de nos erreurs. Travailler avec des technologies qui ne sont pas encore arrivées à maturité, c'est s'exposer à de nombreux bugs encore non résolus par la communauté, ainsi qu'à une surcharge de travail non seulement en terme d'effort et d'apprentissage mais également en terme de recherche sur ces technologies. Néanmoins nous sommes fiers d'avoir pu obtenir des résultats et une application fonctionnelle. Voici une liste non-exhaustive des améliorations possibles auxquelles nous avons pensé (en plus de la correction des bugs mentionnés):
 		\begin{itemize}
 			\item Icônes personnalisées pour chacun (à l'aide de son avatar) indiquant sa position sur la carte lors d'une rencontre
 			\item Affichage des avatars des utilisateurs dans les menus
+			\item Gestion des places favorites
 			\item Fonctionnalités optionnelles du cahier des charges
-			\item et bien d'autres ...
 		\end{itemize}
 		
 		\subsection{Planification}
@@ -982,23 +982,23 @@
 		La planification initiale du projet (disponible en annexe) a fonctionné durant les premières semaines. Rapidement nous nous sommes rendu compte que certaines tâches avaient été grandement sous-estimées tandis que d'autre avaient été totalement oubliées.
 		Cela peut s'expliquer par le fait que les technologies que nous avons décidé d'utiliser, bien qu'efficaces, ne disposaient pas d'une quantité d'information suffisante (ou à jour). En effet, puisque certaines, telles que Ionic2 et Angular2, sont sorties en septembre 2016. Elles ne disposaient que d'une documentation peu fournie et d'une faible quantité d'exemples. De plus, nous pouvions difficilement nous renseigner via des sources externes, car celles-ci avaient souvent été utilisées lors des phases de bêta. \\ 
 		
-		Ensuite, certaines taches se sont révélées plus complexes que prévu ou alors ont requis des sous étapes non spécifiés dans le rapport. Par exemple, réalisation du push pour les notifications qui n'avait pas été pris en compte lors de la planification initiale et qui s'est finalement avéré être un pilier de notre application.
+		Ensuite, certaines tâches se sont révélées plus complexes que prévu ou alors ont requis des sous étapes non spécifiés dans le rapport. Par exemple, réalisation du push pour les notifications qui n'avait pas été pris en compte lors de la planification initiale et qui s'est finalement avéré être un pilier de notre application.
 		
-		Enfin, une source majeure du retard fût le temps des déploiemenst et de tests de nos différentes parties du projet. Le temps de déploiement du serveur se compte en minute tout comme celui de l'application mobile.
-		Ajouté à cela le fait de devoir tester le GPS et la boussole nous à forcé à effectuer de nombreux déplacements chronophages.
+		Enfin, une source majeure du retard fût le temps des déploiements et des tests de nos différentes parties du projet. Le temps de déploiement du serveur se compte en minute tout comme celui de l'application mobile.
+		Ajouté à cela le fait de devoir tester le GPS et la boussole nous à forcé à effectuer de nombreux déplacements chrono-phages.
 
 		
 		\subsection{Travail de groupe}
-		Ce projet fut extrêmement enrichissant, autant du point de vue technique que logistique. Cela nous a à nouveau montré les difficultés liées à la planification et au travail en groupe. De ces problèmes, nous avons pû en retirer de bonnes conclusions: \\
+		Ce projet fut extrêmement enrichissant, autant du point de vue technique que logistique. Cela nous a à nouveau montré les difficultés liées à la planification et au travail en groupe. De ces problèmes, nous avons pu en retirer de bonnes conclusions: \\
 		
 		- La première est que quelque soit nos difficultés lors du projet, il ne faut pas hésiter a en parler avec les autres personnes du groupe. Ces derniers offriront une nouvelle vision au problème et apporteront leurs propres connaissances afin de résoudre les difficultés. \\
 		
 		- La seconde est qu'il est préférable de "surdécouper" le projet en petites tâche avec de nombreuses "deadlines", plutôt que d'avoir de longues itérations. En effet lorsque l'objectif est encore lointain,  nous avons tendance à prendre du retard qui devra être rattrapé au dernier moment. \\
 		
-		- Enfin, nous nous sommes rendus compte qu'une uniformité au niveau de la structure du travail fourni permet une gestion rapide et efficace des problèmes, ce que nous avons durement appris à nos dépend. \\ 
+		- Enfin, nous nous sommes rendus compte qu'une uniformité au niveau de la structure du travail fourni permet une gestion rapide et efficace des problèmes, ce que nous avons durement appris à nos dépends. \\ 
 		
 		
-		Cependant, nous sommes donc, au final, heureux d'avoir pû apprendre de nos erreurs et participer à l'élaboration de A à Z d'un projet complet et complexe. C'est une épreuve très enrichissant. Nous avons pû apprendre les uns des autres et mettre en commun nos forces. 
+		Cependant, nous sommes donc, au final, heureux d'avoir pu apprendre de nos erreurs et participer à l'élaboration de A à Z d'un projet complet et complexe. C'est une épreuve très enrichissant. Nous avons pu apprendre les uns des autres et mettre en commun nos forces. 
 		
 		\newpage
 	
@@ -1023,6 +1023,12 @@
 		
 		\bibitem{fabric}
 		Python library for streamlining the use of SSH for application deployment.\\ \url{http://www.fabfile.org/}
+		
+		\bibitem{jwt}
+		JSON Web Token,\\ \url{https://en.wikipedia.org/wiki/JSON_Web_Token}
+		
+		\bibitem{angular2}
+		Angular2,\\ \url{http://www.angular2.com/}
 	\end{thebibliography}
 			
 	\newpage
