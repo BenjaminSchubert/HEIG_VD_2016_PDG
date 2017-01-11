@@ -1,0 +1,736 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: Rady API
+  description: This is the API used for Rady application
+  version: "1.0.0"
+# the domain of the service
+host: rady.benschubert.me
+# array of all schemes that your API supports
+schemes:
+  - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+# will be prefixed to all paths
+basePath: /api/v1
+produces:
+  - application/json
+paths:
+
+  /users/:
+
+    get:
+      security:
+        - Bearer: []
+      description: Returns all users registered in the application.
+      parameters:
+        - name: email
+          in: query
+          description: Filter the users by this email.
+          required: false
+          type: string
+        - name: username
+          in: query
+          description: Filter the users by this username.
+          required: false
+          type: string
+        - name: phone(list)
+          in: query
+          description: Filter the users by this/these phone number(s).
+          required: false
+          type: string
+      responses:
+        200:
+          description: Return an array of registerd users.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PublicUser'
+        401:
+          description: Could not authenticate the request.
+
+    post:
+      description: Create a new user.
+      parameters:
+        - name: username
+          in: query
+          description: The username of the user.
+          required: true
+          type: string
+        - name: password
+          in: query
+          description: The password of the user.
+          required: true
+          type: string
+        - name: email
+          in: query
+          description: The email address of the user (must be unique).
+          required: true
+          type: string
+      responses:
+        201:
+          description: The user has been created, return user details.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PublicUser'
+        400:
+          description: The request is incorect, see the received error message.
+          
+  /users/me/:
+
+    get:
+      security:
+        - Bearer: []
+      description: Allows a user to get his own information.
+      responses:
+        200:
+          description: Return the user information.
+          schema:
+              $ref: '#/definitions/UserProfil'
+        401:
+          description: Could not authenticate the request.
+
+    put:
+      security:
+        - Bearer: []
+      description: Allows a user to update his own information.
+      parameters:
+        - name: username
+          in: query
+          description: The new username.
+          required: false
+          type: string
+        - name: email
+          in: query
+          description: The new email.
+          required: false
+          type: string
+        - name: password
+          in: query
+          description: The new password.
+          required: false
+          type: string
+        - name: phone_number
+          in: query
+          description: The new phone number.
+          required: false
+          type: string
+        - name: country
+          in: query
+          description: The new country for the phone number. Required only if a new phone number is provided.
+          required: false
+          type: string
+        - name: is_hidden
+          in: query
+          description: True if the user is hidden from the others, false otherwise.
+          required: false
+          type: boolean
+      responses:
+        200:
+          description: Return the user information.
+          schema:
+              $ref: '#/definitions/UserProfil'
+        401:
+          description: Could not authenticate the request.
+
+  /users/me/avatar/:
+
+    put:
+      security:
+        - Bearer: []
+      description: Allows a user to update his avatar.
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: avatar
+          in: formData
+          description: The new avatar image.
+          required: true
+          type: file
+      responses:
+        200:
+          description: The avatar has been updated.
+        400:
+          description: The request is incorect, see the received error message.
+        401:
+          description: Could not authenticate the request.
+
+    delete:
+      security:
+        - Bearer: []
+      description: Allows a user to delete his avatar.
+      responses:
+        204:
+          description: The avatar has been deleted.
+        400:
+          description: The request is incorect, see the received error message.
+        401:
+          description: Could not authenticate the request.
+
+  /users/me/friends/:
+
+    get:
+      security:
+        - Bearer: []
+      description: Allows a user to retrieve his friends that have accepted the request and that are not blocked by the user.
+      responses:
+        200:
+          description: Return an array of friends.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        401:
+          description: Could not authenticate the request.
+
+    post:
+      security:
+        - Bearer: []
+      description: Allows a user to request a new friendship relation.
+      parameters:
+        - name: friend
+          in: query
+          description: The id of the friend to request.
+          required: true
+          type: integer
+      responses:
+        201:
+          description: The friend request is done, return the friendship details.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        400:
+          description:  
+            An error has occured.
+        401:
+          description:  
+            The user isn't authenticated.
+        403:
+          description:  
+            You don't have permission to perform that action.
+            
+  /users/me/friends/all/:
+  
+    get:
+      security:
+        - Bearer: []
+      description: Allows a user to retrieve the list of his friends whether they already accepted the request or not, whether they are blocked or not.
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        401:
+          description: Could not authenticate the request.
+
+  /users/me/friends/blocked/:
+  
+    get:
+      security:
+        - Bearer: []
+      description: Allows a user to retrieve the list of his friends that he blocked.
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        401:
+          description: Could not authenticate the request.
+
+  /users/me/friends/pending/:
+
+    get:
+      security:
+        - Bearer: []
+      description: Allows a user to retrieve the list of his friends that where not yet answered.
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        401:
+          description: Could not authenticate the request.
+    
+  /users/me/friends/hidden/:
+
+    get:
+      security:
+        - Bearer: []
+      description: Allows a user to retrieve the list of his friends that he hid.
+      responses:
+        200:
+          description: Return an array of friends with informations if they are blocked, accepted or hidden .
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Friend'
+        401:
+          description: Could not authenticate the request.
+            
+  /users/me/friends/{pk}/:
+
+    get:
+      security:
+        - Bearer: []
+      description: Allows a user to retrieve a friendship relation.
+      parameters:
+        - name: pk
+          in: path
+          description: The id of the friend user.
+          required: true
+          type: integer
+          format: int64  
+      responses:
+        200:
+          description: Return the friendship relation. 
+          schema:
+            $ref: '#/definitions/Friend'
+        401:
+          description: Could not authenticate the request.
+        403:
+          description: Could not autorize the request.
+        404:
+          description: The place doesn't exists.
+
+    patch:
+      security:
+        - Bearer: []
+      description: Allows a user to update one of his friendship relation.
+      parameters:
+        - name: pk
+          in: path
+          description: The id of the friend user.
+          required: true
+          type: integer
+          format: int64  
+        - name: is_blocked
+          description: True if the friend is blocked, false otherwise.
+          in: query
+          required: true
+          type: boolean
+        - name: is_hidden
+          description: True if the friend is hidden, false otherwise.
+          in: query
+          required: true
+          type: boolean
+      responses:
+        200:
+          description: The friendship relation has been modified, return the friendship details.
+          schema:
+            $ref: '#/definitions/Friend'
+        400:
+          description: The request is incorect, see the received error message.
+        401:
+          description: Could not authenticate the request.
+        403:
+          description: Could not autorize the request.
+        404:
+          description: The place doesn't exists.
+
+  /meetings/:
+
+    get:
+      security:
+        - Bearer: []
+      description: |
+        Allows a user to retrieve all the meetings which he was participant.
+        
+        See the POST /meetings/ endpoint for more information about the types of meetings.
+      responses:
+        200:
+          description: Return an array of meetings. 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Meeting'
+        401:
+          description: Could not authenticate the request.
+
+    post:
+      security:
+        - Bearer: []
+      description: |
+        Allows a user to create a new meeting.
+
+        There are 3 types of meeting :
+        * type = "shortest":
+        
+        When the type is "shortest", then the server will compute an approximation of the shortest path between all participants and will use this as a meeting point. If this mode is chosen, then the `place` attribute will be displayed on `GET` requests, but may be null as long as the server didn't finish its computation.
+            
+  
+        * type = "place":
+        
+        When the type is "place", then the server expects a `place` attribute on creation, which contains at least a `longitude` and `latitude` attributes, representing the coordinates of the place. It also accepts an optional `name` that has no influence on the place but allows to give a human readable name of it.
+
+
+        * type = "person":
+        
+        When the type is "person", then the server expects a `on` attribute on creation, which contains the id of the user on which to make the meeting point. The user must be in the meeting.
+      parameters:
+        - name: type
+          in: query
+          type: string
+          description: The type of the meeting (place | shortest | person).
+          required: false
+        - name: participants
+          in: query
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: The id of the participants.
+          required: false
+      responses:
+        201:
+          description: The meeting has been created, return the meeting details. 
+          schema:
+            $ref: '#/definitions/Meeting'
+        401:
+          description: Could not authenticate the request.
+            
+  /meetings/places/:
+  
+    get:
+      security:
+        - Bearer: []
+      description: Allows the user to retrieve all his places.
+      responses:
+        200:
+          description: Return an array of places.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PublicUser'
+        401:
+          description: Could not authenticate the request.
+  
+  /meetings/places/{pk}/:
+  
+    get:
+      security:
+        - Bearer: []
+      description: Allows a user to retrieve a specific place.
+      parameters:
+        - name: pk
+          in: path
+          description: The id of the place.
+          required: true
+          type: integer
+          format: int64  
+      responses:
+        200:
+          description: Return the place. 
+          schema:
+            $ref: '#/definitions/Place'
+        401:
+          description: Could not authenticate the request.
+        403:
+          description: Could not autorize the request.
+        404:
+          description: The place doesn't exists.
+
+    patch:
+      security:
+        - Bearer: []
+      description: Allows a user to update one of his place.
+      parameters:
+        - name: pk
+          in: path
+          description: The Id of the place.
+          required: true
+          type: integer
+          format: int64 
+        - name: name
+          in: query
+          description: The name of the place.
+          required: true
+          type: string
+      responses:
+        200:
+          description: The place has been modified, return the place details.
+          schema:
+            $ref: '#/definitions/Place'
+        400:
+          description: The request is incorect, see the received error message.
+        401:
+          description: Could not authenticate the request.
+        403:
+          description: Could not autorize the request.
+        404:
+          description: The place doesn't exists.
+
+  /meetings/{pk}/participants/:
+
+    patch:
+      security:
+        - Bearer: []
+      description: Allows a user to update one of his participation.
+      parameters:
+        - name: pk
+          in: path
+          description: The Id of the place.
+          required: true
+          type: integer
+          format: int64 
+        - name: accepted
+          in: query
+          description: True if the user accepted the meeting, false otherwise.
+          required: false
+          type: boolean
+        - name: arrived
+          in: query
+          description: True if the user is arrived to the meeting, false otherwise.
+          required: false
+          type: boolean
+      responses:
+        200:
+          description: The participation has been modified, return the participation details.
+          schema:
+            $ref: '#/definitions/Participant'
+        400:
+          description: The request is incorect, see the received error message.
+        401:
+          description: Could not authenticate the request.
+        403:
+          description: Could not autorize the request.
+        404:
+          description: The participation doesn't exists.
+
+  /meetings/position/:
+  
+    post:
+      security:
+        - Bearer: []
+      description: Allows a user to share his position.
+      parameters:
+        - name: latitude
+          in: query
+          description: The latitude.
+          required: true
+          type: number
+          format: DECIMAL(6)
+        - name: longitude
+          in: query
+          description: The longitude.
+          required: true
+          type: number
+          format: DECIMAL(6)
+      responses:
+        201:
+          description: The place has shared.
+        400:
+          description: The request is incorect, see the received error message.
+        401:
+          description: Could not authenticate the request.
+
+  /auth/login/:
+  
+    post:
+      description: Allows the user to obtain a valide token, used to authenticate each of his requests.
+      parameters:
+        - name: username
+          in: query
+          description: The username of the user.
+          required: true
+          type: string
+        - name: password
+          in: query
+          description: The password of the user.
+          required: true
+          type: string   
+      responses:
+        200:
+          description: The authentication is correct, return a valid token.
+          schema:
+            $ref: '#/definitions/Token'
+        400:
+          description: The request is incorect, see the received error message.
+
+  /auth/refresh/:
+  
+    post:
+      description: Allows the user to refresh is token to extend his lifetime.
+      parameters:
+        - name: token
+          in: body
+          description: The old token
+          required: true
+          schema:
+            $ref: '#/definitions/Token'
+      responses:
+        200:
+          description: The transmitted token is correct, return a new valid token.
+          schema:
+            $ref: '#/definitions/Token'
+        400:
+          description: The request is incorect, see the received error message.
+
+  /fcm/devices/:
+  
+    post:
+      security:
+        - Bearer: []
+      description: Allows the user to register a new device, related to his profile.
+      parameters:
+        - name: registration_id
+          in: query
+          description: Filter the users by this email.
+          required: false
+          type: string
+      responses:
+        201:
+          description: The device has been registered, return the details of the device.
+          schema:
+            $ref: '#/definitions/Device'
+        400:
+          description: An error has occured.
+        401:
+          description: Could not authenticate the request.
+          
+  
+definitions:
+
+  PublicUser:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: The Id of the user.
+      username:
+        type: string
+        description: The username of the user
+      avatar:
+        type: string
+        description: The url of the avatar.
+        
+  UserProfil:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: The Id of the user.
+      username:
+        type: string
+        description: The username of the user.
+      email:
+        type: string
+        description: The email address of the user. 
+      avatar:
+        type: string
+        description: The url of the picture of the user.
+      is_hidden:
+        type: boolean
+        description: True if the user is hidden from the others, false otherwise.
+        
+  Friend:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: The Id of the user.
+      friend:
+        $ref: '#/definitions/UserProfil'
+      initiator:
+        type: boolean
+        description: True if the user is the initiator of the request, false otherwise.
+      is_hidden:
+        type: boolean
+        description: True if the friend is hidden, false otherwise.
+      is_accepted:
+        type: boolean
+        description: True if the friend is accepted, false otherwise.
+      is_blocked:
+        type: boolean
+        description: True if the friend is blocked, false otherwise.
+        
+  Meeting:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: The Id of the meeting.
+      organiser :
+        $ref: '#/definitions/UserProfil'
+      place :
+        $ref: '#/definitions/Place'
+      participants:
+        type: array
+        items:
+          $ref: '#/definitions/Participant'
+      meeting_time:
+        type: string
+        format: date-time
+        description: The time at which the meeting is planned.
+      type:
+        type: string
+        description: The type of the meeting (place | shortest | person).
+      status:
+        type: string
+        description: The type of the meeting (pending | progress | ended | canceled).
+      on :
+        $ref: '#/definitions/UserProfil'
+
+  Place:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: The Id of the place.
+      latitude:
+        type: number
+        format: DECIMAL(6)
+        description: The latitude of the place.
+      longitude:
+        type: number
+        format: DECIMAL(6)
+        description: The longitude of the place.
+      name:
+        type: string
+        description: The name of the place.
+ 
+  Participant:
+    type: object
+    properties:
+      user :
+        $ref: '#/definitions/UserProfil'
+      accepted:
+        type: boolean
+        description: True if the meeting has been accepted by the user, false if not, null if the request is still pending.
+      arrived:
+        type: boolean
+        description: True if the user has arrived to the meeting, false otherwise.
+
+  Token:
+    type: object
+    required:
+      - token
+    properties:
+      token:
+        type: string
+        description: The token.
+        
+  Device:
+    type: object
+    required:
+      - registration_id
+    properties:
+      registration_id:
+        type: string
+        description: The registration Id of the device.
