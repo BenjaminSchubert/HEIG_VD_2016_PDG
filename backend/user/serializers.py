@@ -20,19 +20,6 @@ from user.models import User, Friendship
 __author__ = "Benjamin Schubert <ben.c.schubert@gmail.com>"
 
 
-def validate_phone_number(value: str):
-    """
-    Validate that the given value is a valid phone number.
-
-    :param value: value to check
-    :raise ValidationError: when the phone number is not valid
-    """
-    if not phonenumbers.is_possible_number_string(value, None):
-        raise serializers.ValidationError(
-            "{} is not a possible phone number under the E.164 specification".format(value)
-        )
-
-
 class FriendField(Field):
     """
     Field for a friend.
@@ -167,7 +154,7 @@ class PhoneNumberSerializerMixin(serializers.Serializer):
     This allows for the submission of a phone number and its validation under the E.164 format.
     """
 
-    phone_number = CharField(required=False, validators=[validate_phone_number], write_only=True)
+    phone_number = CharField(required=False, write_only=True)
     country = CharField(required=False, write_only=True)
 
     def validate(self, attrs):
@@ -187,7 +174,10 @@ class PhoneNumberSerializerMixin(serializers.Serializer):
             raise ValidationError({"phone_number": "This field is required when giving a country."})
 
         if "phone_number" in attrs:
-            phone_number = phonenumbers.parse(attrs["phone_number"], attrs["country"])
+            try:
+                phone_number = phonenumbers.parse(attrs["phone_number"], attrs["country"])
+            except Exception:
+                raise ValidationError({"phone_number": "This is not a valid phone number"})
             if not phonenumbers.is_valid_number_for_region(phone_number, attrs["country"]):
                 raise ValidationError({"phone_number": "This is not a valid phone number."})
 
