@@ -582,15 +582,21 @@
 	
 	Les paramètres entrés en ligne de commande indiquent à Django les opérations à effectuer, c'est à dire la création des différentes tables depuis les modèles pré-existants.
 	
+	Django parcours alors nos applications par réflexion et en génère une représentation intermédiaire avant d'adapter celle-ci au moteur de base de données utilisé. La liaison entre Django et PostgreSQL se fait alors de manière toute simple, en spécifiant à Django les paramètres de connections. Par exemple :
 	
+	\begin{lstlisting}[style=py]
+	DATABASES = {
+		"default": {
+		"ENGINE": "django.db.backends.postgresql_psycopg2",
+		"NAME": "rady",
+		"USER": "rady",
+		"PASSWORD": "CENSORED",
+		"HOST": "localhost"
+		}
+	}
+	\end{lstlisting}
 	
-	
-	 
-	TODO : EXPLICATION DU FONCTIONNEMENT DE DJANGO AVEC POSTGRESQL
-	
-	
-	
-	indépendant du moteur de bbd / django
+	L'utilisation de Django nous permet donc de rester indépendant de la base de données, et changer de moteur revient à changer ces informations de connections.
 	
 	
 	\subsection{API}
@@ -620,7 +626,7 @@
 		\item[$\bullet$] /admin/users/<pk>/
 	\end{itemize}
 		
-	Nous pouvons observer que ces différents endpoints correspondent directement à des modèles (user, meetings, etc.) ou à des attributs des modèles (avatar, hidden, etc.) qui sont renvoyés ou reçus par l'API. 
+	Nous pouvons observer que ces différents endpoints correspondent directement à des modèles (user, meetings, etc.) ou à des attributs des modèles (avatar, hidden, etc.) qui sont renvoyés ou reçus par l'API. La documentation complète se trouve en annexe. 
 	
 	\subsection{Notifications}
 	\subsubsection{Fonctionnement}
@@ -639,18 +645,107 @@
 	
 	\subsection{Communication}
 	
-	TODO : CHIFFREMENT + CODE
+	Nous chiffrons toutes les communications entre les clients et le serveur, afin de garantir que les données de nos utilisateurs, comme le mot de passe ou le numéro de téléphone, ne tombent pas entre de mauvaises mains. Pour ceci, nous nous basons sur le protocole HTTPS, utilisant TLS 1.2. La configuration du serveur, un proxy Nginx, est la suivante :
+	
+	\begin{lstlisting}[style=py]
+	listen 443 ssl;
+	ssl_certificate /etc/letsencrypt/live/benschubert.me/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/benschubert.me/privkey.pem;
+	
+	ssl_protocols TLSv1.2;
+	ssl_prefer_server_ciphers on;
+	ssl_dhparam /etc/ssl/certs/dhparam.pem;
+	
+	ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
+	ssl_session_timeout 1d;
+	ssl_session_cache shared:SSL:50m;
+	ssl_stapling on;
+	ssl_stapling_verify on;
+	\end{lstlisting}
+	
+	Nous y listons les options TLS 1.2 acceptables par le serveur, pour une protection optimale.
 	
 	\subsection{Tests Unitaires}
 	\subsubsection{Tests API}
 	
-	TODO : FONCTIONNEMENT DES TESTS + CODE
+	Les tests unitaires de l'API se révèlent très simples et suivent la méthodologie suivante :
+	
+	\begin{enumerate}
+		\item Vérifier les méthodes acceptables pour le point d'entrée
+		\item Vérifier les droits requis pour le point d'entrée
+		\item Vérifier les contraintes d'intégrités de nos modèles (valeurs uniques, etc)
+		\item Vérifier la validité des actions devant être valides
+	\end{enumerate}
+
+	Cette méthodologie permet de s'assurer que notre implémentation est correcte par rapport à la documentation, qui est la référence lors de l'implémentation des tests.
+	
+	De plus, afin de s'assurer que nos tests n'ont aucun effet de bord, la base de données est remise à zéro entre chaque test.
 	
 	\subsubsection{Tests du Push}
 	
 	TODO : FONCTIONNEMENT DES TESTS + CODE
 	
 	\subsubsection{Coverage}
+	
+	Le serveur, pierre angulaire de notre application et gardien des données de nos utilisateurs nécessite beaucoup plus de vérifications que le côté client. En effet, une erreur sur le client risque de causer quelques désagréments à certains utilisateurs, mais une erreur côté serveur pourrait amener à la divulgation de données confidentielles ou à la perte de données. Nous avons donc testé de manière extensive le serveur, et nous présentons le coverage de nos tests dans le tableau \ref{tab:coverage} Nous y présentons, par fichier, le nombre de lignes exécutées, le nombre de lignes manquantes, le nombre de branches totales, le nombre de branches partiellement testées et finalement la couverture du fichier.
+	
+	
+	\begin{figure}
+		\centering
+	\begin{tabular}{|l| r r r r r|}
+		\hline
+		Name & Stmts & Miss & Branch & BrPart  & Cover \\
+		\hline \hline
+		admin/\_\_init\_\_.py & 0 & 0 & 0 & 0 & 100\% \\
+		admin/apps.py & 4 & 0 & 0 & 0 & 100\% \\
+		admin/serializers.py & 8 & 0 & 0 & 0 & 100\% \\
+		admin/urls.py & 4 & 0 & 0 & 0 & 100\% \\
+		admin/views.py & 13 & 0 & 0 & 0 & 100\% \\
+		auth/\_\_init\_\_.py & 0 & 0 & 0 & 0 & 100\% \\
+		auth/apps.py & 4 & 0 & 0 & 0 & 100\% \\
+		auth/permissions.py & 15 & 0 & 4 & 0 & 100\% \\
+		auth/urls.py & 5 & 0 & 0 & 0 & 100\% \\
+		auth/views.py & 37 & 6 & 8 & 0 & 82\% \\
+		device/\_\_init\_\_.py & 1 & 0 & 0 & 0 & 100\% \\
+		device/apps.py & 3 & 0 & 0 & 0 & 100\% \\
+		device/fcm.py & 10 & 0 & 0 & 0 & 100\% \\
+		device/models.py & 50 & 1 & 24 & 3 & 95\% \\
+		device/serializers.py & 8 & 0 & 0 & 0 & 100\% \\
+		device/urls.py & 4 & 0 & 0 & 0 & 100\% \\
+		device/views.py & 25 & 0 & 2 & 0 & 100\% \\
+		manage.py & 14 & 6 & 2 & 1 & 56\% \\
+		meeting/\_\_init\_\_.py & 1 & 0 & 0 & 0 & 100\% \\
+		meeting/apps.py & 5 & 0 & 0 & 0 & 100\% \\
+		meeting/models.py & 34 & 0 & 0 & 0 & 100\% \\
+		meeting/serializers.py & 119 & 3 & 40 & 1 & 97\% \\
+		meeting/signals.py & 41 & 0 & 26 & 1 & 99\% \\
+		meeting/urls.py & 4 & 0 & 0 & 0 & 100\% \\
+		meeting/views.py & 62 & 1 & 4 & 1 & 97\% \\
+		rady/\_\_init\_\_.py & 0 & 0 & 0 & 0 & 100\% \\
+		rady/settings/\_\_init\_\_.py & 23 & 0 & 0 & 0 & 100\% \\
+		rady/settings/debug.py & 9 & 0 & 0 & 0 & 100\% \\
+		rady/urls.py & 4 & 0 & 0 & 0 & 100\% \\
+		rady/wsgi.py & 4 & 4 & 0 & 0 & 0\% \\
+		stats/\_\_init\_\_.py & 1 & 0 & 0 & 0 & 100\% \\
+		stats/apps.py & 5 & 0 & 0 & 0 & 100\% \\
+		stats/models.py & 5 & 0 & 0 & 0 & 100\% \\
+		stats/signals.py & 15 & 0 & 2 & 1 & 94\% \\
+		stats/urls.py & 4 & 0 & 0 & 0 & 100\% \\
+		stats/views.py & 17 & 0 & 0 & 0 & 100\% \\
+		user/\_\_init\_\_.py & 1 & 0 & 0 & 0 & 100\% \\
+		user/apps.py & 5 & 0 & 0 & 0 & 100\% \\
+		user/models.py & 82 & 10 & 14 & 2 & 83\% \\
+		user/serializers.py & 162 & 7 & 42 & 3 & 95\% \\
+		user/signals.py & 15 & 0 & 4 & 0 & 100\% \\
+		user/urls.py & 4 & 0 & 0 & 0 & 100\% \\
+		user/views.py & 71 & 0 & 14 & 0 & 100\% \\
+		\hline \hline
+		TOTAL & 898 & 38 & 186 & 13 & 95\% \\
+		\hline
+	\end{tabular}
+		\caption{Test coverage du server}\label{tab:coverage}
+	\end{figure}
+	
 	
 	TODO : EXPLICATION DU COVERAGE + SCREENSHOT 97\%+ COVERAGE
 	
