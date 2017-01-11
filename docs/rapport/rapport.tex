@@ -660,15 +660,20 @@
 		% Propositions d'améliorations pour des développements futurs
 		
 		\subsection{Application fournie}			
-		Vis à vis du cahier des charges initial (disponible en annexe), l'application répond à toutes les fonctionnalités prévues hormis l'implémentation de certains algorithmes, dont voici la liste:
+		Par rapport du cahier des charges initial (disponible en annexe), l'application répond à toutes les fonctionnalités prévues hormis l'implémentation de certains algorithmes, dont voici la liste:
 		\begin{itemize}
-			\item Arborescence recouvrante de poids min
-			\item Arborescence recouvrante de section min/max
-			\item Flot de capacité fixée (ou min)
-			\item Flot de capacité fixée (ou min) de poids min
+			\item Mode de rencontre sur une personne
+			\item Mode de rencontre au meilleur lieu
+			\item Radar
 		\end{itemize}
-		Les fonctionnalités optionnelles et futures n'ont pas pu être intégrées par manque de temps, cependant leur ajout est tout à fait réalisable car la conception générale de l'application a été prévue pour être ouverte aux extensions. Notons encore que l'interface graphique n'est pas tout à fait la même que la maquette présente dans le cahier des charges, néanmoins les fonctionnalités sont les mêmes.\\
+		Les fonctionnalités optionnelles n'ont pas pu être intégrées par manque de temps, cependant leur ajout est tout à fait réalisable car la conception générale de l'application a été prévue pour être ouverte aux extensions. De plus certaines extensions on déjà été implémenté coté backend : 
+		\begin{itemize}
+			\item Le système de place
+			\item Le partage des positions
+			\item La gestion des avatars
+		\end{itemize}
 		
+		TODO : MODIFIER
 		Concernant la stabilité du programme, la majorité des bugs/crashs découverts pendant le projet a été corrigée. Cependant certains cas posent toujours problème:
 		\begin{enumerate}
 			\item Un graphe ne possédant pas tous les sommets dans l'ordre (ex: \texttt{g=dfs(\{\#2\}, 1);}) pose problème à certaines fonctionnalités (ex: \texttt{draw(g);}, \texttt{egli::deserialize(...);})
@@ -678,31 +683,32 @@
 		\end{enumerate}
 		Les cas (1) et (2) sont des priorités absolues pour la suite du développement, mais nous les avons malheureusement découverts trop tard pour pouvoir les corriger en l'état. Par chance, les causes des problèmes sont connues, ce qui permettra de les corriger rapidement. De plus, nous avons découvert l'existence du logiciel DrMemory \cite{drmemory} qui nous offre la possibilité de cibler les fuites mémoires très précisément.\\
 		
-		Un petit mot sur le langage développé spécifiquement pour l'application. Celui-ci demande un petit temps d'apprentissage, mais la prise en main est assez rapide. L'aide intégrée et ses pages bien expliquées (facilement extensible), sa fonction de recherche par mots-clés, ainsi que l'auto-complétion des fonctions et variables prend l'utilisateur par la main et rend l'utilisation de l'application agréable.\\  
-		
+		TODO : REECRIRE
 		Au final, nous sommes satisfaits du résultat final bien qu'il reste encore d'importants bugs à corriger. Le projet offre de nombreuses possibilités d'amélioration, tant au niveau de l'interface graphique que du reste, et nous sommes très contents de cela. Voici une liste non-exhaustive des améliorations possibles auxquelles nous avons pensé:
 		\begin{itemize}
-			\item Meilleure visualisation des graphes
-			\item Affichage des variables créées dans une zone de l'interface graphique
-			\item Coloration syntaxique
-			\item Fonctionnalités optionnelles et futures du cahier des charges
+			\item Icones personalisé pour la position des utilisateurs sur la carte
+			\item Affichage des avatars dans les menus
+			\item Ajout des 
+			\item Fonctionnalités optionnelles du cahier des charges
 			\item ... et plein d'autres
 		\end{itemize}
 		
 		\subsection{Planification}
 		% Les figures ne prennent pas en compte les tests et la doc, uniquement la conception et l'impl.
 		
-		La planification initiale du projet (disponible en annexe) a fait ressortir plusieurs problèmes. Premièrement, les temps d'analyse et de conception ont été très largement sous-estimés, ce qui a engendré un gros décalage des tâches:
+		La planification initiale du projet (disponible en annexe) a fonctionné durant les quelques premières semaine. Rapidement nous nous sommes rendu compte que certaines tâches avaient été grandement sous-estimé tandis que d'autre avaient été oublié.
 		\begin{figure}[H]
 			
 			\caption{Comparaison entre les dates prévues et effectives des tâches principales}
 			\label{fig:comparaisondates}
 		\end{figure}
-		On peut expliquer cela par deux choses: certains problèmes étaient plus complexes que prévus, et l'apprentissage de Qt était beaucoup plus long. En effet, Qt est très puissant et offre de multiples manières d'aborder un problème, en contre-partie cela induit des pertes de temps lorsque l'on part dans la mauvaise direction. Cependant une fois que Qt est pris en main, les gains lors de l'implémentation sont conséquents.\\ 
+		Cela peut s'expliquer par le fait que les technologies que nous avons décidé d'utiliser, bien que puissante, ne disposaient pas d'une quantité d'information suffisante ou à jour. En effet, puisque certaines technologies, tel que Ionic2 et Angular2, sont sorti en septembre 2016, elles ne disposaient que d'une documentation peu fournie et une faible quantité d'exemples sur les sites officiels. De plus, nous pouvions difficilement nous renseigner via des sources externes car celles-ci avaient souvent été réalisé lors des phases de bêta. \\ 
 		
-		Deuxièmement, la planification initiale était une suite de tâches à faire complètement avant de passer à la suivante. Dans les faits, les tâches (pour une même personne) ont été réalisées en parallèle, cela a impliqué une dissonance entre les temps prévus et les temps effectifs.\\
+		De plus, certaines taches se sont révélé plus complexes que prévus ou alors ont requis des sous étapes non spécifiés dans le rapport. Par exemple réalisation du push pour les notifications n'avait pas été pris en compte lors de la planification initale, cependant elle s'est avéré être un pilier de notre application.
 		
-		Troisièmement, la partie sur les graphes et les algorithmes a été la plus largement sous-estimée, le graphique suivant le montre assez clairement:
+		Enfin une source majeure du retard fut les temps de déploiement et de tests de nos différentes parties. Le temps de déploiement du serveur se compte en minute tout comme celui de l'application mobile.
+		TODO : EXEMPLE SERVER TOOLCHAIN + APP TOOLCHAIN 
+		Ajouté à cela le fait de devoir tester le GPS et la boussole nous à forcé à effectuer de nombreux déplacements chronophages.
 		\begin{figure}[H]
 			
 			\caption{Comparaison entre le temps prévu et temps effectif des tâches
@@ -751,8 +757,14 @@
 		\subsection{Cahier des charges}
 			\includepdf[pages=-,width=\textwidth]{../cahier-des-charges/main}
 		\subsection{Journaux de travail}
-		
+			\includepdf[pages=-,width=\textwidth]{../journal-de-travail/main}
 		\subsection{Planification initiale}
+			\includepdf[pages=2,width=\textwidth]{../diagramme-de-gantt/diagramme-de-gantt}
+			\includepdf[pages=3,width=\textwidth]{../diagramme-de-gantt/diagramme-de-gantt}
+			\centering
+			\includegraphics[angle=90,width=\linewidth,height=\textheight]{../diagramme-de-gantt/diagramme-de-gantt.png}
+			\centering
+			\includegraphics[angle=90,height=\textheight]{../diagramme-de-gantt/tableau-heures-personnes}
 				
 
 \end{document}
