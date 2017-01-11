@@ -1,5 +1,5 @@
 """
-Production configuration for Entrepy
+Production configuration for Rady
 """
 
 
