@@ -41,19 +41,26 @@ class DeviceView(CreateAPIView):
         If the user is registering the same device than he already has,
         just try to send eventually pending messages and response with a HTTP 200 code.
 
+        If the device is already attached to an other user, change it for the current one.
+
         Otherwise, register the new device.
 
         :param request: the HTTP request done
         :return a 201, 200, 400, 401 response depending on whether the data was correct or not.
         """
+        Device.objects.filter(user=self.request.user).delete()
         if "registration_id" in self.request.data:
             try:
-                Device.objects.get(
-                    user=self.request.user,
-                    registration_id=self.request.data["registration_id"]
-                )
+                device = Device.objects.get(registration_id=self.request.data["registration_id"])
+                device.user = self.request.user
+                device.save(update_fields=("user",))
                 self.request.user.send_deferred_messages()
-                return Response(status=status.HTTP_200_OK)
+                return Response(status=status.HTTP_201_CREATED)
             except Device.DoesNotExist:
                 pass
         return super(DeviceView, self).create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        """Override method to set the current user."""
+        serializer.validated_data["user"] = self.request.user
+        return super(DeviceView, self).perform_create(serializer)

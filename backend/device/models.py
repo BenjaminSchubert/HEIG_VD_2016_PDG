@@ -88,11 +88,6 @@ class Device(models.Model):
 
     objects = DeviceManager()
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        """Override save method to delete eventually existing device attached to the user."""
-        Device.objects.filter(user_id=self.user_id).delete()
-        super(Device, self).save(force_insert, force_update, using, update_fields)
-
     def send_message(self, title=None, body=None, data=None, deferred=True, related_type=None, related_id=None):
         """
         Send a push message to the device, allowing the message to be deferred if sending failed.
