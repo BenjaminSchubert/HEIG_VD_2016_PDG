@@ -25,42 +25,41 @@ class DevicesEndpointTestCase(APIEndpointTestCase):
     @authenticated
     def test_can_register_device(self):
         device = generate_device_info()
+
         self.assertEqual(self.post(device).status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Device.objects.filter(registration_id=device["registration_id"], user=self.user).count(), 1)
-
-    @authenticated
-    def test_cannot_register_already_existing_device(self):
-        device1 = generate_device_info()
-
-        # Same device, other user
-        device2 = device1.copy()
-        device2["user"] = User.objects.last()
-        Device(**device2).save()
-
-        self.assertContains(self.post(device1), "already exists", status_code=status.HTTP_400_BAD_REQUEST)
-
-    @authenticated
-    def test_register_my_existing_device_has_no_effect(self):
-        device = generate_device_info()
-        self.post(device)
-        self.assertEqual(self.post(device).status_code, status.HTTP_200_OK)
         self.assertEqual(Device.objects.filter(registration_id=device["registration_id"], user=self.user).count(), 1)
 
     @authenticated
     def test_registered_device_is_set_to_me(self):
         device = generate_device_info()
+
         self.post(device)
         self.assertEqual(
             Device.objects.get(registration_id=device["registration_id"]).user_id,
             self.user.id
         )
 
+    @authenticated
+    def test_register_already_existing_device_set_it_to_me(self):
+        device = generate_device_info()
+
+        device1 = device.copy()
+        device1["user"] = User.objects.last()
+        Device(**device1).save()
+
+        self.assertEqual(self.post(device).status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Device.objects.get(registration_id=device["registration_id"]).user_id, self.user.id)
+
+    @authenticated
     def test_new_device_replace_my_old_one(self):
-        device1 = create_device(self.user)
-        device2 = create_device(self.user)
+        device1 = generate_device_info()
+        device2 = generate_device_info()
+
+        self.post(device1)
+        self.post(device2)
 
         # The old device should not exist anymore
-        self.assertEqual(Device.objects.filter(registration_id=device1.registration_id).count(), 0)
+        self.assertEqual(Device.objects.filter(registration_id=device1["registration_id"]).count(), 0)
 
         # My device should be the new one
-        self.assertEqual(Device.objects.filter(registration_id=device2.registration_id, user=self.user).count(), 1)
+        self.assertEqual(Device.objects.filter(registration_id=device2["registration_id"], user=self.user).count(), 1)
