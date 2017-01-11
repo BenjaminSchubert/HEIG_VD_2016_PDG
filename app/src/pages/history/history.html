@@ -6,8 +6,13 @@
 
 <ion-content padding>
 
-  <p *ngIf="list==null">no meeting made yet</p>
-  <ion-list *ngIf="list!=null">
+  <ion-list>
+    <ion-list-header *ngIf="list.length==0">
+      No meeting made yet
+    </ion-list-header>
+    <ion-item *ngIf="fetching">
+      fetching...
+    </ion-item>
     <ion-card *ngFor="let meetings of list">
       <ion-card-content>
         <button ion-item (click)="startGathering(meetings)" >
