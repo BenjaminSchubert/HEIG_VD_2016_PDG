@@ -262,7 +262,7 @@
 			\item \textbf{Serveur :} Concernant le serveur nous avons choisi d'utiliser \textbf{Django} \cite{django}  pour ses performances, sa sécurité, sa scalabilité et sa maintenabilité.
 			\item \textbf{Base de données :} Le choix de la base de données s'est porté sur \textbf{PostgreSQL} car ce système de gestion de base de données (SGBD) est stable, fonctionne sur de nombreux OS et peut stocker des types de données dit "modernes". De plus ce SGDB fait parti des plus conforme aux norme ANSI SQL.
 			\item \textbf{Serialisation :} Pour la sérialisation des données et leur transfert nous avons opté pour \textbf{JSON}, car en comparaison avec \textbf{XML}, le \textbf{JSON} est plus léger, plus simple et peut directement être utilisé par le TypeScript (Ionic2), ainsi qu'être stocké tel quel dans le SGBD.
-			\item \textbf{Notifications :} Le systeme de notification permettant au serveur de maintenir les utilisateurs à jour concernant les interactions inter-utilisateur se fera via \textbf{Firebase Cloud Messsaging}. FCM  (anciennement Google Cloud Messaging) nous offre un service de transmission de message fiable, une plus grande simplicité de développement ainsi qu'une prise en charge multi-plateforme.
+			\item \textbf{Notifications :} Le systeme de notification permettant au serveur de maintenir les utilisateurs à jour concernant les interactions inter-utilisateur se fera via \textbf{Firebase Cloud Messsaging}\cite{firebase}. FCM  (anciennement Google Cloud Messaging) nous offre un service de transmission de message fiable, une plus grande simplicité de développement ainsi qu'une prise en charge multi-plateforme.
 		\end{itemize}
 		
 		\begin{figure}[H]
@@ -1012,6 +1012,13 @@
 			
 	% References
 	\begin{thebibliography}{9}
+		
+		\bibitem{firebase}
+		Firebase Cloud Messaging (FCM) is a cross-platform messaging solution that lets you reliably deliver messages at no cost..\\ \url{https://firebase.google.com/docs/cloud-messaging/}
+		
+		\bibitem{Cordova}
+		Developping tool for mobile apps with HTML, CSS & JS Target multiple platforms with one code base free and open source\\ \url{https://cordova.apache.org/}
+		
 		\bibitem{meteor}
 		Open source platform for web, mobile, and desktop developpement. ,\\ \url{https://www.meteor.com/}
 		
@@ -1023,6 +1030,9 @@
 		
 		\bibitem{fabric}
 		Python library for streamlining the use of SSH for application deployment.\\ \url{http://www.fabfile.org/}
+		
+		
+		
 	\end{thebibliography}
 			
 	\newpage
@@ -1034,12 +1044,22 @@
 		\subsection{Journaux de travail}
 			\includepdf[pages=-,width=\textwidth]{../journal-de-travail/main}
 		\subsection{Planification initiale}
+		
 			\includepdf[pages=2,width=\textwidth]{../diagramme-de-gantt/diagramme-de-gantt}
 			\includepdf[pages=3,width=\textwidth]{../diagramme-de-gantt/diagramme-de-gantt}
-			\centering
 			\includegraphics[angle=90,width=\linewidth,height=\textheight]{../diagramme-de-gantt/diagramme-de-gantt.png}
-			\centering
-			\includegraphics[angle=90,height=\textheight]{../diagramme-de-gantt/tableau-heures-personnes}
-				
+			\begin{figure}[H]
+				\centering
+				\includegraphics[angle=90,height=\textheight]{../diagramme-de-gantt/tableau-heures-personnes}
+			\end{figure}
+			\justifying 
+		\subsection{Planification effective}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[angle=90,width=\linewidth,height=\textheight]{../diagramme-de-gantt/gantt2.png}
+			\end{figure}
+		\subsection{Détail API REST}
+			\includepdf[pages=-,width=\textwidth]{../doc-api/doc-api}
+			
 
 \end{document}
