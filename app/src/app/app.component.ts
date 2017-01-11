@@ -1,4 +1,4 @@
-import { Platform, AlertController, Nav } from "ionic-angular";
+import { Platform, AlertController, Nav, App } from "ionic-angular";
 import { Component, ViewChild, AfterViewInit } from "@angular/core";
 import { StatusBar } from "ionic-native";
 import { GatheringService } from "../providers/gathering-service";
@@ -26,7 +26,8 @@ export class RadyApp extends AfterViewInit {
 
     public rootPage = SignIn;
 
-    constructor(private platform: Platform,
+    constructor(private app: App,
+                private platform: Platform,
                 private alertCtrl: AlertController,
                 private authService: AuthService,
                 private pushService: PushService,
@@ -54,12 +55,12 @@ export class RadyApp extends AfterViewInit {
             let logger = function (nS) {
                 return function (text) {
                     nS.notify({
-                        title: "CONSOLE.LOG",
-                        message: text
+                        message: text,
+                        title: 'CONSOLE.LOG',
                     });
                 };
             };
-            console.log = logger(this.notificationService);//*/
+            console.log = logger(this.notificationService);
 
             platform.ready().then(() => {
                 // Okay, so the platform is ready and our plugins are available.
@@ -86,8 +87,7 @@ export class RadyApp extends AfterViewInit {
     }
 
     public ngAfterViewInit() {
-        this.gatheringService.configureNotificationHandlers(this.nav, this.alertCtrl, PendingGathering,
-            RunningGathering, MainTabs);
+        this.gatheringService.configureNotificationHandlers(this.app, this.alertCtrl, PendingGathering, RunningGathering, MainTabs);
         this.contactsService.configureNotificationHandlers(this.notificationService);
     }
 

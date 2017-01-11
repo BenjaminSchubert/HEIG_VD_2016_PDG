@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { AlertController, App } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 
 import { RadyMeetings } from '../models/meetings';
@@ -35,7 +35,7 @@ export class GatheringService {
     public notificationService: NotificationService,
     public meService: MeService
   ) {
-    this.reset();
+    this.reset(false);
 
     // update distance
     this.geolocationService.each.push((position) => {
@@ -130,10 +130,10 @@ export class GatheringService {
       });
   }
 
-  reset(doStop = true) {
-    if(doStop && this.status == 'running') {
+  reset(doStop = true, status = 'ended') {
+    if(this.status != null && doStop && this.status != 'create') {
       if(this.initiator)
-        this.stop().then();
+        this.stop(status).then();
       else
         this.decline().then();
     }
@@ -159,7 +159,7 @@ export class GatheringService {
   }
 
   configureNotificationHandlers(
-      navCtrl: NavController, alertCtrl: AlertController, pendingGathering: typeof PendingGathering,
+      app: App, alertCtrl: AlertController, pendingGathering: typeof PendingGathering,
       runningGathering: typeof RunningGathering, mainTabs: typeof MainTabs,
   ) {
 
@@ -184,7 +184,7 @@ export class GatheringService {
             this.reset();
             this.fetch(n.additionalData.meeting).then(() => {
               this.status = 'request';
-              navCtrl.setRoot(pendingGathering);
+              app.getRootNav().setRoot(pendingGathering).then();
             });
           }}
         ],
@@ -225,36 +225,40 @@ export class GatheringService {
       this.meetings.status = 'progress';
       if(this.status == 'pending') {
         this.status = 'running';
-        navCtrl.setRoot(runningGathering);
+        app.getRootNav().setRoot(runningGathering).then();
       }
     });
 
     // finished meetings
     this.notificationService.addHandler('finished-meeting', (n) => {
-      alertCtrl.create({
-        title: 'Gathering finished',
-        buttons: [
-          { text: 'OK', handler: () => {
-            navCtrl.setRoot(mainTabs);
-            this.reset();
-          }}
-        ],
-        enableBackdropDismiss: false
-      }).present();
+      if(this.status != null) {
+        alertCtrl.create({
+          title: 'Gathering finished',
+          buttons: [
+            { text: 'OK', handler: () => {
+              app.getRootNav().setRoot(mainTabs).then();
+              this.reset(false);
+            }}
+          ],
+          enableBackdropDismiss: false
+        }).present();
+      }
     });
 
     // canceled meetings
     this.notificationService.addHandler('canceled-meeting', (n) => {
-      alertCtrl.create({
-        title: 'Gathering canceled',
-        buttons: [
-          { text: 'OK', handler: () => {
-            navCtrl.setRoot(mainTabs);
-            this.reset();
-          }}
-        ],
-        enableBackdropDismiss: false
-      }).present();
+      if(this.status != null) {
+        alertCtrl.create({
+          title: 'Gathering canceled',
+          buttons: [
+            { text: 'OK', handler: () => {
+              app.getRootNav().setRoot(mainTabs).then();
+              this.reset(false);
+            }}
+          ],
+          enableBackdropDismiss: false
+        }).present();
+      }
     });
 
     // TODO other?
