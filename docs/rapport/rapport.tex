@@ -781,7 +781,10 @@
 	
 	\subsubsection{Tests du Push}
 	
-	TODO : FONCTIONNEMENT DES TESTS + CODE
+	Il est difficile de tester les conversations entre le serveur et les clients de manière automatique. De plus, les messages transitent par les serveurs de Google, ce qui n'améliore pas les choses. Nous avons décidé de simplement simuler l'envoi à ces derniers.
+	
+	Nous avons implémenté des \textbf{mocks} des fonctions d'envoi du module PyFCM. Ceci nous permettait de les remplacer par d'autres fonctions et ainsi contrôler qu'elles étaient correctement appelées.
+    Un autre point extrêmement utile était de pouvoir simuler les réponses de ces méthodes afin de tester le comportement de notre serveur en cas de d'erreur ou de succès des envois.
 	
 	\subsubsection{Coverage}
 	
