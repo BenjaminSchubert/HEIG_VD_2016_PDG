@@ -92,7 +92,7 @@ export class PendingGathering {
     function callback(gatS, nC) {
 
       nC.setRoot(MainTabs);
-      gatS.reset();
+      gatS.reset(true, 'canceled');
     }
 
     if(askConfirmation) {

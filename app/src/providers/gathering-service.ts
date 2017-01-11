@@ -35,7 +35,7 @@ export class GatheringService {
     public notificationService: NotificationService,
     public meService: MeService
   ) {
-    this.reset();
+    this.reset(false);
 
     // update distance
     this.geolocationService.each.push((position) => {
@@ -130,10 +130,10 @@ export class GatheringService {
       });
   }
 
-  reset(doStop = true) {
-    if(doStop && this.status == 'running') {
+  reset(doStop = true, status = 'ended') {
+    if(this.status != null && doStop && this.status != 'create') {
       if(this.initiator)
-        this.stop().then();
+        this.stop(status).then();
       else
         this.decline().then();
     }
@@ -231,30 +231,34 @@ export class GatheringService {
 
     // finished meetings
     this.notificationService.addHandler('finished-meeting', (n) => {
-      alertCtrl.create({
-        title: 'Gathering finished',
-        buttons: [
-          { text: 'OK', handler: () => {
-            navCtrl.setRoot(mainTabs);
-            this.reset();
-          }}
-        ],
-        enableBackdropDismiss: false
-      }).present();
+      if(this.status != null) {
+        alertCtrl.create({
+          title: 'Gathering finished',
+          buttons: [
+            { text: 'OK', handler: () => {
+              navCtrl.setRoot(mainTabs);
+              this.reset();
+            }}
+          ],
+          enableBackdropDismiss: false
+        }).present();
+      }
     });
 
     // canceled meetings
     this.notificationService.addHandler('canceled-meeting', (n) => {
-      alertCtrl.create({
-        title: 'Gathering canceled',
-        buttons: [
-          { text: 'OK', handler: () => {
-            navCtrl.setRoot(mainTabs);
-            this.reset();
-          }}
-        ],
-        enableBackdropDismiss: false
-      }).present();
+      if(this.status != null) {
+        alertCtrl.create({
+          title: 'Gathering canceled',
+          buttons: [
+            { text: 'OK', handler: () => {
+              navCtrl.setRoot(mainTabs);
+              this.reset();
+            }}
+          ],
+          enableBackdropDismiss: false
+        }).present();
+      }
     });
 
     // TODO other?
