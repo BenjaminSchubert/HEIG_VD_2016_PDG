@@ -1,5 +1,5 @@
 import { Component, Inject, ElementRef } from '@angular/core';
-import { NavController, AlertController, LoadingController } from 'ionic-angular';
+import { NavController, AlertController, LoadingController, App } from 'ionic-angular';
 
 import { GatheringService } from '../../providers/gathering-service';
 import { GeolocationService } from '../../providers/geolocation-service';
@@ -24,6 +24,7 @@ export class PendingGathering {
 
   constructor(
     public navCtrl: NavController,
+    public app: App,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public gatheringService: GatheringService,
@@ -39,7 +40,11 @@ export class PendingGathering {
 
   // TEST
   diag(v) {
-    return JSON.stringify(v);
+    try {
+      return JSON.stringify(v);
+    } catch(e) {
+      return v;
+    }
   }
 
   ionViewDidLoad() {
@@ -89,12 +94,6 @@ export class PendingGathering {
 
   cancel(askConfirmation = true) {
 
-    function callback(gatS, nC) {
-
-      nC.setRoot(MainTabs);
-      gatS.reset(true, 'canceled');
-    }
-
     if(askConfirmation) {
       this.alertCtrl.create({
         title: 'Cancel gathering',
@@ -102,13 +101,16 @@ export class PendingGathering {
         buttons: [
           { text: 'No' },
           { text: 'Yes', handler: () => {
-            callback(this.gatheringService, this.navCtrl);
+            this.app.getRootNav().setRoot(MainTabs).then();
+            this.gatheringService.reset(true, 'canceled');
           }}
         ]
       }).present();
     }
-    else
-      callback(this.gatheringService, this.navCtrl);
+    else {
+      this.app.getRootNav().setRoot(MainTabs).then();
+      this.gatheringService.reset(true, 'canceled');
+    }
   }
 
   accept() {
@@ -118,22 +120,22 @@ export class PendingGathering {
   }
 
   decline() {
-    this.alertCtrl.create({
+    let alert = this.alertCtrl.create({
       title: 'Decline gathering',
       message: 'Are you sure?',
       buttons: [
         { text: 'No' },
         { text: 'Yes', handler: () => {
-          this.gatheringService.decline().then(() => {
-            this.cancel(false);
-          });
+          this.app.getRootNav().setRoot(MainTabs);
+          this.gatheringService.reset();
         }}
       ]
-    }).present();
+    });
+    alert.present();
   }
 
   continueAnyway() {
-    this.navCtrl.setRoot(RunningGathering);
+    this.navCtrl.setRoot(RunningGathering).then();
 
     // TODO check if it's ok, for exemple in 'person' type, the person must have accepted
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { AlertController, App } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 
 import { RadyMeetings } from '../models/meetings';
@@ -159,7 +159,7 @@ export class GatheringService {
   }
 
   configureNotificationHandlers(
-      navCtrl: NavController, alertCtrl: AlertController, pendingGathering: typeof PendingGathering,
+      app: App, alertCtrl: AlertController, pendingGathering: typeof PendingGathering,
       runningGathering: typeof RunningGathering, mainTabs: typeof MainTabs,
   ) {
 
@@ -184,7 +184,7 @@ export class GatheringService {
             this.reset();
             this.fetch(n.additionalData.meeting).then(() => {
               this.status = 'request';
-              navCtrl.setRoot(pendingGathering);
+              app.getRootNav().setRoot(pendingGathering).then();
             });
           }}
         ],
@@ -225,7 +225,7 @@ export class GatheringService {
       this.meetings.status = 'progress';
       if(this.status == 'pending') {
         this.status = 'running';
-        navCtrl.setRoot(runningGathering);
+        app.getRootNav().setRoot(runningGathering).then();
       }
     });
 
@@ -236,8 +236,8 @@ export class GatheringService {
           title: 'Gathering finished',
           buttons: [
             { text: 'OK', handler: () => {
-              navCtrl.setRoot(mainTabs);
-              this.reset();
+              app.getRootNav().setRoot(mainTabs).then();
+              this.reset(false);
             }}
           ],
           enableBackdropDismiss: false
@@ -252,8 +252,8 @@ export class GatheringService {
           title: 'Gathering canceled',
           buttons: [
             { text: 'OK', handler: () => {
-              navCtrl.setRoot(mainTabs);
-              this.reset();
+              app.getRootNav().setRoot(mainTabs).then();
+              this.reset(false);
             }}
           ],
           enableBackdropDismiss: false
