@@ -178,8 +178,9 @@ class WriteMeetingSerializer(MeetingSerializer):
             place.save()
 
         for participant in participants:
+
             accepted = None
-            if participant.is_hidden is True:
+            if participant.is_hidden is True & participant.id != meeting.organiser_id:
                 accepted = False
             elif current_user.id == participant.id:
                 accepted = True
