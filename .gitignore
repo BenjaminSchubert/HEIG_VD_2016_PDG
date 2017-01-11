@@ -34,3 +34,4 @@ htmlcov/
 backup/
 app/res
 app/.keys
+venv/
