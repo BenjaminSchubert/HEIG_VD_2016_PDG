@@ -145,16 +145,16 @@
 \lstdefinestyle{py} {%
 	language=python,
 	literate=%
-	*{0}{{{\color{lightred}0}}}1
-	{1}{{{\color{lightred}1}}}1
-	{2}{{{\color{lightred}2}}}1
-	{3}{{{\color{lightred}3}}}1
-	{4}{{{\color{lightred}4}}}1
-	{5}{{{\color{lightred}5}}}1
-	{6}{{{\color{lightred}6}}}1
-	{7}{{{\color{lightred}7}}}1
-	{8}{{{\color{lightred}8}}}1
-	{9}{{{\color{lightred}9}}}1,
+	*{0}{{{\color{red}0}}}1
+	{1}{{{\color{red}1}}}1
+	{2}{{{\color{red}2}}}1
+	{3}{{{\color{red}3}}}1
+	{4}{{{\color{red}4}}}1
+	{5}{{{\color{red}5}}}1
+	{6}{{{\color{red}6}}}1
+	{7}{{{\color{red}7}}}1
+	{8}{{{\color{red}8}}}1
+	{9}{{{\color{red}9}}}1,
 	basicstyle=\footnotesize\ttfamily, % Standardschrift
 	numbers=left,               % Ort der Zeilennummern
 	%numberstyle=\tiny,          % Stil der Zeilennummern
@@ -739,7 +739,7 @@
 
 	\section{Sécurité}
 	
-	TODO : EXPLIQUER EN QUOI C'EST IMPORTANT
+	Le but de notre application étant de permettre aux utilisateurs d'enregistrer leurs informations personnelles puis de se retrouver, via les coordonnées GPS envoyés par leur téléphone, nous nous sommes préoccupé de la sécurité de ces informations. Nous avons donc établit différents protocoles (notamment de test) afin de garantir leur préservation.
 	
 	\subsection{Communication}
 	
@@ -786,11 +786,9 @@
 	\subsubsection{Coverage}
 	
 	Le serveur, pierre angulaire de notre application et gardien des données de nos utilisateurs nécessite beaucoup plus de vérifications que le côté client. En effet, une erreur sur le client risque de causer quelques désagréments à certains utilisateurs, mais une erreur côté serveur pourrait amener à la divulgation de données confidentielles ou à la perte de données. Nous avons donc testé de manière extensive le serveur, et nous présentons le coverage de nos tests dans le tableau \ref{tab:coverage} Nous y présentons, par fichier, le nombre de lignes exécutées, le nombre de lignes manquantes, le nombre de branches totales, le nombre de branches partiellement testées et finalement la couverture du fichier.
-	
-	
 	\begin{figure}
 		\centering
-	\begin{tabular}{|l| r r r r r|}
+		\begin{tabular}{|l| r r r r r|}
 		\hline
 		Name & Stmts & Miss & Branch & BrPart  & Cover \\
 		\hline \hline
@@ -840,12 +838,11 @@
 		\hline \hline
 		TOTAL & 898 & 38 & 186 & 13 & 95\% \\
 		\hline
-	\end{tabular}
+		\end{tabular}
 		\caption{Test coverage du server}\label{tab:coverage}
 	\end{figure}
 	
-	
-	TODO : EXPLICATION DU COVERAGE + SCREENSHOT 97\%+ COVERAGE
+	\newpage
 	
 		\section{Conclusion}
 		% Conclusion critique sur l'application fournie et le travail de groupe
@@ -853,70 +850,61 @@
 		% Propositions d'améliorations pour des développements futurs
 		
 		\subsection{Application fournie}			
-		Par rapport du cahier des charges initial (disponible en annexe), l'application répond à toutes les fonctionnalités prévues hormis l'implémentation de certains algorithmes, dont voici la liste:
+		Par rapport au cahier des charges initial (disponible en annexe à ce document), l'application répond à toutes les fonctionnalités prévues hormis l'implémentation de certains algorithmes, dont voici la liste:
 		\begin{itemize}
 			\item Mode de rencontre sur une personne
-			\item Mode de rencontre au meilleur lieu
-			\item Radar
+			\item Mode de rencontre en un point optimal
+			\item Radar pour guider les utilisateurs
 		\end{itemize}
-		Les fonctionnalités optionnelles n'ont pas pu être intégrées par manque de temps, cependant leur ajout est tout à fait réalisable car la conception générale de l'application a été prévue pour être ouverte aux extensions. De plus certaines extensions on déjà été implémenté coté backend : 
+		Les fonctionnalités optionnelles n'ont pas pu être intégrées par manque de temps, cependant leur ajout est tout à fait réalisable. En effet, la conception générale de l'application a été prévue pour être ouverte aux extensions. De plus certaines extensions on déjà été implémentées du coté du backend : 
 		\begin{itemize}
-			\item Le système de place
-			\item Le partage des positions
-			\item La gestion des avatars
+			\item Le système de gestion de places
+			\item Le partage des positions des utilisateurs
+			\item La système de gestion des avatars
 		\end{itemize}
 		
-		TODO : MODIFIER
-		Concernant la stabilité du programme, la majorité des bugs/crashs découverts pendant le projet a été corrigée. Cependant certains cas posent toujours problème:
+		Concernant la stabilité du programme, la majorité des bugs/crashs découverts pendant le projet a été corrigée. Cependant certains cas posent en ce moment toujours problème:
 		\begin{enumerate}
-			\item Un graphe ne possédant pas tous les sommets dans l'ordre (ex: \texttt{g=dfs(\{\#2\}, 1);}) pose problème à certaines fonctionnalités (ex: \texttt{draw(g);}, \texttt{egli::deserialize(...);})
-			\item Fuites mémoires détectées au niveau de la couche \textit{graphes et algorithmes}
-			\item La fenêtre d'aide ne se ferme pas lorsque que l'on quitte la fenêtre principale (avec la croix en haut à droite)
-			\item La grammaire du langage ne permet pas de tout faire (ex: \texttt{v=(0); g=\{v\};}, \texttt{v=(0::-1);}, \texttt{draw(dfs(g, 0)[0]);})
+			\item Les notifications lorsque l'application est en background sont effectivement reçue. Ensuite, en foreground, nous n'arrivons pas à être redirigé à l'endroit désiré de l'application.
+			\item Le SecureService est à null lors du premier lancement de l'application. Il faut donc la redémarrer une deuxième fois pour continuer.
+			\item Le retour à MainTabs ne fonctionne pas si l'on vient d'une page qui a été chargée depuis un handler d'une notification.
 		\end{enumerate}
-		Les cas (1) et (2) sont des priorités absolues pour la suite du développement, mais nous les avons malheureusement découverts trop tard pour pouvoir les corriger en l'état. Par chance, les causes des problèmes sont connues, ce qui permettra de les corriger rapidement. De plus, nous avons découvert l'existence du logiciel DrMemory \cite{drmemory} qui nous offre la possibilité de cibler les fuites mémoires très précisément.\\
+		Le premier problème est du à Cordova. Nous avons tenté de le résoudre  sans succès.
+		Le deuxième bug est lui aussi dû à Cordova, une exception java est lancée lorsqu'un service est à null au premier lancement de l'application.
+		Enfin le dernier problème n'est actuellement sans solution non plus. Après maintes recherches, nous n'avons pas trouvé de réponse à ce soucis.
 		
-		TODO : REECRIRE
-		Au final, nous sommes satisfaits du résultat final bien qu'il reste encore d'importants bugs à corriger. Le projet offre de nombreuses possibilités d'amélioration, tant au niveau de l'interface graphique que du reste, et nous sommes très contents de cela. Voici une liste non-exhaustive des améliorations possibles auxquelles nous avons pensé:
+		
+		Après ces 10 semaines intenses de projet, nous sommes relativement satisfait des résultats obtenus et de notre apprentissage. Cependant, nous avons appris de nos erreurs. Travailler avec des technologies qui ne sont pas encore arrivées à maturité, c'est s'exposer à de nombreux bugs encore non résolus par la communauté, ainsi qu'à une surcharge de travail non seulement en terme d'effort et d'apprentissage mais également en terme de recherche sur ces technologies. Néanmoins nous sommes fiers d'avoir pû obtenir des résultats et une application fonctionnelle. Voici une liste non-exhaustive des améliorations possibles auxquelles nous avons pensées:
 		\begin{itemize}
-			\item Icones personalisé pour la position des utilisateurs sur la carte
-			\item Affichage des avatars dans les menus
-			\item Ajout des 
+			\item Icônes personnalisées pour chacun (à l'aide de son avatar) indiquant sa position sur la carte lors d'une rencontre
+			\item Affichage des avatars des utilisateurs dans les menus
 			\item Fonctionnalités optionnelles du cahier des charges
-			\item ... et plein d'autres
+			\item et bien d'autres ...
 		\end{itemize}
 		
 		\subsection{Planification}
 		% Les figures ne prennent pas en compte les tests et la doc, uniquement la conception et l'impl.
 		
-		La planification initiale du projet (disponible en annexe) a fonctionné durant les quelques premières semaine. Rapidement nous nous sommes rendu compte que certaines tâches avaient été grandement sous-estimé tandis que d'autre avaient été oublié.
-		\begin{figure}[H]
-			
-			\caption{Comparaison entre les dates prévues et effectives des tâches principales}
-			\label{fig:comparaisondates}
-		\end{figure}
-		Cela peut s'expliquer par le fait que les technologies que nous avons décidé d'utiliser, bien que puissante, ne disposaient pas d'une quantité d'information suffisante ou à jour. En effet, puisque certaines technologies, tel que Ionic2 et Angular2, sont sorti en septembre 2016, elles ne disposaient que d'une documentation peu fournie et une faible quantité d'exemples sur les sites officiels. De plus, nous pouvions difficilement nous renseigner via des sources externes car celles-ci avaient souvent été réalisé lors des phases de bêta. \\ 
+		La planification initiale du projet (disponible en annexe) a fonctionné durant les premières semaines. Rapidement nous nous sommes rendu compte que certaines tâches avaient été grandement sous-estimées tandis que d'autre avaient été totalement oubliées.
+		Cela peut s'expliquer par le fait que les technologies que nous avons décidé d'utiliser, bien qu'efficaces, ne disposaient pas d'une quantité d'information suffisante (ou à jour). En effet, puisque certaines, telles que Ionic2 et Angular2, sont sorties en septembre 2016. Elles ne disposaient que d'une documentation peu fournie et d'une faible quantité d'exemples. De plus, nous pouvions difficilement nous renseigner via des sources externes, car celles-ci avaient souvent été utilisées lors des phases de bêta. \\ 
 		
-		De plus, certaines taches se sont révélé plus complexes que prévus ou alors ont requis des sous étapes non spécifiés dans le rapport. Par exemple réalisation du push pour les notifications n'avait pas été pris en compte lors de la planification initale, cependant elle s'est avéré être un pilier de notre application.
+		Ensuite, certaines taches se sont révélées plus complexes que prévu ou alors ont requis des sous étapes non spécifiés dans le rapport. Par exemple, réalisation du push pour les notifications qui n'avait pas été pris en compte lors de la planification initiale et qui s'est finalement avéré être un pilier de notre application.
 		
-		Enfin une source majeure du retard fut les temps de déploiement et de tests de nos différentes parties. Le temps de déploiement du serveur se compte en minute tout comme celui de l'application mobile.
-		TODO : EXEMPLE SERVER TOOLCHAIN + APP TOOLCHAIN 
+		Enfin, une source majeure du retard fût le temps des déploiemenst et de tests de nos différentes parties du projet. Le temps de déploiement du serveur se compte en minute tout comme celui de l'application mobile.
 		Ajouté à cela le fait de devoir tester le GPS et la boussole nous à forcé à effectuer de nombreux déplacements chronophages.
-		\begin{figure}[H]
-			
-			\caption{Comparaison entre le temps prévu et temps effectif des tâches
-				principales}
-			\label{fig:comparaisonheures}
-		\end{figure}
-		
-		Pour finir, les différentes tâches, bien que mal planifiées, ont été bien cernées dès le début du projet. Cela a permis une séparation du travail correcte et indépendante, ainsi qu'une application finale utilisable. Nous sommes cependant convaincus qu'utiliser un modèle de développement itératif (et non pas en cascade) aurait apporté un plus au projet. En effet, cela nous aurait obligé à mettre les différentes couches en commun plus souvent, et ainsi détecter les problèmes avant la fin du projet. 
+
 		
 		\subsection{Travail de groupe}
-		Le principal problème, comme mentionné dans la section précédente, a été le fait que nous n'avons pas fixé suffisamment de délais intermédiaires et que la mise en commun n'a été faite qu'à la fin du projet. Cela a posé des problèmes que nous n'avons malheureusement pas pu résoudre dans les temps.\\
+		Ce projet fut extrêmement enrichissant, autant du point de vue technique que logistique. Cela nous a à nouveau montré les difficultés liées à la planification et au travail en groupe. De ces problèmes, nous avons pû en retirer de bonnes conclusions: \\
 		
-		Le second problème a été un laxisme en début de semestre, nous avons donc dû fournir un gros effort lors des dernières semaines. Lors de ces "rushs", où nous avons travaillé tous ensemble dans la même pièce, il a été intéressant de constater la grande efficacité avec laquelle nous avons travaillé. En effet les problèmes se résolvent beaucoup plus vite et l'ambiance offre un cadre de travail beaucoup plus motivant et encourageant. Il nous semble donc important à l'avenir de planifier ce type de séance plus souvent tout au long d'un projet, pour une meilleure productivité.\\
+		- La première est que quelque soit nos difficultés lors du projet, il ne faut pas hésiter a en parler avec les autres personnes du groupe. Ces derniers offriront une nouvelle vision au problème et apporteront leurs propres connaissances afin de résoudre les difficultés. \\
 		
-		Pour conclure, ce projet a été une expérience enrichissante, autant du point de vue technique et de la planification, que du travail en grand groupe. La collaboration au sein de l'équipe a été très bonne durant toute la durée du semestre, et cela même malgré la grande charge de travail avec les autres cours. Nous sommes donc au final heureux d'avoir pu participer à l'élaboration de A à Z d'un projet complet et complexe, nous profitons de cette conclusion pour nous remercier les uns les autres pour le travail accompli.
+		- La seconde est qu'il est préférable de "surdécouper" le projet en petites tâche avec de nombreuses "deadlines", plutôt que d'avoir de longues itérations. En effet lorsque l'objectif est encore lointain,  nous avons tendance à prendre du retard qui devra être rattrapé au dernier moment. \\
+		
+		- Enfin, nous nous sommes rendus compte qu'une uniformité au niveau de la structure du travail fourni permet une gestion rapide et efficace des problèmes, ce que nous avons durement appris à nos dépend. \\ 
+		
+		
+		Cependant, nous sommes donc, au final, heureux d'avoir pû apprendre de nos erreurs et participer à l'élaboration de A à Z d'un projet complet et complexe. C'est une épreuve très enrichissant. Nous avons pû apprendre les uns des autres et mettre en commun nos forces. 
 		
 		\newpage
 	
