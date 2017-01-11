@@ -1,0 +1,36 @@
+# Projet de groupe - HEIG-VD 2016-2017 - Groupe 1
+
+CD contenant l'ensemble des fichiers rendus pour le projet de semèstre PDG.
+
+
+## Professeur
+
+René Rentsch
+
+
+## Auteurs
+
+Benjamin Schubert
+
+Damien Rochat
+
+Patrick Champion
+
+Thibaut Loiseau
+
+
+## Organisation du CD
+
+**/app** : sources de l'application mobile
+
+**/backend** : sources du serveur
+
+**/deployment** : fichier utilitaires pour le déployement
+
+**/frontend** : sources du site web
+
+**/documentation/src : sources de nos rapport et de notre documentation
+
+**/documentation/build : nos rapports et documentation déjà construits
+
+**fabfile.py : script fabric (http://www.fabfile.org/) pour automatiser le déployement
