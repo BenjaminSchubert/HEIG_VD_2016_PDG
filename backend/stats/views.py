@@ -76,7 +76,7 @@ class StatisticsView(APIView):
                           .annotate(number=Count("id"))
                           .all(),
             meetings_per_user=Participant.objects
-                                         .annotate(day=TruncDay(F("meeting__meeting_time")))
+                                         .annotate(day=TruncDay(F("meeting__start_time")))
                                          .values("day")
                                          .annotate(number=meeting_per_users)
                                          .all(),
