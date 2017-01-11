@@ -631,14 +631,112 @@
 	\subsection{Notifications}
 	\subsubsection{Fonctionnement}
 	
-	TODO : EXPLICATION DU SYSTEME DE PUSH
+	Le système de messages Push, à l'inverse des appels HTTP où le client demande une information au serveur qui lui répond, permet à ce dernier d'envoyer une information à ses clients.
+	
+	Cette méthode, principalement utilisée sur les appareils mobiles, est asynchrone est ne nécessite pas que l'application cliente soit exécutée en tout temps. En effet, celle-ci peut se trouver en arrière-plan ou même être terminée, c'est un service dédié qui réceptionne les messages et les dispatche vers la bonne application.
+	
+	Les notifications Push apparaissent comme une notification banale sur l'appareil de l'utilisateur, avec un titre, une description, éventuellement une icône et même un son lors de leur réception. Ce principe est désormais bien connu des utilisateurs de smartphones et tablettes. On peut citer un certain nombre d'exemples d'utilisation : les messageries instantanées, les rappels d'événements, les actions spéciales d'un magasins, une nouvelles news, etc.
+	
+	Lorsque l'utilisateur clique sur la notification, l'application cible s'ouvre et en traite le contenu. Ces messages n'ont pas pour vocation d'envoyer des données, mais de notifier qu'une action est disponible. Par exemple, une information est disponible au téléchargement sur le serveur. Ceci permet des messages très légers.
+	
+	Dans le cas où l'application est lancée, la notification n'est pas affichée et l'application est directement informée. Afficher une notification dans le cas contraire amène une forme de sécurité où l'utilisateur doit explicitement demander à ce que l'application soit ouverte.
+	
+	TODO : schema-sequence-communication.png
+
+	L'envoi de messages s'effectue en passant au travers d'un serveur de Push. Les applications clientes doivent inscrire au près de ce serveur qui va leur retourner un token unique d'une certaine validité et correspondant à l'appareil. Ce token doit ensuite être transmis au serveur de l'application. Celui-ci pourra demander l'envoi d'un message au serveur de Push en utilisant ces tokens comme destinataires. Le serveur de Push informe répond ensuite en indiquant si l'envoi a réussi ou s'il a échoué. 
 	
 	\subsubsection{Firebase Cloud Messaging}
 	
-	TODO : EXPLICATION DE L'INTEGRATION DE FCM + CODE
+	Durant ce projet, nous avons utilisé le serveur Push de Google, Firebase Cloud Messaging (FCM). Cette technique a l'avantage d'être simple a mettre en place, gratuite (bien que le nombre de message soit limité, mais amplement suffisant pour nous) et multi-plateforme. Les clients peuvent être sur iOS, Android ou même Web.
+	En revanche, elle nécessite que les Google Play Services soient installés sur l'appareil (sous forme d'une application). Ceci n'est pas possible sur tous les appareils (vielles versions de l'OS et du matériel, smartphones "anti-Google" comme le Fairphone, désire des utilisateurs, etc.).
+	Néanmoins, FCM permet de couvrir une large part de marché de manière rapide et efficace.
 	
+	Le service de Google permet également de notifier des appareils par groupes (liste de tokens) ou encore par sujet (par exemple, toutes les personnes intéressées au football ou au jet-ski).
 	
+	\subsubsection{Concernant ce projet}
 	
+	Python possède un large éventail de librairies et PyFCM en est une qui permet de communiquer avec Firebase Cloud Messaging. Celle-ci nous a facilité l'envoi des messages push en s'occupant de toutes les communications réseaux. Concernant la partie mobile, les transactions avec FCM s'effectuent à l'aide d'une librairie pour Cordova.
+	
+	Les clients s'enregistre auprès de FCM et reçoivent un \textbf{registration\_id} qui est propre à l'appareil. Ils doivent ensuite le transmettre à notre serveur qui en a besoin pour la communication. Ceci via l'API Rest mise en place. Plus précisément à l'aide du endpoint \textbf{POST /fcm/devices/}.
+	
+	Le serveur est plus complexe. Nous avons utilisé des envois à un appareil et des envois groupés. Les envois "solo" pour les demandes d'amitié et leur réponse, car elles ne concernent qu'une seule personnes. En ce qui concerne les rencontres, plusieurs personnes sont à chaque fois notifiées ce qui rend utile les messages par groupe.
+	
+	Un point important est que dans le cas où un utilisateur se connecte à son compte sur l'application, qu'il se déconnecte et se reconnecte à l'aide d'un autre compte, il est possible que le registration\_id généré par FCM soit le même, car il s'agit du même appareil. Il a donc fallu faire attention à ce que le token soit lié au dernier utilisateur qui l'a utilisé afin de ne pas transmettre des notification à la mauvaise personne.
+	
+	Les messages contiennent peu d'information (limité à 4KB par FCM). Pour ce projet, nous transmettons un type d'événement, ainsi les identifiants nécessaires afin que le client puisse récupérer les bonnes données.
+	
+	\begin{lstlisting}[style=py]
+	meeting.participants.send_message(
+		title="New meeting",
+		body="{} added you to a meeting".format(meeting.organiser.username),
+		data=dict(type="new-meeting", meeting=meeting.id)
+	)	
+	\end{lstlisting}
+	
+	Ci-dessus, un exemple d'envoi d'une notification d'une nouvelle rencontre à un groupe d'utilisateurs.
+	
+	Nous avons mis en place un certain nombre de notifications. Celle-ci informent les utilisateurs lors de demandes d'amis et de rencontres.
+	
+	\textbf{Nouvelle demande d'ami}
+	\begin{itemize}
+		\item Data: \emph{\{type="friend-request", friendship=id \}}
+		\item Envoyé à la personne demandée en ami
+	\end{itemize}
+		
+	\textbf{Demande d'ami acceptée}
+	\begin{itemize}
+		\item Data: \emph{\{ type="friend-request-accepted", friendship=id \}}
+		\item Envoyé à la personne ayant effectué la demande d'ami
+	\end{itemize}
+		
+	\textbf{Nouvelle demande de rencontre}
+	\begin{itemize}
+		\item Data: \emph{\{ type="new-meeting", meeting=id \}}
+		\item Envoyé aux participants de la rencontres, excepté l'organisateur et les personnes "hidden" qui refusent automatiquement les nouvelles demandes.
+	\end{itemize}
+		
+	\textbf{Participation acceptée} (lorsqu'un utilisateur a accepté la rencontre)
+	\begin{itemize}
+		\item Data: \emph{\{ type="user-accepted-meeting", meeting=id, participant=id \}}
+		\item Envoyé aux participants de la rencontres, excepté ceux qui ont déjà refusé la rencontre.
+	\end{itemize}
+				
+	\textbf{Participation refusée} (lorsqu'un utilisateur a refusé la rencontre)
+	\begin{itemize}
+		\item Data: \emph{\{ type="user-refused-meeting", meeting=id, participant=id \}}
+		\item Envoyé aux participants de la rencontres, excepté ceux qui ont déjà refusé la rencontre.
+	\end{itemize}
+		
+	\textbf{Participation annulée} (lorsqu'un utilisateur a annulé sa participation à une rencontre après l'avoir acceptée)
+	\begin{itemize}
+		\item Data: \emph{\{ type="user-canceled-meeting", meeting=id, participant=id \}}
+		\item Envoyé aux participants de la rencontres, excepté ceux qui ont refusé la rencontre.
+	\end{itemize}
+			
+	\textbf{Participant arrivé} (lorsqu'un utilisateur a signalé son arrivée à la rencontre après l'avoir acceptée)
+	\begin{itemize}
+		\item Data: \emph{\{ type="user-arrived-meeting", meeting=id, participant=id \}}
+		\item Envoyé aux participants de la rencontres, excepté ceux qui ont refusé la rencontre.
+	\end{itemize}
+			
+	\textbf{Meeting démarré}
+	\begin{itemize}
+		\item Data: \emph{\{ type="meeting-in-progress", meeting=id \}}
+		\item Envoyé aux participants de la rencontres, excepté ceux qui ont refusé la rencontre.
+	\end{itemize}
+		
+	\textbf{Meeting terminé}
+	\begin{itemize}
+		\item Data: \emph{\{ type="meeting-finished", meeting=id \}}
+		\item Envoyé aux participants de la rencontres, excepté ceux qui ont refusé la rencontre.
+	\end{itemize}
+			
+	\textbf{Meeting annulé}
+	\begin{itemize}
+		\item Data: \emph{\{ type="meeting-canceled", meeting=id \}}
+		\item Envoyé aux participants de la rencontres, excepté ceux qui ont refusé la rencontre.
+	\end{itemize}
+
 	\section{Sécurité}
 	
 	TODO : EXPLIQUER EN QUOI C'EST IMPORTANT
