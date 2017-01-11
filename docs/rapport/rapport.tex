@@ -21,6 +21,7 @@
 \usepackage{subcaption}
 \usepackage{dirtree}
 \usepackage{pdfpages}
+\usepackage{float}
 % Pdf
 \setboolean{@twoside}{false}
 
@@ -512,13 +513,102 @@
 	
 	\subsubsection{Rencontres}
 	
-	TODO : EXPLICATION + CODE
+	Les rencontres sont le point central de l'application. Leur conception tourne autour de plusieurs composants qui interagissent entre eux, afin de mener à bien tous les utilisateurs participants vers la destination choisie. Voici un schéma montrant ces différentes parties:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth]{../schema/gathering-page-flow}
+		\caption{Interactions des composants pour les rencontres}
+	\end{figure}
+
+	Sur ce schéma les rectangles sont les pages, avec les flèches pleines indiquant leurs successeurs et les flèches en trait-tillé mettant en évidance les services utilisés, qui eux sont les ovales. Les services flottants, comme \texttt{GatheringService} et \texttt{AuthService}, sont des services utilisés par toutes les pages.\\
 	
-	\subsubsection{Géolocalisation et boussole}
+	Penchons-nous un peu sur \texttt{GatheringService}, ce service s'occupe de l'intégrité et des appels au serveur en ce qui concerne la rencontre en cours. Il est important de noter qu'il s'enregistre auprès de \texttt{NotificationService}, afin de recevoir les notifications \textit{push} concernant les rencontres (qui elles-mêmes sont reçues de \texttt{PushService}).\\
 	
-	TODO : FONCTIONNEMENT GEOLOC + BOUSSOLE
-	TODO : SUCE PAS TROP LA BATTERIE CAR TOUTE LES 3 SECONDES
+	Pour mieux comprendre ce schéma, nous allons faire un exemple des interactions dans le cas suivant:
+	\begin{itemize}
+		\item il y a deux utilisateurs dans la rencontre
+		\begin{itemize}
+			\item le créateur de la rencontre, nommons-le \textbf{A}
+			\item l'invité de la rencontre, nommons-le \textbf{B}
+		\end{itemize}
+		\item la destination est un point fixe sur la carte choisi par \textbf{A}
+		\item la rencontre va à son terme, il n'y a pas d'interruptions/annulations/etc.
+	\end{itemize}
+
+	Voyons ce que ça donne:
+	\begin{figure}[H]
+		\centering
+		\begin{longtable}{|l|l|}
+			\hline
+			\textbf{A} & \textbf{B}\\
+			\hline
+			\multicolumn{2}{c}{lance l'application}\\
+			\multicolumn{2}{c}{\texttt{ContactsService} récupère la liste des contacts}\\
+			\multicolumn{2}{c}{se trouve sur \texttt{ContactList}}\\
+			choisi \textbf{B} dans sa liste & \\
+			lance la création de rencontre & \\
+			\texttt{GatheringService} est mis à jour & \\
+			se trouve sur \texttt{CreateGathering} & \\
+			choisi le mode et la destination & \\
+			lance la rencontre & \\
+			se trouve sur \texttt{PendingGathering} & reçoit une notification de nouvelle rencontre\\
+			& récupère la rencontre à l'aide de \texttt{GatheringService}\\
+			& accepte de voir la demande de rencontre\\
+			& se trouve sur \texttt{PendingGathering}\\
+			& accepte la demande de rencontre\\
+			reçoit une notification d'acceptation & va sur \texttt{RunningGathering}\\
+			\texttt{GatheringService} est mis à jour & \textit{déplacement en cours}\\
+			va sur \texttt{RunningGathering} & \\
+			\textit{déplacement en cours} & \\
+			&\\
+			\vdots & \vdots\\
+			&\\
+			arrive à destination & \\
+			& reçoit une notification que \textbf{A} est arrivé\\
+			& arrive à destination\\
+			reçoit une notification que \textbf{B} est arrivé & \\
+			\multicolumn{2}{c}{reçoivent une notification de fin}\\
+			\multicolumn{2}{c}{retour à \texttt{ContactList}}\\
+			\hline
+		\end{longtable}
+		\caption{Exemple de rencontre côté application}
+	\end{figure}
+
+	Cette exemple est le cas de base, évidemment à chaque instant l'un et l'autre peuvent quitter la rencontre avant de l'avoir finie. Dans ce cas les notifications adéquates seront envoyées par le serveur et reçues par les utilisateurs. 
 	
+	\paragraph{Affichage de la carte}
+	
+	Nous n'avons pas encore parlé des services \texttt{CompassService}, \texttt{GeolocationService} et \texttt{LeafletHelper}, voici un résumé:
+	\begin{figure}[H]
+		\centering
+		\begin{tabular}{rl}
+			\textbf{\texttt{CompassService}:} & Récupération de l'orientation du mobile par rapport au pôle nord.\\
+			\textbf{\texttt{GeolocationService}:} & Récupération de la position du mobile sur terre (latitude, longitude).\\
+			\textbf{\texttt{LeafletHelper}:} & Aide à la création de carte à l'aide de la bibliothèque \textit{leafletJS}.\\
+		\end{tabular}
+	\end{figure}
+	Les services de boussoles et surtout de géolocalisation sont gourmands en processus, et donc en batterie du mobile. À cause de cela il ne sont activés que lorsque c'est nécessaire.\\
+	
+	Pour parler de la carte, à la base nous voulions trois vues différentes: radar, boussole et carte. Nous sommes arrivés à la conclusion qu'il était plus facile, intuitif et pratique de fusionner les trois en un:
+	\begin{itemize}
+		\item une carte avec notre position et la destination
+		\item une flèche sur notre position indiquant notre orientation (boussole)
+		\item la position des autres participants de la rencontre sur la carte (radar)
+	\end{itemize}
+	Ainsi tout les informations sont regroupées.\\
+	
+	Notons encore que \textit{leafletJS} ne permet pas d'opérer une rotation sur la carte, ainsi afin de savoir dans quel sens aller quand même, nous avons tirer une ligne droite entre notre position et la destination:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.4\textwidth]{../images/boussole-cote}
+		\caption{L'utilisateur est trop orienté sur la droite}
+	\end{figure}
+	Avec ça, il suffit d'aligner la boussole et cette ligne afin de connaître la direction générale vers la destination:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.4\textwidth]{../images/boussole-droite}
+		\caption{L'utilisateur est trop orienté sur la droite}
+	\end{figure}
 	
 	\section{Serveur et Communication}	
 	\subsection{Fonctionnement Général}
