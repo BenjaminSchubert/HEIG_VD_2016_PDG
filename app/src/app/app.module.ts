@@ -16,9 +16,6 @@ import { History } from '../pages/history/history'
 import { EditProfile } from '../pages/edit-profile/edit-profile'
 
 import { AddContact } from '../pages/add-contact/add-contact';
-import { AddContactFromList } from '../pages/add-contact-from-list/add-contact-from-list';
-import { AddContactFromScanner } from '../pages/add-contact-from-scanner/add-contact-from-scanner';
-import { MyQrCode } from '../pages/my-qr-code/my-qr-code';
 
 import { CreateGathering } from '../pages/create-gathering/create-gathering';
 import { CreateGatheringModalFixed } from '../pages/create-gathering-modal-fixed/create-gathering-modal-fixed';
@@ -49,9 +46,6 @@ let COMPONENTS_LIST: any = [
   EditProfile,
   MainTabs,
   AddContact,
-  AddContactFromList,
-  AddContactFromScanner,
-  MyQrCode,
   CreateGathering,
   CreateGatheringModalFixed,
   PendingGathering,

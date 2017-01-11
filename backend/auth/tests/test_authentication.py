@@ -6,7 +6,15 @@ from test_utils import APIEndpointTestCase, API_V1, authenticated
 class AuthenticationBySessionEndpointTestCase(APIEndpointTestCase):
     url = API_V1 + "auth/session/"
 
-    def test_can_authenticate(self):
+    def test_cannot_authenticate_as_normal_user(self):
+        self.assertEqual(
+            self.post(dict(username=self.user.email, password=self.password)).status_code,
+            status.HTTP_403_FORBIDDEN
+        )
+
+    def test_can_authenticate_as_admin(self):
+        self.user.is_staff = True
+        self.user.save()
         self.assertEqual(
             self.post(dict(username=self.user.email, password=self.password)).status_code,
             status.HTTP_200_OK
