@@ -212,7 +212,7 @@ def prepare_app():
 
         max_version = sorted(os.listdir(os.path.join(get_android_home(), "build-tools")))[-1]
         zipalign = os.path.join(ANDROID_HOME, "build-tools", max_version, "zipalign")
-
+        local("rm -f {}".format(PATH_TO_BUILT_APK))
         local("{} -v 4 {} {}".format(zipalign, PATH_TO_BASE_APK, PATH_TO_BUILT_APK))
 
 
@@ -258,7 +258,7 @@ def deploy_app():
         run("mkdir -p " + TEMPORARY_PATH)
         put(PATH_TO_BUILT_APK, "{}/".format(TEMPORARY_PATH))
         sudo("mkdir -p {}/downloads".format(REMOTE_FRONTEND))
-        sudo("cp {}/android-release-unsigned.apk {}/downloads/rady.apk".format(TEMPORARY_PATH, REMOTE_FRONTEND))
+        sudo("cp {}/{} {}/downloads/rady.apk".format(TEMPORARY_PATH, BUILT_APK_NAME, REMOTE_FRONTEND))
         sudo("rm -r {}".format(TEMPORARY_PATH))
 
 
