@@ -74,7 +74,6 @@ export class RadyApp extends AfterViewInit {
                             console.log("[Rady][RadyApp] got : " + JSON.stringify(err));
                             this.notifyBadError();
                         }
-                        this.rootPage = SignIn;
                         this.nav.setRoot(SignIn).then();
                     });
 

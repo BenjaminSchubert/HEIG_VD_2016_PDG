@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import { AuthService } from "./auth-service";
 import { RadyFriend } from "../models/friend";
 import { RestService } from "../lib/rest-service";
-import { FRIENDS_URL, ALL_FRIENDS_URL } from "../app/api.routes";
+import { FRIENDS_URL, ALL_FRIENDS_URL, USERS_URL } from "../app/api.routes";
 import { IUser } from "../lib/stubs/user";
-import { NotificationService } from './notification-service';
+import { NotificationService } from "./notification-service";
 
 
 /**
@@ -41,32 +41,31 @@ export class ContactsService extends RestService<IUser> {
         return this.modify(id, {is_blocked: false});
     }
 
-    /**
-     * Fetch informations
-     * @return a promise
-     */
-    fetch() {
-        this.contacts = [];
-        return super.fetch().do((res: any) => this.contacts = res.json());
+    public configureNotificationHandlers(nS: NotificationService) {
+
+        let f = (n) => {
+            this.fetch().subscribe();
+            nS.notify({
+                message: n.message,
+                title: n.title,
+            });
+        };
+
+        nS.addHandler("friend-request", (n) => f(n));
+        nS.addHandler("friend-request-accepted", (n) => f(n));
+    }
+
+    public search(s: string) {
+        return this.http.get(`${USERS_URL}?username=${s}`);
+    }
+
+    public addFriend(user: IUser) {
+        return this.http.post(FRIENDS_URL, {friend: user.id})
+            .do(() => this.fetch().subscribe());
     }
 
     private modify(id: number, info: any) {
         return this.authService.patch(`${FRIENDS_URL}${id}/`, info)
             .do(() => this.fetch().subscribe());
     }
-
-    configureNotificationHandlers(nS: NotificationService) {
-
-        let f = (n) => {
-            this.fetch().subscribe();
-            nS.notify({
-                title: n.title,
-                message: n.message
-            });
-        }
-
-        nS.addHandler('friend-request', n => f(n));
-        nS.addHandler('friend-request-accepted', n => f(n));
-    }
-
 }

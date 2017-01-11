@@ -1,59 +1,31 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title class="hidden">Add Contact</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title class="hidden">Add Contact</ion-title>
+    </ion-navbar>
 </ion-header>
 
-<!-- Add contact options (QR code, search, phone contact list) -->
 <ion-content>
-  <div class="content">
-    <div class="page-add-contact">
-      <h1>Add Contact</h1>
+    <div class="content">
+        <div class="page-add-contact">
+            <h1>Add Contact</h1>
 
-      <div *ngIf="!searchFocus">
+            <div class="search">
+                <ion-searchbar placeholder="Search by Username" showCancelButton="true" (ionInput)="search($event)"></ion-searchbar>
 
-        <div class="qr">
-          <h3>QR Code</h3>
-          <ion-row center>
-            <ion-col width-50>
-              <button ion-button icon-left (click)="goToAddContactFromScanner()">
-                <ion-icon name="qr-scanner"></ion-icon>
-                Scanner
-              </button>
-            </ion-col>
-            <ion-col width-50>
-              <button ion-button icon-left (click)="goToMyQrCode()">
-                <ion-icon name="image"></ion-icon>
-                My Code
-              </button>
-            </ion-col>
-          </ion-row>
+                <p *ngIf="noInputEntered">Please search for users</p>
+                <p *ngIf="!noInputEntered && (users$ | async).length == 0">No user with this username</p>
+
+                <ion-list>
+                    <ion-item *ngFor="let user of addedUsers$ | async">
+                        {{ user.username }}
+                        <ion-icon item-right name="checkmark"></ion-icon>
+                    </ion-item>
+                    <button ion-item *ngFor="let user of displayedUsers$ | async" (click)="addContact(user)">
+                        {{ user.username }}
+                        <ion-icon item-right name="add"></ion-icon>
+                    </button>
+                </ion-list>
+            </div>
         </div>
-        <hr>
-
-        <div class="list">
-          <h3>Other Options</h3>
-          <button ion-button small clear (click)="goToAddContactFromList()">looking for friends in your contact list</button>
-        </div>
-        <hr>
-
-      </div>
-
-      <div class="search">
-        <h3>Search Manually</h3>
-        <ion-searchbar placeholder="Search by Username" showCancelButton="true" (ionInput)="doSearch($event)" (ionFocus)="searchFocus=true"></ion-searchbar>
-        <p *ngIf="message.length > 0">{{message}}</p>
-        <ion-list>
-          <ion-item *ngFor="let user of added">
-            {{user.username}}
-            <ion-icon item-right name="checkmark"></ion-icon>
-          </ion-item>
-          <button ion-item *ngFor="let user of users" (click)="doAddContact(user)">
-            {{user.username}}
-            <ion-icon item-right name="add"></ion-icon>
-          </button>
-        </ion-list>
-      </div>
     </div>
-  </div>
 </ion-content>

@@ -25,8 +25,7 @@ export class ContactList {
     public filter$: BehaviorSubject<string>;
     public checkedUsers: IUser[] = [];
 
-    constructor(public navCtrl: NavController,
-                public app: App,
+    constructor(public app: App,
                 public service: ContactsService,
                 public alertCtrl: AlertController,
                 public actionSheetCtrl: ActionSheetController,

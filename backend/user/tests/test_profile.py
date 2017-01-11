@@ -17,7 +17,14 @@ class UserProfileEndpointTestCase(APIEndpointTestCase):
 
         self.assertDictEqual(
             response.json(),
-            dict(id=self.user.id, username=self.user.username, email=self.user.email, avatar=None, is_hidden=False)
+            dict(
+                id=self.user.id,
+                username=self.user.username,
+                email=self.user.email,
+                avatar=None,
+                is_hidden=False,
+                is_staff=False,
+            )
         )
 
     @authenticated
