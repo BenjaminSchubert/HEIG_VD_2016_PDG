@@ -18,6 +18,7 @@ import { CONFIG } from '../../providers/config';
 })
 export class History {
 
+  public fetching: boolean;
   public list : RadyMeetings[];
 
   constructor(
@@ -26,10 +27,11 @@ export class History {
     public authService: AuthService,
     public gatheringService: GatheringService
   ) {
-    this.list = null;  
+    this.list = [];
+    this.fetching = false;
   }
 
-  ionViewDidLoad() {
+  ionViewWillEnter() {
     this.fetch();
   }
 
@@ -50,6 +52,7 @@ export class History {
   }
 
   fetch() {
+    this.fetching = true;
     this.authService.get(CONFIG.API_URL + 'meetings/')
       .map(res => res.json())
       .map((res) => {
@@ -60,6 +63,7 @@ export class History {
       .toPromise()
       .then((data) => {
         this.list = data;
+        this.fetching = false;
       })
       .catch((err) => {
         console.log('[History] fetch error: ' + JSON.stringify(err));

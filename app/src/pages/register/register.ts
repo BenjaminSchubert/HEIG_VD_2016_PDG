@@ -38,8 +38,8 @@ export class Register extends AccountFormComponent {
                             text: "OK",
                         }],
                         enableBackdropDismiss: false,
-                        message: "You can now find your friend !",
-                        title: "Welcome!",
+                        message: "We hope you will enjoy our app!",
+                        title: "Welcome",
                     }).present();
                 },
                 (err: Response) => {
